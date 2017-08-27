@@ -1,4 +1,29 @@
 #pragma once
+/*////////////////////////////////////////////////////////////////////////////
+Remaps.h
+
+A collection of integral remaps.
+
+Copyright 2017 HJA Bird
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/////////////////////////////////////////////////////////////////////////////
 
 #include <cmath>
 
@@ -12,13 +37,16 @@ namespace Quad1D {
 								Ty new_x0, Ty new_x1);
 
 	template<typename Ty>
-	constexpr void telles_quadratic_remap(Ty & point, Ty & weight, bool singularity_positive);
+	constexpr void telles_quadratic_remap(Ty & point, Ty & weight, 
+										bool singularity_positive);
 
 	template<typename Ty>
-	constexpr void telles_cubic_remap(Ty & point, Ty & weight, Ty singularity_pos);
+	constexpr void telles_cubic_remap(Ty & point, Ty & weight, 
+									  Ty singularity_pos);
 
 	template<int Torder, typename Ty>
-	constexpr void sato_remap(Ty & point, Ty & weight, Ty singularity_pos);
+	constexpr void sato_remap(Ty & point, Ty & weight, 
+							  Ty singularity_pos);
 	// TODO:
 	// tanh_sinh
 	// Sigmoidal
@@ -42,8 +70,8 @@ namespace Quad1D {
 	/// \f[\int^c_d f(x) dx.\f] By linearly remapping a quadrature this
 	/// can be achieved.
 	///
-	/// To remap a point 0.0 with weight 1.0, from -1.0, 1.0 to 2.0, 6.0 one would 
-	/// write:
+	/// To remap a point 0.0 with weight 1.0, from -1.0, 1.0 to 2.0, 6.0 
+	/// one would write:
 	/// \code
 	/// #include "Quad1D/Remaps.h"
 	/// double p, w;
@@ -53,8 +81,8 @@ namespace Quad1D {
 	/// \endcode
 	/// Now the quadrature, will integrate the interval 2.0, 6.0.
 	/// 
-	/// Care must be taken to ensure that all arguments are of the same type, or
-	/// explicity typing must be used: \code
+	/// Care must be taken to ensure that all arguments are of the same type, 
+	/// or explicity typing must be used: \code
 	/// Quad1D::linear_remap<double>(p, w, -1, 1, 2, 6) \endcode
 	///
 	template<typename Ty>
@@ -73,10 +101,12 @@ namespace Quad1D {
 	/// \param point integration weight - mutated.
 	/// \param singularity_positive true if singularity is at +1, false if at -1
 	///
-	/// \brief Applies Telles' quadratic integral transfrom to a quadrature point / weight
+	/// \brief Applies Telles' quadratic integral transfrom to a quadrature
+	/// point / weight
 	///
-	/// Telles' quadratic remap increases the accuracy of quadratures when there is a singularity
-	/// at the boundary of the integration interval, which must be mapped to [-1, 1]. 
+	/// Telles' quadratic remap increases the accuracy of quadratures when 
+	/// there is a singularity at the boundary of the integration interval,
+	/// which must be mapped to [-1, 1]. 
 	/// The input point and weight are modified.
 	/// The code can be used as follows:
 	/// \code
@@ -87,7 +117,8 @@ namespace Quad1D {
 	/// Quad1D::telles_quadratic_remap(px, wx, true);
 	/// \endcode
 	template<typename Ty>
-	constexpr void telles_quadratic_remap(Ty & point, Ty & weight, bool singularity_positive) 
+	constexpr void telles_quadratic_remap(Ty & point, Ty & weight, 
+										  bool singularity_positive) 
 	{
 		Ty s_pos = singularity_positive ? 1.0 : -1.0;
 		Ty tmp_p, tmp_w;
@@ -103,9 +134,11 @@ namespace Quad1D {
 	/// \param point integration weight - mutated.
 	/// \param singularity_pos the position of the singularity
 	///
-	/// \brief Applies Telles' cubic integral transfrom to a quadrature point / weight
+	/// \brief Applies Telles' cubic integral transfrom to a quadrature
+	/// point / weight
 	///
-	/// Telles' cubic remap increases the accuracy of quadratures when there is a singularity.
+	/// Telles' cubic remap increases the accuracy of quadratures when there  
+	/// is a singularity.
 	/// The inverval of integration must be mapped to [-1, 1]. 
 	/// The input point and weight are modified.
 	///
@@ -123,10 +156,11 @@ namespace Quad1D {
 		Ty tmp_p, tmp_w, sp_rm;
 		// remap singularity position.
 		sp_rm = cbrt((singularity_pos - 1)*(singularity_pos + 1)*(singularity_pos + 1))
-			+ cbrt((singularity_pos - 1)*(singularity_pos - 1)*(singularity_pos + 1))
-			+ singularity_pos;
+			+   cbrt((singularity_pos - 1)*(singularity_pos - 1)*(singularity_pos + 1))
+			+   singularity_pos;
 		// and calculate new point & weight.
-		tmp_p = (pow(point - sp_rm, 3) + sp_rm*(sp_rm*sp_rm + 3)) / (3 * sp_rm*sp_rm + 1);
+		tmp_p = (pow(point - sp_rm, 3) + sp_rm*(sp_rm*sp_rm + 3)) 
+											/ (3 * sp_rm*sp_rm + 1);
 		tmp_w = (3 * pow(sp_rm - point, 2)) / (3 * sp_rm*sp_rm + 1) * weight;
 		point = tmp_p;
 		weight = tmp_w;
@@ -167,8 +201,10 @@ namespace Quad1D {
 	{
 		static_assert(Torder > 1);
 		Ty tmp_p, tmp_w;
-		tmp_p = singularity_pos - (singularity_pos / pow(2, Torder - 1)) * pow(1 - singularity_pos * point, Torder);
-		tmp_w = Torder * pow(2, 1 - Torder) * singularity_pos*singularity_pos * pow(1 - singularity_pos*point, Torder - 1) * weight;
+		tmp_p = singularity_pos - (singularity_pos / pow(2, Torder - 1)) 
+								* pow(1 - singularity_pos * point, Torder);
+		tmp_w = Torder * pow(2, 1 - Torder) * singularity_pos*singularity_pos 
+						* pow(1 - singularity_pos*point, Torder - 1) * weight;
 		point = tmp_p;
 		weight = tmp_w;
 		return;
