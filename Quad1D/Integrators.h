@@ -1,35 +1,58 @@
 #pragma once
+/*////////////////////////////////////////////////////////////////////////////
+Integrators.h
+
+Methods to perform integration of a function in one dimension.
+
+Copyright 2017 HJA Bird
+
+Permission is hereby granted, free of charge, to any person obtaining a copy 
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights 
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+copies of the Software, and to permit persons to whom the Software is 
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
+*/////////////////////////////////////////////////////////////////////////////
+
 
 #include <cassert>
 #include <cmath>
 #include <type_traits>
 #include <stack>
-#include <array>
-#include <tuple>
 
 namespace Quad1D {
 
 	// DECLARATIONS
 	template< typename Tf, typename Tp, typename Tw>
-	decltype(auto) static_integrate(Tf & func, Tp & points, Tw & weights, int n_points);
+	decltype(auto) static_integrate(Tf & func, Tp & points, 
+		Tw & weights, int n_points);
 
 	template<int n_points, typename Tf, typename Tp, typename Tw>
 	decltype(auto) static_integrate(Tf & func, Tp & points, Tw & weights);
 
 	template<typename Tf_in, typename Tf, typename Ttol>
-	decltype(auto) adaptive_trapezoidal_integrate(Tf & func, Ttol tolerance, Tf_in lower_limit, Tf_in upper_limit);
+	decltype(auto) adaptive_trapezoidal_integrate(Tf & func, Ttol tolerance, 
+		Tf_in lower_limit, Tf_in upper_limit);
 
 	template<typename Tf_in, typename Tf, typename Ttol>
-	decltype(auto) adaptive_simpsons_integrate(Tf & func, Ttol tolerance, Tf_in lower_limit, Tf_in upper_limit);
-	/*
-	template<typename Tf_in, typename Tf, typename Ttol, typename Tinter>
-	Tinter adaptive_trapezoidal_integrate(Tf & func, const Ttol tolerance,
-										const Tf_in lower_limit, const Tf_in upper_limit, 
-										const Tinter lower_eval, const Tinter upper_eval);
-	*/
+	decltype(auto) adaptive_simpsons_integrate(Tf & func, Ttol tolerance, 
+		Tf_in lower_limit, Tf_in upper_limit);
+
 	// DEFINITIONS
 
-	/// \param func a function/lambda which accepts the value in points as its only argument.
+	/// \param func a function/lambda which accepts the value in points as its 
+	/// only argument.
 	/// \param points quadrature points. Indexable.
 	/// \param weights quadrature weights. Indexable.
 	/// \param n_ponts number of quadrature points.
@@ -40,7 +63,8 @@ namespace Quad1D {
 	/// Evaluates
 	/// \f[ I = \sum\limits_{i=0}^{\texttt{n_points}} \texttt{func}(\texttt{points}_i) \times \texttt{weights}_i \f]
 	///
-	/// For example, using a six node gauss_legendre quadrature (overkill) - so on interval [-1, 1] on a lambda my_fun:
+	/// For example, using a six node gauss_legendre quadrature (overkill) - so 
+	/// on interval [-1, 1] on a lambda my_fun:
 	/// \code
 	/// #include "Quad1D/Integrators.h"
 	/// const int num_points = 6;
@@ -56,7 +80,8 @@ namespace Quad1D {
 	/// result = Quad1D::static_integrate(my_fun, points, weights, num_points);
 	/// \endcode
 	template< typename Tf, typename Tp, typename Tw>
-	decltype(auto) static_integrate(Tf & func, Tp & points, Tw & weights, int n_points)
+	decltype(auto) static_integrate(Tf & func, Tp & points, 
+									Tw & weights, int n_points)
 	{
 		assert(n_points > 0);
 		int idx = 0;
@@ -71,7 +96,8 @@ namespace Quad1D {
 
 
 
-	/// \param func a function/lambda which accepts the value in points as its only argument.
+	/// \param func a function/lambda which accepts the value in points as its 
+	/// only argument.
 	/// \param points quadrature points. Indexable.
 	/// \param weights quadrature weights. Indexable.
 	/// \param n_points number of quadrature points.
@@ -79,8 +105,9 @@ namespace Quad1D {
 	///
 	/// \brief A specialised integrator templated with set number of points.
 	/// 
-	/// By specifying the number of integration points at compile time, it may be possible
-	/// for the compiler to unroll the loop. It may or may not be different to normal...
+	/// By specifying the number of integration points at compile time, it may be
+	/// possible for the compiler to unroll the loop. It may or may not be
+	/// different to normal...
 	///
 	/// It can be used as
 	/// \code
@@ -104,30 +131,16 @@ namespace Quad1D {
 	}
 
 
-	/// \param func a function that takes a single argument of type Tf_in (ie. that of lower and upper limit)
-	/// and returns a floating point type.
+	/// \param func a function that takes a single argument of type Tf_in (ie. 
+	/// that of lower and upper limit) and returns a floating point type.
 	/// \param tolerance a floating point relative tolerance.
 	/// \param lower_limit the lower limit of integration.
 	/// \param upper_limit the upper limit of integration.
 	///
 	/// \brief Evaluate an integral using an adaptive trapezium rule method.
-	/*
 	template<typename Tf_in, typename Tf, typename Ttol>
-	decltype(auto) adaptive_trapezoidal_integrate(Tf & func, Ttol tolerance, Tf_in lower_limit, Tf_in upper_limit)
-	{
-		//static_assert(std::is_floating_point<Ttol>);
-		//static_assert(std::is_floating_point<std::result_of<func>>);
-		// static_assert(std::is_invokable_r<Ttol, Tf, Tf_in>); // C++17 
-		assert(tolerance > 0.0);
-
-		std::result_of<Tf(Tf_in)>::type result;
-		result = adaptive_trapezoidal_integrate(func, tolerance, lower_limit, upper_limit,
-																		func(lower_limit), func(upper_limit));
-		return result;
-	}
-	*/
-	template<typename Tf_in, typename Tf, typename Ttol>
-	decltype(auto) adaptive_trapezoidal_integrate(Tf & func, Ttol tolerance, Tf_in lower_limit, Tf_in upper_limit)
+	decltype(auto) adaptive_trapezoidal_integrate(Tf & func, Ttol tolerance, 
+										Tf_in lower_limit, Tf_in upper_limit)
 	{
 		assert(tolerance > 0.0);
 
@@ -152,7 +165,8 @@ namespace Quad1D {
 
 		std::stack<stack_frame> stack;
 
-		stack.emplace(stack_frame{ lower_limit, upper_limit, func(lower_limit), func(upper_limit) });
+		stack.emplace(stack_frame{ lower_limit, upper_limit, 
+									func(lower_limit), func(upper_limit) });
 
 		while (!stack.empty())
 		{
@@ -182,38 +196,10 @@ namespace Quad1D {
 		assert(stack_size == 0);
 		return result;
 	}
-	/*
-	template<typename Tf_in, typename Tf, typename Ttol, typename Tinter>
-	Tinter adaptive_trapezoidal_integrate(Tf & func, const Ttol tolerance,
-												const Tf_in lower_limit, const Tf_in upper_limit,
-												const Tinter lower_eval, const Tinter upper_eval)
-	{
-		//static_assert(std::is_floating_point<Ttol>);
-		//static_assert(std::is_floating_point<std::result_of<func>>);
-		assert(lower_limit != upper_limit);
-		
-		auto centre_limit = (lower_limit + upper_limit) / 2.0;
-		auto centre_val = func(centre_limit);
-		auto unrefined_sol = (upper_limit - lower_limit) * (lower_eval + upper_eval) / 2.0;
-		auto refined_sol = (upper_limit - lower_limit) * (lower_eval + 2*centre_val + upper_eval) / 4.0;
-		Tinter return_val;
-		
-		if (abs(refined_sol - unrefined_sol) > (upper_limit - lower_limit) * tolerance)
-		{
-			return_val = adaptive_trapezoidal_integrate(func, tolerance, lower_limit, centre_limit, lower_eval, centre_val)
-				+ adaptive_trapezoidal_integrate(func, tolerance, centre_limit, upper_limit, centre_val, upper_eval);
-		}
-		else
-		{
-			return_val = refined_sol;
-		}
-		return return_val;
-	}
-	*/
 
 
-	/// \param func a function that takes a single argument of type Tf_in (ie. that of lower and upper limit)
-	/// and returns a floating point type.
+	/// \param func a function that takes a single argument of type Tf_in (ie. 
+	/// that of lower and upper limit) and returns a floating point type.
 	/// \param tolerance a floating point relative tolerance.
 	/// \param lower_limit the lower limit of integration.
 	/// \param upper_limit the upper limit of integration.
@@ -230,9 +216,11 @@ namespace Quad1D {
 	/// { x*x*x*x*x*x*x*x*x; };
 	/// auto result = Quad1D::adaptive_simpsons_integrate(my_f, 1e-10, 0.0, 1.0);
 	/// \endcode
-	///	Uses a simple adaptive composite simpson's rule to evaluated to a given tolerance.	
+	///	Uses a simple adaptive composite simpson's rule to evaluated to a given 
+	/// tolerance.	
 	template<typename Tf_in, typename Tf, typename Ttol>
-	decltype(auto) adaptive_simpsons_integrate(Tf & func, Ttol tolerance, Tf_in lower_limit, Tf_in upper_limit)
+	decltype(auto) adaptive_simpsons_integrate(Tf & func, Ttol tolerance, 
+										Tf_in lower_limit, Tf_in upper_limit)
 	{
 		assert(tolerance > 0.0);
 
@@ -245,7 +233,8 @@ namespace Quad1D {
 
 		int stack_size = 1;
 
-		auto simp = [&](Tf_in x0, Tf_in x2, R_Type f0, R_Type f1, R_Type f2)->R_Type {
+		auto simp = [&](Tf_in x0, Tf_in x2, R_Type f0, R_Type f1, R_Type f2)->R_Type 
+		{
 			return (x2 - x0)*(f0 + 4.0 * f1 + f2) / 6.0;
 		};
 
@@ -258,7 +247,8 @@ namespace Quad1D {
 
 		std::stack<stack_frame> stack;
 
-		stack.emplace(stack_frame{ lower_limit, upper_limit, func(lower_limit), func(upper_limit), func((upper_limit - lower_limit) / 2.0) });
+		stack.emplace(stack_frame{ lower_limit, upper_limit, func(lower_limit), 
+			func(upper_limit), func((upper_limit - lower_limit) / 2.0) });
 
 		while (!stack.empty())
 		{
