@@ -27,7 +27,7 @@ SOFTWARE.
 
 #include <cmath>
 
-namespace Quad1D {
+namespace Quad {
 	
 	// Declarations
 

@@ -26,7 +26,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 
-namespace Quad1D {
+namespace Quad {
 
 	/// \brief returns the tolerance of a type Ty.
 	///

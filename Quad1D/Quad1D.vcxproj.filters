@@ -36,6 +36,12 @@
     <ClInclude Include="Integrators.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ElementNodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ElementGoemetry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

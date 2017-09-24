@@ -129,6 +129,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ElementGoemetry.h" />
+    <ClInclude Include="ElementNodes.h" />
     <ClInclude Include="GaussLegendre.h" />
     <ClInclude Include="Integrators.h" />
     <ClInclude Include="Remaps.h" />
