@@ -26,6 +26,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <array>
+#include "ElementGoemetry.h"
 
 namespace Elements
 {
@@ -75,21 +76,25 @@ namespace Elements
 namespace Elements
 {
     class Point1
+		: Elements::PointGeometry
     {
-        const std::array<std::array<double, 0>, 0> nodes = { {} };
+		const std::array<std::array<double, 0>, 0> nodes = {{ {{ }} }};
     };
 
     class Line2
+		: Elements::LineGeometry
     {
         const std::array<std::array<double, 1>, 2> nodes = {{ {{ -1.0 }},{{ 1.0 }} }};
     };
 
     class Line3
+		: Elements::LineGeometry
     {
         const std::array<std::array<double, 1>, 3> nodes = {{ {{ -1.0 }},{{ 1.0 }},{{ 0.0 }} }};
     };
 
     class Line4
+		: Elements::LineGeometry
     {
         const std::array<std::array<double, 1>, 4> nodes = {{ 
         {{ -1.0 }},
@@ -99,6 +104,7 @@ namespace Elements
     };
 
     class Line5
+		: Elements::LineGeometry
     {
         const std::array<std::array<double, 1>, 5> nodes = {{ 
         {{ -1.0 }},
@@ -109,6 +115,7 @@ namespace Elements
     };
 
     class Line6
+		: Elements::LineGeometry
     {
         const std::array<std::array<double, 1>, 6> nodes = {{ 
         {{ -1.0 }},
@@ -121,6 +128,7 @@ namespace Elements
     };
 
     class Triangle3
+		: Elements::RightAngleTriangleGeometry
     {
         const std::array<std::array<double, 2>, 3> nodes = {{ 
         {{ 0.0,  0.0 }},
@@ -130,6 +138,7 @@ namespace Elements
     };
 
     class Triangle6
+		: Elements::RightAngleTriangleGeometry
     {
         const std::array<std::array<double, 2>, 6> nodes = {{ 
         {{ 0.0,  0.0 }},
@@ -142,6 +151,7 @@ namespace Elements
     };
 
     class Triangle9
+		: Elements::RightAngleTriangleGeometry
     {
         const std::array<std::array<double, 2>, 9> nodes = {{ 
         {{ 0.0,			0.0 }},
@@ -156,6 +166,7 @@ namespace Elements
     };
 
     class Triangle10
+		: Elements::RightAngleTriangleGeometry
     {
         const std::array<std::array<double, 2>, 10> nodes = {{ 
         {{ 0.0,			0.0 }},
@@ -171,6 +182,7 @@ namespace Elements
     };
 
     class Triangle12
+		: Elements::RightAngleTriangleGeometry
     {
         const std::array<std::array<double, 2>, 12> nodes = {{ 
         {{ 0.0,     0.0 }},
@@ -188,6 +200,7 @@ namespace Elements
     };
 
     class Triangle15O4
+		: Elements::RightAngleTriangleGeometry
     {
         const std::array<std::array<double, 2>, 15> nodes = {{ 
         {{ 0.0,  0.0 }},
@@ -208,6 +221,7 @@ namespace Elements
     };
 
     class Triangle15O5
+		: Elements::RightAngleTriangleGeometry
     {
         const std::array<std::array<double, 2>, 15> nodes = {{ 
         {{ 0.0,	0.0 }},
@@ -228,6 +242,7 @@ namespace Elements
     };
 
     class Triangle21
+		: Elements::RightAngleTriangleGeometry
     {
         const std::array<std::array<double, 2>, 21> nodes = {{ 
         {{ 0.0,  0.0 }},
@@ -254,6 +269,7 @@ namespace Elements
     };
 
     class Quadrangle4
+		: Elements::QuadrangleGeometry
     {
         const std::array<std::array<double, 2>, 4> nodes = {{ 
         {{ -1.0, -1.0 }},
@@ -263,6 +279,7 @@ namespace Elements
     };
 
     class Quadrangle8
+		: Elements::QuadrangleGeometry
     {
         const std::array<std::array<double, 2>, 8> nodes = {{ 
         {{ -1.0, -1.0 }},
@@ -276,6 +293,7 @@ namespace Elements
     };
 
     class Quadrangle9
+		: Elements::QuadrangleGeometry
     {
         const std::array<std::array<double, 2>, 9> nodes = {{ 
         {{ -1.0, -1.0 }},
@@ -290,6 +308,7 @@ namespace Elements
     };
 
     class Quadrangle12
+		: Elements::QuadrangleGeometry
     {
         const std::array<std::array<double, 2>, 12> nodes = {{ 
         {{ -1.0,			-1.0 }},
@@ -307,6 +326,7 @@ namespace Elements
     };
 
     class Quadrangle16
+		: Elements::QuadrangleGeometry
     {
         const std::array<std::array<double, 2>, 16> nodes = {{ 
         {{ -1.0,         -1.0 }},
@@ -328,6 +348,7 @@ namespace Elements
     };
 
     class Tetrahedron4
+		: Elements::TetrahedronGeometry
     {
         const std::array<std::array<double, 3>, 4> nodes = {{ 
         {{ 0.0,  0.0,  0.0 }},
@@ -337,6 +358,7 @@ namespace Elements
     };
 
     class Tetrahedron10
+		: Elements::TetrahedronGeometry
     {
         const std::array<std::array<double, 3>, 10> nodes = {{ 
         {{ 0.0,  0.0,  0.0 }},
@@ -352,6 +374,7 @@ namespace Elements
     };
 
     class Tetrahedron20
+		: Elements::TetrahedronGeometry
     {
         const std::array<std::array<double, 3>, 20> nodes = {{ 
         {{ 0.0,			0.0,		0.0 }},
@@ -377,6 +400,7 @@ namespace Elements
     };
 
     class Hexahedron8
+		: Elements::HexahedronGeometry
     {
         const std::array<std::array<double, 3>, 8> nodes = {{ 
         {{ -1.0, -1.0, -1.0 }},
@@ -390,6 +414,7 @@ namespace Elements
     };
 
     class Hexahedron20
+		: Elements::HexahedronGeometry
     {
         const std::array<std::array<double, 3>, 20> nodes = {{ 
         {{ -1.0, -1.0, -1.0 }},
@@ -415,6 +440,7 @@ namespace Elements
     };
 
     class Hexahedron27
+		: Elements::HexahedronGeometry
     {
         const std::array<std::array<double, 3>, 27> nodes = {{ 
         {{ -1.0, -1.0, -1.0 }},
@@ -447,6 +473,7 @@ namespace Elements
     };
 
     class Prism6
+		: Elements::RightAngleTrianglePrismGeometry
     {
         const std::array<std::array<double, 3>, 6> nodes = {{ 
         {{ 0.0, 0.0, -1.0 }},
@@ -458,6 +485,7 @@ namespace Elements
     };
 
     class Prism15
+		: Elements::RightAngleTrianglePrismGeometry
     {
         const std::array<std::array<double, 3>, 15> nodes = {{ 
         {{ 0.0, 0.0, -1.0 }},
@@ -478,6 +506,7 @@ namespace Elements
     };
 
     class Prism18
+		: Elements::RightAngleTrianglePrismGeometry
     {
         const std::array<std::array<double, 3>, 18> nodes = {{ 
         {{ 0.0, 0.0, -1.0 }},
@@ -501,6 +530,7 @@ namespace Elements
     };
 
     class Pyramid5
+		: Elements::PyramidGeometry
     {
         const std::array<std::array<double, 3>, 5> nodes = {{ 
         {{ -1.0, -1.0, 0.0 }},
@@ -511,6 +541,7 @@ namespace Elements
     };
 
     class Pyramid13
+		: Elements::PyramidGeometry
     {
         const std::array<std::array<double, 3>, 13> nodes = {{ 
         {{ -1.0, -1.0, 0.0 }},
@@ -529,6 +560,7 @@ namespace Elements
     };
 
     class Pyramid14
+		: Elements::PyramidGeometry
     {
         const std::array<std::array<double, 3>, 14> nodes = {{ 
         {{ -1.0, -1.0, 0.0 }},
@@ -548,4 +580,3 @@ namespace Elements
     };
 
 }
-
