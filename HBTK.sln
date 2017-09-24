@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Quad1D", "Quad1D\Quad1D.vcxproj", "{0F21DF6F-7069-43C7-8161-42347BDFDF9A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HBTK", "HBTK\HBTK.vcxproj", "{0F21DF6F-7069-43C7-8161-42347BDFDF9A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestQuad1D", "TestQuad1D\TestQuad1D.vcxproj", "{895EA174-DAC1-4357-B6F1-BDAA63243E84}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestHBTK", "TestHBTK\TestHBTK.vcxproj", "{895EA174-DAC1-4357-B6F1-BDAA63243E84}"
 EndProject
 Global
 	GlobalSection(Performance) = preSolution
