@@ -66,10 +66,10 @@ namespace Quad {
 	/// For example, using a six node gauss_legendre quadrature (overkill) - so 
 	/// on interval [-1, 1] on a lambda my_fun:
 	/// \code
-	/// #include "Quad1D/Integrators.h"
+	/// #include "HBTK/Integrators.h"
 	/// const int num_points = 6;
 	/// std::array<double, num_points> points, weights;
-	/// Quad1D::gauss_legendre<num_points, double>(points, weights);
+	/// HBTK::gauss_legendre<num_points, double>(points, weights);
 	///
 	/// auto my_fun = [](double x)->double
 	/// {
@@ -77,7 +77,7 @@ namespace Quad {
 	/// };
 	///
 	/// double result;
-	/// result = Quad1D::static_integrate(my_fun, points, weights, num_points);
+	/// result = HBTK::static_integrate(my_fun, points, weights, num_points);
 	/// \endcode
 	template< typename Tf, typename Tp, typename Tw>
 	decltype(auto) static_integrate(Tf & func, Tp & points, 
@@ -111,10 +111,10 @@ namespace Quad {
 	///
 	/// It can be used as
 	/// \code
-	/// #include "Quad1D/Integrators.h"
+	/// #include "HBTK/Integrators.h"
 	/// const int num_points = 6;
 	/// std::array<double, num_points> points, weights;
-	/// Quad1D::gauss_legendre<num_points, double>(points, weights);
+	/// HBTK::gauss_legendre<num_points, double>(points, weights);
 	/// 
 	/// auto my_fun = [](double x)->double
 	/// {
@@ -122,7 +122,7 @@ namespace Quad {
 	/// };
 	/// 
 	/// double result;
-	/// result = Quad1D::static_integrate<num_points>(my_fun, points, weights);
+	/// result = HBTK::static_integrate<num_points>(my_fun, points, weights);
 	/// \endcode
 	template<int n_points, typename Tf, typename Tp, typename Tw>
 	decltype(auto) static_integrate(Tf & func, Tp & points, Tw & weights)
@@ -211,10 +211,10 @@ namespace Quad {
 	///
 	/// The code could be used as follows:
 	/// \code
-	/// #include "Quad1D/Integrators.h"
+	/// #include "HBTK/Integrators.h"
 	/// auto my_f = [](double x)->double
 	/// { x*x*x*x*x*x*x*x*x; };
-	/// auto result = Quad1D::adaptive_simpsons_integrate(my_f, 1e-10, 0.0, 1.0);
+	/// auto result = HBTK::adaptive_simpsons_integrate(my_f, 1e-10, 0.0, 1.0);
 	/// \endcode
 	///	Uses a simple adaptive composite simpson's rule to evaluated to a given 
 	/// tolerance.	

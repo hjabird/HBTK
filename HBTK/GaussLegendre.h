@@ -57,7 +57,7 @@ namespace Quad {
 	/// std::vector<double> points, weights;
 	/// points.resize(3);
 	/// weights.resize(3);
-	/// Quad1D::gauss_legendre<double>(3, points, weights);
+	/// HBTK::gauss_legendre<double>(3, points, weights);
 	/// \endcode 
 	/// points and weights now contain the coordinates and weights of a 
 	/// GL quadrature.
@@ -69,9 +69,9 @@ namespace Quad {
 	/// \code
 	/// My_typeA points;
 	/// My_typeB weights;
-	/// Quad1D::gauss_legendre<double, My_typeA>(3, points, weights);
+	/// HBTK::gauss_legendre<double, My_typeA>(3, points, weights);
 	/// \endcode which is equivalent to \code
-	/// Quad1D::gauss_legendre<double>(3, points, (My_typeB) weights);
+	/// HBTK::gauss_legendre<double>(3, points, (My_typeB) weights);
 	/// \endcode
 	template <typename Ty, typename TyStor>
 	constexpr void gauss_legendre(int n_points, TyStor & points, 
@@ -124,7 +124,7 @@ namespace Quad {
 	/// Generates points and weights for a gauss legendre quadrature.
 	/// \code 
 	/// std::array<double, 100> p, w;
-	/// Quad1D::gauss_legendre<100, double>(p, w);
+	/// HBTK::gauss_legendre<100, double>(p, w);
 	/// \endcode
 	/// p now contians quadrature points, and w weights. This code 
 	/// should be optimised away such that the solution is precalcuated

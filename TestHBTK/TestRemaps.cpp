@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "../Quad1D/Remaps.h"
-#include "../Quad1D/Tolerances.h"
+#include "../HBTK/Remaps.h"
+#include "../HBTK/Tolerances.h"
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace TestQuad1D
+namespace TestHBTK
 {
 	TEST_CLASS(Test_Remaps)
 	{

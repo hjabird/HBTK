@@ -3,13 +3,13 @@
 
 #include <array>
 
-#include "../Quad1D/GaussLegendre.h"
-#include "../Quad1D/Integrators.h"
-#include "../Quad1D/Tolerances.h"
+#include "../HBTK/GaussLegendre.h"
+#include "../HBTK/Integrators.h"
+#include "../HBTK/Tolerances.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace TestQuad1D
+namespace TestHBTK
 {
 	TEST_CLASS(Test_Integrators)
 	{

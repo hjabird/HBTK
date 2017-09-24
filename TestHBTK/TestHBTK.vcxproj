@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{895EA174-DAC1-4357-B6F1-BDAA63243E84}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>TestQuad1D</RootNamespace>
+    <RootNamespace>TestHBTK</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
     <ProjectSubType>NativeUnitTestProject</ProjectSubType>
     <ProjectName>TestHBTK</ProjectName>

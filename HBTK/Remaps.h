@@ -73,17 +73,17 @@ namespace Quad {
 	/// To remap a point 0.0 with weight 1.0, from -1.0, 1.0 to 2.0, 6.0 
 	/// one would write:
 	/// \code
-	/// #include "Quad1D/Remaps.h"
+	/// #include "HBTK/Remaps.h"
 	/// double p, w;
 	/// p = 0.0;	w = 1.0;
-	/// Quad1D::linear_remap(p, w, -1.0, 1.0, 2.0, 6.0);
+	/// HBTK::linear_remap(p, w, -1.0, 1.0, 2.0, 6.0);
 	/// std::cout << p << " , " << w << std::endl;	// prints 4.0 , 4.0
 	/// \endcode
 	/// Now the quadrature, will integrate the interval 2.0, 6.0.
 	/// 
 	/// Care must be taken to ensure that all arguments are of the same type, 
 	/// or explicity typing must be used: \code
-	/// Quad1D::linear_remap<double>(p, w, -1, 1, 2, 6) \endcode
+	/// HBTK::linear_remap<double>(p, w, -1, 1, 2, 6) \endcode
 	///
 	template<typename Ty>
 	constexpr void linear_remap(Ty & point, Ty & weight,
@@ -110,11 +110,11 @@ namespace Quad {
 	/// The input point and weight are modified.
 	/// The code can be used as follows:
 	/// \code
-	/// #include "Quad1D/Remaps.h"
+	/// #include "HBTK/Remaps.h"
 	/// double px, wx;
 	/// px = -1;
 	/// wx = 1;
-	/// Quad1D::telles_quadratic_remap(px, wx, true);
+	/// HBTK::telles_quadratic_remap(px, wx, true);
 	/// \endcode
 	template<typename Ty>
 	constexpr void telles_quadratic_remap(Ty & point, Ty & weight, 
@@ -144,11 +144,11 @@ namespace Quad {
 	///
 	/// The code can be used as follows:
 	/// \code
-	/// #include "Quad1D/Remaps.h"
+	/// #include "HBTK/Remaps.h"
 	/// double px, wx;
 	/// px = -1;
 	/// wx = 1;
-	/// Quad1D::telles_cubic_remap(px, wx, 0.75);
+	/// HBTK::telles_cubic_remap(px, wx, 0.75);
 	/// \endcode
 	template<typename Ty>
 	constexpr void telles_cubic_remap(Ty & point, Ty & weight, Ty singularity_pos)
@@ -179,21 +179,21 @@ namespace Quad {
 	///
 	/// The code can be used as follows:
 	/// \code
-	/// #include "Quad1D/Remaps.h"
+	/// #include "HBTK/Remaps.h"
 	/// double px, wx;
 	/// px = -1;
 	/// wx = 1;
-	/// Quad1D::sato_remap<3>(px, wx, 1.0);
+	/// HBTK::sato_remap<3>(px, wx, 1.0);
 	/// \endcode
 	/// where a third order remap is being used.
 	/// If the arguments must be cast to a type use:
 	///	\code
-	/// #include "Quad1D/Remaps.h"
+	/// #include "HBTK/Remaps.h"
 	/// double px, 
 	/// float wx;
 	/// px = -1;
 	/// wx = 1;
-	/// Quad1D::sato_remap<3, double>(px, wx, 1.0);
+	/// HBTK::sato_remap<3, double>(px, wx, 1.0);
 	/// \endcode
 	/// or explicity type the arguments.
 	template<int Torder, typename Ty>

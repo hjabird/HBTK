@@ -31,12 +31,12 @@ namespace Quad {
 	/// \brief returns the tolerance of a type Ty.
 	///
 	/// Useage:
-	/// \code Ty tol = Quad1D::tolerance<double>() \endcode
+	/// \code Ty tol = HBTK::tolerance<double>() \endcode
 	template < typename Ty >
 	constexpr Ty tolerance(void);
 
 	/// \brief returns the tolerance of double (10^-15)
-	/// \code double tol = Quad1D::tolerance<double>() \endcode
+	/// \code double tol = HBTK::tolerance<double>() \endcode
 	template <>
 	constexpr double tolerance<double>(void) 
 	{
@@ -45,7 +45,7 @@ namespace Quad {
 
 
 	/// \brief returns the tolerance of double (10^-7)
-	/// \code float tol = Quad1D::tolerance<float>() \endcode
+	/// \code float tol = HBTK::tolerance<float>() \endcode
 	template <>
 	constexpr float tolerance<float>(void)
 	{
