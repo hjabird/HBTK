@@ -45,10 +45,16 @@
     <ClInclude Include="PotentialFlowDistributions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GmshParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GmshParser.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
