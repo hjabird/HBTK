@@ -1,25 +1,12 @@
-# HBTK
-A C++ library containing useful code for numerical engineering applications,
-narcissistically named after its creator (I'm unimaginative).
+# Quad1D
+A C++ quadrature library for basic 1D quadrature with extensive template use.
 
-A statically linked library, mostly just header files. Heavy use of templates
-and constexpr. Mostly written as individual routines intended to be integrated into 
-user objects.
-
-Contains the following:
-- Gauss-Legendre quadrature
-- Simple adaptive quadratures
-- Integral remaps
-- GMSH .msh parser
-- GMSH element node coordinate definitions & shape definitions
-- Basic 2D potential flow distributions
-
-The library should be considered work in progress and liable to change. Essentially this is my
-collection of things that I'm worried I'll implement multiple times otherwise.
+The library includes functions to generate Gauss-Legendre quadratures at compile and runtime,
+integral remaps for handling singularities and adaptive integrators.
 
 ## Getting Started
 
-HBTK is a header only library. To use, just include the appropriate header file into your project.
+Quad1D is a header only library. To use, just include the appropriate header file into your project.
 
 ### Prerequisites
 
