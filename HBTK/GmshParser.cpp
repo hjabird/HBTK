@@ -65,6 +65,8 @@ void Parsers::GmshParser::parse(std::ifstream & input_stream)
 
 void Parsers::GmshParser::parse(std::ifstream & input_stream, std::ofstream & error_stream)
 {
+	if (!input_stream) { throw; }
+	if (!error_stream) { throw; }
 	// Line counters
 	int line_count = 0, section_start_line = 0;
 	int expect_lines_to_next_section = 0;
@@ -83,7 +85,7 @@ void Parsers::GmshParser::parse(std::ifstream & input_stream, std::ofstream & er
 			continue;
 		}
 
-		else if (std::getline(input_stream, this_line)) {
+		else if (!std::getline(input_stream, this_line)) {
 			still_parsing = false;
 			break;
 		}
@@ -138,7 +140,7 @@ void Parsers::GmshParser::parse(std::ifstream & input_stream, std::ofstream & er
 			break;
 		default:
 			auto substrings = tokenise(this_line);
-			if (substrings.size() != 0) {
+			if (substrings.size() != 0 && substrings[0] != "") {
 				error_stream << "ERROR:\tInvalid line in no section at line " << line_count << ".\n";
 				error_stream << "ERROR:\tLast header seen at line " << section_start_line << ".\n\n";
 				throw;
@@ -238,7 +240,7 @@ void Parsers::GmshParser::parse_phys_name_line(std::string inpt_string)
 	name = name.substr(1, name.length() - 2);	//Remove quote marks.
 
 	for (auto func = phys_name_funcs.begin(); func != phys_name_funcs.end(); func++) {
-		if (!(*func)(dimension, phys_num, name)) { break; };
+		if (!(*func)(phys_num, dimension, name)) { break; };
 	}
 	return;
 }
@@ -246,8 +248,7 @@ void Parsers::GmshParser::parse_phys_name_line(std::string inpt_string)
 
 std::vector<std::string> Parsers::GmshParser::tokenise(std::string input_string)
 {
-
-	std::regex no_whitespace("\\s+");
+	std::regex no_whitespace("[\\s,]+");
 	std::vector<std::string> tokens(
 		std::sregex_token_iterator(input_string.begin(), input_string.end(), no_whitespace, -1),
 		std::sregex_token_iterator());
