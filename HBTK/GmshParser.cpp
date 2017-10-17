@@ -65,9 +65,6 @@ void Parsers::GmshParser::parse(std::ifstream & input_stream)
 
 void Parsers::GmshParser::parse(std::ifstream & input_stream, std::ofstream & error_stream)
 {
-	assert(input_stream.is_open());
-	assert(error_stream.is_open());
-
 	// Line counters
 	int line_count = 0, section_start_line = 0;
 	int expect_lines_to_next_section = 0;
@@ -78,10 +75,6 @@ void Parsers::GmshParser::parse(std::ifstream & input_stream, std::ofstream & er
 	bool still_parsing = true;
 	bool parsing_binary = false;
 	file_section current_section = no_section;
-
-	// Regexs:
-	std::regex section_end("");
-	std::regex node_ln(":digit:");
 
 	while (still_parsing) 
 	{

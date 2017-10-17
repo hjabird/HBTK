@@ -50,10 +50,13 @@ namespace Parsers {
 		// to parse. Functions are executed according to the order in the vector, conditionally
 		// if the previous function returned true.
 		// Add a function to execute for phys names on parsing. 
+		// [Tag, dimensions, string]
 		void add_phys_name_function(std::function<bool(int, int, std::string)> func);
 		// Add a function to execute for nodes on parsing.
+		// [tag, x, y, z]
 		void add_node_function(std::function<bool(int, double, double, double)> func);
 		// Add a function to execute for elements on parsing.
+		// [tag, type, phys_group_tags, node_tags]
 		void add_elem_function(std::function<bool(int, int, std::vector<int>, std::vector<int>)> func);
 
 		// Parse based on file system path.
