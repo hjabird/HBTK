@@ -1,12 +1,16 @@
-# Quad1D
-A C++ quadrature library for basic 1D quadrature with extensive template use.
+# HBTK
+A C++ library containing what I consider to be 'useful stuff'.
 
-The library includes functions to generate Gauss-Legendre quadratures at compile and runtime,
-integral remaps for handling singularities and adaptive integrators.
+* Integral remaps
+* Integrations methods
+* GMSH parser (incomplete)
+* GMSH elements
 
 ## Getting Started
 
-Quad1D is a header only library. To use, just include the appropriate header file into your project.
+HBTK is a static library. If using Visual Studio, first, go to team explorer and pull this Repo. Probably best at this point to run the Unit tests (Test explorer - run all). 
+
+To use this in a project in VS add HBTK to your references (References, add references). Otherwise, for most of the library you'll certainly need headers (so add include path directory in the appropriate place) and you may need to link .obj / .lib files if you use certain parts of the library - ie. if you get lnk2019 in VS.
 
 ### Prerequisites
 
