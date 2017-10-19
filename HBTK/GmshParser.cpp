@@ -30,25 +30,203 @@ SOFTWARE.
 #include <regex>
 #include <algorithm>
 
-
+/// \param func Function to be executed on finding physical name.
+///
+/// \brief Define a function to be executed each time a physical name
+/// line is parsed in GMSH .msh file.
+///
+/// The GMSH file's physical name field has the following attributes:
+///
+/// tag: Integer - unique id for the physical name to be associated with.
+///
+/// dimensions: Integer - dimensions of the physical group (ie 1 is edge, 2 is surf...)
+///
+/// name: String - the name itself.
+///
+/// There fields are parsed and forwarded to a user function given here. It must be 
+/// possible to cast the function as std::function<bool(int tag, int dimensions, std::string name)>
+/// THe function should return a boolean. If the function returns false, the remaining 
+/// functions in the functions to be invoked are not invoked.
+///
+/// For example
+/// \code
+/// #include "HBTK/GmshParser.h"
+/// #include <map>
+/// #include <string>
+///
+/// Parsers::GmshParser my_parser;
+/// std::map<int, std::string> phys_names // A map for names to be placed into.
+///
+/// //We need a function that does what we want with the correct signiture. Lambdas are a quick 
+/// //way to do this as a demo.
+/// auto phys_name_func = [&phys_names](int tag, int dimensions, std::string name)->bool
+///	{
+///		phys_names[tag] = name;
+///		if(name == "Dont execute the second phys_name function")
+///		{
+///			return false;
+///		} else {
+///			return true;
+///		}
+///	};
+///
+/// // And a section function:
+/// auto a_second_func = [](int tag, int dimensions, std::string name)->bool
+/// { cout << "I found a physical name: " << name << ".\n"; return true; };
+///
+/// // Now add to our GMSH parser.
+/// my_parser.add_phys_name_function(phys_name_func);
+/// my_parser.add_phys_name_function(a_second_func);
+///
+/// // We can now run the parser:
+/// my_parser.parse(<MY_MSH_FILE>);
+/// \endcode 
 void Parsers::GmshParser::add_phys_name_function(std::function<bool(int, int, std::string)> func)
 {
 	phys_name_funcs.emplace_back(func);
 }
 
-
+/// \param func Function to be executed on parsing a node.
+///
+/// \brief Define a function to be executed every time a node is parsed.
+///
+/// The GMSH file's physical name field has the following attributes:
+///
+/// tag: Integer - unique id for the node to be associated with. Not always consecutive!
+///
+/// Coordinates: Doubles * 3 - 3D cartesian coordinate of point
+///
+/// There fields are parsed and forwarded to a user function given here. It must be 
+/// possible to cast the function as std::function<bool(int tag, double x, double y, double z)>
+/// THe function should return a boolean. If the function returns false, the remaining 
+/// functions in the functions to be invoked are not invoked.
+///
+/// For example
+/// \code
+/// #include "HBTK/GmshParser.h"
+/// #include <map>
+/// #include <array>
+///
+/// Parsers::GmshParser my_parser;
+/// std::map<int, std::array<double, 3>> nodes_in_volume; \\ location for our nodes of interest.
+/// std::map<int, std::array<double, 3>> nodes_outside_volume; \\ some other nodes.
+///
+/// //We need a function that does what we want with the correct signiture. Lambdas are a quick 
+/// //way to do this as a demo.
+/// auto node_func_in_vol = [&nodes_in_volume](int tag, double x, double y, double z)->bool
+///	{
+///		if ( x + y + z < 10){
+///			nodes_in_volume[tag] = {x,y,z};
+///			return false;
+///		} else { return true; }
+///	};
+///
+/// // And a section function:
+/// auto other_nodes_func = [&nodes_outside_volume](int tag, int dimensions, std::string name)->bool
+/// { 
+///		nodes_outside_volume[tag] = {x, y, z};
+///		return true;
+/// };
+///
+/// // Now add to our GMSH parser.
+/// my_parser.add_node_function(node_func_in_vol);
+/// my_parser.add_node_function(other_nodes_func);
+///
+/// // We can now run the parser:
+/// my_parser.parse(<MY_MSH_FILE>);
+/// \endcode 
 void Parsers::GmshParser::add_node_function(std::function<bool(int, double, double, double)> func)
 {
 	node_funcs.emplace_back(func);
 }
 
 
+/// \param func Function to be executed on parsing an element.
+///
+/// \brief Define a function to be executed every time a element is parsed.
+///
+/// The GMSH file's physical name field has the following attributes:
+///
+/// tag: Integer - unique id for the node to be associated with. Not always consecutive!
+///
+/// Type: Integer - maps a list of nodes to nodes of a GMSH element type
+///
+/// Physical group tags: set of physical group integer tags
+///
+/// Nodes: Integer node tags - there are ordered, and correspond the the element Type and
+/// the node tags given earlier.
+///
+/// There fields are parsed and forwarded to a user function given here. It must be 
+/// possible to cast the function as std::function<bool(int, int, std::vector<int>, std::vector<int>)>,
+/// where the ordering is tag, type, phys_groups, nodes.
+/// THe function should return a boolean. If the function returns false, the remaining 
+/// functions in the functions to be invoked are not invoked.
+///
+/// For example
+/// \code
+/// #include "HBTK/GmshParser.h"
+/// #include <map>
+/// #include <list>
+/// #include <vector>
+/// #include <tuple>
+///
+/// Parsers::GmshParser my_parser;
+/// std::map<int, std::tuple<int, int, std::vector<int>>> elements;
+/// std::map<int, std::vector<int>> phy_elem_grp;
+///
+/// //We need a function that does what we want with the correct signiture. Lambdas are a quick 
+/// //way to do this as a demo.
+/// auto elem_grp_func = [&phy_elem_grp](int tag, int type, std::vector<int> phy_grps, std::vector<int> nodes)->bool{
+///		for(auto grp = phy_grps.begin(); grp != phy_grps.end(); grp++){
+///			phy_elem_grp[*grp].emplace_back(tag);
+///		}
+///		// We might want to ignore ungrouped elements for example:
+///		if ( (int) phy_grps.size() == 0 ) { return false; }
+///		else { return true; }
+///	}
+///
+/// // And a function store our filtered elements:
+/// auto elem_stor_func = [&elements](int tag, int type, std::vector<int> phy_grps, std::vector<int> nodes)->bool{
+///		elements[tag] = std::tuple(tag, type, nodes);
+///		return false;
+///	}
+///
+/// // Now add to our GMSH parser.
+/// my_parser.add_elem_function(elem_grp_func);
+/// my_parser.add_elem_function(elem_stor_func);
+///
+/// // We can now run the parser:
+/// my_parser.parse(<MY_MSH_FILE>);
+/// \endcode 
 void Parsers::GmshParser::add_elem_function(std::function<bool(int, int, std::vector<int>, std::vector<int>)> func)
 {
 	elem_funcs.emplace_back(func);
 }
 
-
+/// \param file_path the absolute path to file to be parsed.
+/// 
+/// \brief Set the parser going on file defined by file_path
+///
+/// The easiest way of choosing a file to be parsed. The file 
+/// path given is opened and parsed according to the functions the 
+/// user has already given. Any error messages will go to stderr
+///
+/// Eg:
+/// \code
+/// #include "HBTK/GmshParser.h"
+///
+/// Parsers::GmshParser my_parser;
+///
+/// // Add functions to execute on parsing here
+/// // ...
+/// my_parser.add_node_function(my_node_func);
+/// my_parser.add_elem_function(my_elem_func);
+/// //..
+///
+/// // We can now run the parser:
+/// my_parser.parse(<MY_MSH_FILE>);
+/// // Where perhaps <MY_MESH_FILE> = C:\path\to\a\file.msh
+/// \endcode
 void Parsers::GmshParser::parse(fs::path file_path)
 {
 	if (file_path.empty()) { throw; }
