@@ -32,7 +32,7 @@ SOFTWARE.
 #include <fstream>
 
 // This namespace is liable to be problematic.
-#ifdef WIN32
+#ifdef _MSC_VER
 namespace fs = std::experimental::filesystem::v1;
 #else
 namespace fs = std::filesystem;
