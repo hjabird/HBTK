@@ -230,7 +230,7 @@ void Parsers::GmshParser::add_elem_function(std::function<bool(int, int, std::ve
 /// \endcode
 void Parsers::GmshParser::parse(fs::path file_path)
 {
-	if (file_path.empty()) { throw; }
+	if (file_path.empty()) { throw -1; }
 	std::ifstream inpt_stream(file_path, std::ios::binary);
 	std::ofstream out_stream(stderr);
 	parse(inpt_stream, out_stream);
@@ -368,7 +368,7 @@ Parsers::GmshParser::file_section Parsers::GmshParser::parse_file_section(std::s
 	// Expects "$<section-name>" or "$End<section-name>"
 	file_section section = invalid;
 	auto strings = tokenise(input_string);
-	if (strings.size() > 1) { throw; }
+	if (strings.size() > 1) { throw -2; }
 
 	if (strings[0].substr(0, 4) == "$End") {
 		section = no_section;
@@ -421,9 +421,6 @@ void Parsers::GmshParser::parse_node_line_binary(std::ifstream & input_stream, b
 
 	std::array<char, (int)sizeof(node_data)> buffer;
 	if (!input_stream.read(buffer.data(), buffer.size())) {
-		if (input_stream.eof()) {
-			throw 1;
-		}
 		throw - 1;
 	}
 	node_data *tn = reinterpret_cast<node_data *>(buffer.data());
