@@ -3,7 +3,7 @@ A C++ library containing what I consider to be 'useful stuff'.
 
 * Integral remaps
 * Integrations methods
-* GMSH parser (incomplete)
+* GMSH parser (ASCII & Binary v2.2 - physical groups, nodes and elements only)
 * GMSH elements
 
 ## Getting Started
@@ -21,25 +21,7 @@ has only been tested with msvc on Windows. It is suggested that Visual Studio is
 especially since the unit tests use MSTest.
 
 To generate the documentation you'll need Doxygen (and optionally Latex / Miktex if
-you want .pds).
-
-### Installing
-
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
+you want .pdfs).
 
 ## Running the tests
 
