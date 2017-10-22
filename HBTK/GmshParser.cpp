@@ -561,7 +561,8 @@ std::vector<std::string> Parsers::GmshParser::tokenise(std::string input_string)
 	char *token_begin, *token_end;
 	bool in_word = false;
 
-	for (auto idx = input_string.begin(); idx != input_string.end(); idx++) {
+	auto idx = input_string.begin();
+	for (; idx != input_string.end(); idx++) {
 		if (isspace(*idx)) {
 			if (in_word) {
 				token_end = &(*idx);
@@ -573,6 +574,9 @@ std::vector<std::string> Parsers::GmshParser::tokenise(std::string input_string)
 			token_begin = &(*idx);
 			in_word = true;
 		}
+	}
+	if (in_word) {
+		tokens.emplace_back(std::string(token_begin, &(*(idx-1)) + 1));
 	}
 
 	return tokens;
