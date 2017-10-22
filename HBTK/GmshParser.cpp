@@ -27,7 +27,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
-#include <regex>
+#include <cctype>
 #include <algorithm>
 #include <array>
 
@@ -557,10 +557,24 @@ void Parsers::GmshParser::parse_file_binary_endian(std::ifstream & input_stream,
 
 std::vector<std::string> Parsers::GmshParser::tokenise(std::string input_string)
 {
-	std::regex no_whitespace("[\\s,]+");
-	std::vector<std::string> tokens(
-		std::sregex_token_iterator(input_string.begin(), input_string.end(), no_whitespace, -1),
-		std::sregex_token_iterator());
+	std::vector<std::string> tokens;
+	char *token_begin, *token_end;
+	bool in_word = false;
+
+	for (auto idx = input_string.begin(); idx != input_string.end(); idx++) {
+		if (isspace(*idx)) {
+			if (in_word) {
+				token_end = &(*idx);
+				tokens.emplace_back(std::string(token_begin, token_end));
+				in_word = false;
+			}
+		}
+		else if (!in_word) {
+			token_begin = &(*idx);
+			in_word = true;
+		}
+	}
+
 	return tokens;
 }
 
