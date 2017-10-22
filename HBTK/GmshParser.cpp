@@ -306,8 +306,11 @@ void Parsers::GmshParser::parse(std::ifstream & input_stream, std::ofstream & er
 			try {
 				current_section = parse_file_section(this_line, current_section);
 			}
-			catch (...) {
-				error_stream << "ERROR:\tInvalid section header encountered at line " << line_count << ".\n\n";
+			catch (...) { current_section = invalid; }
+			if (current_section == invalid) {
+				error_stream << "ERROR:\tInvalid section header encountered at line " << line_count << ".\n";
+				error_stream << "ERROR: Line is as follows:\n";
+				error_stream << "ERROR: " << this_line << "\n";
 				throw line_count;
 			}
 			section_start_line = line_count;
@@ -318,7 +321,6 @@ void Parsers::GmshParser::parse(std::ifstream & input_stream, std::ofstream & er
 		// Get expected number of objects.
 		if (expecting_object_count(current_section, line_count - section_start_line)) {
 			expect_lines_to_next_section = std::stoi(this_line);
-			line_count++;
 			if (current_section == nodes && f_info.binary ) {
 				b_info.parsing_binary = true;
 				b_info.count_var = expect_lines_to_next_section;
@@ -332,31 +334,39 @@ void Parsers::GmshParser::parse(std::ifstream & input_stream, std::ofstream & er
 		// end expected number of objects.
 
 		// Parsing ASCII
-		switch (current_section) {
-		case file_info:
-			parse_file_info(this_line, b_info, f_info);
-			break;
-		case nodes:
-			parse_node_line(this_line);
-			expect_lines_to_next_section -= 1;
-			break;
-		case elements:
-			parse_elem_line(this_line);
-			expect_lines_to_next_section -= 1;
-			break;
-		case physical_names:
-			parse_phys_name_line(this_line);
-			expect_lines_to_next_section -= 1;
-			break;
-		default:
-			auto substrings = tokenise(this_line);
-			if (substrings.size() != 0 && substrings[0] != "") {
-				error_stream << "ERROR:\tInvalid line in no section at line " << line_count << ".\n";
-				error_stream << "ERROR:\tLast header seen at line " << section_start_line << ".\n\n";
-				throw line_count;
-				// We have nonsection data, outside a section.
+		try {
+			switch (current_section) {
+			case file_info:
+				parse_file_info(this_line, b_info, f_info);
+				break;
+			case nodes:
+				parse_node_line(this_line);
+				expect_lines_to_next_section -= 1;
+				break;
+			case elements:
+				parse_elem_line(this_line);
+				expect_lines_to_next_section -= 1;
+				break;
+			case physical_names:
+				parse_phys_name_line(this_line);
+				expect_lines_to_next_section -= 1;
+				break;
+			default:
+				auto substrings = tokenise(this_line);
+				if (substrings.size() != 0 && substrings[0] != "") {
+					throw line_count;
+					// We have nonsection data, outside a section.
+				}
+				// Otherwise we're on a blank line between sections.
 			}
-			// Otherwise we're on a blank line between sections.
+		}
+		catch (...) {
+			error_stream << "ERROR:\tInvalid line in ";
+			print_section_name(current_section, error_stream);
+			error_stream << " at line " << line_count << ".\n";
+			error_stream << "ERROR:\tThe line is as follows:\n";
+			error_stream << "ERROR:\t" << this_line << "\n";
+			error_stream << "ERROR:\tLast header seen at line " << section_start_line << ".\n\n";
 		}
 		// End ASCII current section.
 	}
@@ -395,7 +405,9 @@ Parsers::GmshParser::file_section Parsers::GmshParser::parse_file_section(std::s
 void Parsers::GmshParser::parse_node_line(std::string line)
 {
 	auto strings = tokenise(line);
-	assert(strings.size() == 4);
+	if (strings.size() != 4) {
+		throw -1;
+	};
 	int tag;
 	double x, y, z;
 
