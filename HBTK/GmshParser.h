@@ -67,6 +67,8 @@ namespace Parsers {
 
 	private:
 
+		// Generally, looking at http://gmsh.info/doc/texinfo/gmsh.html is useful!
+
 		enum file_section {
 			no_section,
 			file_info,
@@ -75,6 +77,23 @@ namespace Parsers {
 			physical_names,
 			unsupported,
 			invalid
+		};
+
+		// State is needed in binary parsing.
+		struct binary_parse_info {
+			bool parsing_binary;
+			int ele_type;
+			int ele_tag_count;
+			int ele_nodes;
+			int count_var;
+		};
+
+		// Information about the file format.
+		struct file_format_info {
+			double version;
+			bool binary;
+			size_t data_size;
+			bool matching_endian;
 		};
 
 		// Vectors containing the functions the user wants to execute.
@@ -86,12 +105,24 @@ namespace Parsers {
 		file_section parse_file_section(std::string, file_section);
 		// Pares a line in the nodes section.
 		void parse_node_line(std::string line);
+		void parse_node_line_binary(std::ifstream & input_stream, struct binary_parse_info & b_info);
 		// Parse a line in the elements section.
 		void parse_elem_line(std::string);
+		void parse_elem_binary_spec(std::ifstream & input_stream, struct binary_parse_info & b_info);
+		void parse_elem_binary(std::ifstream & input_stream, struct binary_parse_info & b_info);
 		// Parse a line in physical names section.
 		void parse_phys_name_line(std::string);
+		// Parse the file format information section
+		void parse_file_info(std::string this_line, binary_parse_info & b_info, file_format_info & f_info);
+		void parse_file_binary_endian(std::ifstream & input_stream, struct binary_parse_info & b_info, 
+			file_format_info & f_info);
+
 		// Separate a string into substrings by whitespace.
 		std::vector<std::string> tokenise(std::string);
+		// Get number of nodes for element type.
+		int element_type_node_count(int type);
+		// Get whether we're expecting to parse a object count line.
+		bool expecting_object_count(file_section, int);
 
 		// Print the name of file_section given to output file stream.
 		void print_section_name(file_section, std::ofstream &);

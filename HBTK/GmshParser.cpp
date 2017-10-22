@@ -29,6 +29,7 @@ SOFTWARE.
 #include <cassert>
 #include <regex>
 #include <algorithm>
+#include <array>
 
 /// \param func Function to be executed on finding physical name.
 ///
@@ -230,7 +231,7 @@ void Parsers::GmshParser::add_elem_function(std::function<bool(int, int, std::ve
 void Parsers::GmshParser::parse(fs::path file_path)
 {
 	if (file_path.empty()) { throw; }
-	std::ifstream inpt_stream(file_path);
+	std::ifstream inpt_stream(file_path, std::ios::binary);
 	std::ofstream out_stream(stderr);
 	parse(inpt_stream, out_stream);
 }
@@ -243,8 +244,9 @@ void Parsers::GmshParser::parse(std::ifstream & input_stream)
 
 void Parsers::GmshParser::parse(std::ifstream & input_stream, std::ofstream & error_stream)
 {
-	if (!input_stream) { throw; }
-	if (!error_stream) { throw; }
+	if (!input_stream) { throw -1; }
+	if (!error_stream) { throw -1; }
+
 	// Line counters
 	int line_count = 0, section_start_line = 0;
 	int expect_lines_to_next_section = 0;
@@ -253,79 +255,110 @@ void Parsers::GmshParser::parse(std::ifstream & input_stream, std::ofstream & er
 	std::string this_line;
 
 	bool still_parsing = true;
-	bool parsing_binary = false;
+	struct binary_parse_info b_info = { false, -1, -1, -1, -1 };
+	struct file_format_info f_info = { -1, false, (size_t)-1, false };
 	file_section current_section = no_section;
 
 	while (still_parsing) 
 	{
-		if (parsing_binary) {
-			throw; // Not implemented yet!
-			continue;
+		// LOOP FORMAT:
+		//	-> Are we parsing binary right now? Yes. Do that, continue.
+		//	We're parsing ASCII - we can get the line & increment counter.
+		//	-> If starts with $, parse section header, set section, continue.
+		//	-> Are we expecting a number to tell use the number of objects? is so, do that.
+		//	-> We're parsing a regular section! Switch on what section we are
+		//		on and run appropriate functions.
+
+		if (b_info.parsing_binary) {
+			switch (current_section) {
+			case file_info:
+				parse_file_binary_endian(input_stream, b_info, f_info);
+				continue;
+			case nodes:
+				parse_node_line_binary(input_stream, b_info);
+				continue;
+			case elements:
+				if (b_info.count_var > 0) {
+					parse_elem_binary(input_stream, b_info); 
+					expect_lines_to_next_section--;
+					if (expect_lines_to_next_section < 1) { b_info.parsing_binary = false; }
+				}
+				else {
+					parse_elem_binary_spec(input_stream, b_info);
+				}
+				continue;
+			default:
+				assert(false);
+				break;
+			}
 		}
 
-		else if (!std::getline(input_stream, this_line)) {
-			still_parsing = false;
-			break;
-		}
-		line_count++;
+		do {
+			still_parsing = (bool)std::getline(input_stream, this_line);
+			if (!still_parsing) { break; }
+			line_count++;
+		} while (this_line == "");
+		if (!still_parsing) { break; }
 
 		// Working on a line starting with $ - IE section header.
 		if (this_line[0] == '$') {
-			if (expect_lines_to_next_section != 0) {
-				error_stream << "WARNING:\tUnexpected new section on line " << line_count << ".\n";
-				error_stream << "WARNING:\tWas looking at section ";
-				print_section_name(current_section, error_stream);
-				error_stream << " which started on line " << section_start_line << "\n.";
-				error_stream << "WARNING:\tWas expecting " << expect_lines_to_next_section << " more entries first.\n\n";
-			}
 			// Get new section...
 			try {
 				current_section = parse_file_section(this_line, current_section);
 			}
 			catch (...) {
 				error_stream << "ERROR:\tInvalid section header encountered at line " << line_count << ".\n\n";
-				throw;
+				throw line_count;
 			}
 			section_start_line = line_count;
 			continue;
 		}
+		// End of working on section header.
 
-		// We're inside a section.
+		// Get expected number of objects.
+		if (expecting_object_count(current_section, line_count - section_start_line)) {
+			expect_lines_to_next_section = std::stoi(this_line);
+			line_count++;
+			if (current_section == nodes && f_info.binary ) {
+				b_info.parsing_binary = true;
+				b_info.count_var = expect_lines_to_next_section;
+			}
+			else if (current_section == elements && f_info.binary){
+				b_info.parsing_binary = true;
+				b_info.count_var = 0;
+			}
+			continue;
+		}
+		// end expected number of objects.
+
+		// Parsing ASCII
 		switch (current_section) {
 		case file_info:
-			// Not impemented yet...
+			parse_file_info(this_line, b_info, f_info);
 			break;
 		case nodes:
-			if (line_count - section_start_line > 1) {
-				parse_node_line(this_line);
-				expect_lines_to_next_section -= 1;
-			}
-			else { expect_lines_to_next_section = std::stoi(this_line); }
+			parse_node_line(this_line);
+			expect_lines_to_next_section -= 1;
 			break;
 		case elements:
-			if (line_count - section_start_line > 1) {
-				parse_elem_line(this_line);
-				expect_lines_to_next_section -= 1;
-			}
-			else { expect_lines_to_next_section = std::stoi(this_line); }
+			parse_elem_line(this_line);
+			expect_lines_to_next_section -= 1;
 			break;
 		case physical_names:
-			if (line_count - section_start_line > 1) {
-				parse_phys_name_line(this_line);
-				expect_lines_to_next_section -= 1;
-			}
-			else { expect_lines_to_next_section = std::stoi(this_line); }
+			parse_phys_name_line(this_line);
+			expect_lines_to_next_section -= 1;
 			break;
 		default:
 			auto substrings = tokenise(this_line);
 			if (substrings.size() != 0 && substrings[0] != "") {
 				error_stream << "ERROR:\tInvalid line in no section at line " << line_count << ".\n";
 				error_stream << "ERROR:\tLast header seen at line " << section_start_line << ".\n\n";
-				throw;
+				throw line_count;
 				// We have nonsection data, outside a section.
 			}
-			// Otherwise the line is blank between sections...
+			// Otherwise we're on a blank line between sections.
 		}
+		// End ASCII current section.
 	}
 }
 
@@ -378,6 +411,34 @@ void Parsers::GmshParser::parse_node_line(std::string line)
 }
 
 
+void Parsers::GmshParser::parse_node_line_binary(std::ifstream & input_stream, binary_parse_info & b_info)
+{
+#pragma pack(1)
+	struct node_data {
+		int tag;
+		double x, y, z;
+	};
+
+	std::array<char, (int)sizeof(node_data)> buffer;
+	if (!input_stream.read(buffer.data(), buffer.size())) {
+		if (input_stream.eof()) {
+			throw 1;
+		}
+		throw - 1;
+	}
+	node_data *tn = reinterpret_cast<node_data *>(buffer.data());
+	
+	for (auto func = node_funcs.begin(); func != node_funcs.end(); func++) {
+		if (!(*func)(tn->tag, tn->x, tn->y, tn->z)) { break; };
+	}
+	b_info.count_var--;
+	if (b_info.count_var < 1) { 
+		b_info.parsing_binary = false; 
+	}
+	return;
+}
+
+
 void Parsers::GmshParser::parse_elem_line(std::string input_string)
 {
 	auto strings = tokenise(input_string);
@@ -397,6 +458,56 @@ void Parsers::GmshParser::parse_elem_line(std::string input_string)
 	for (auto func = elem_funcs.begin(); func != elem_funcs.end(); func++) {
 		if (!(*func)(id, type, tags, nodes)) { break; };
 	}
+	return;
+}
+
+
+void Parsers::GmshParser::parse_elem_binary_spec(std::ifstream & input_stream, struct binary_parse_info & b_info)
+{
+	// Expects 3 ints: ele_type, num_elem_to_follow, num_tags
+	assert(b_info.parsing_binary);
+	assert(input_stream.good());
+
+	#pragma pack(1)
+	struct info_set {
+		int ele_type, num_to_follow, num_phy_tags;
+	};
+
+	std::array<char, (int)sizeof(info_set)> buffer;
+	input_stream.read(buffer.data(), buffer.size());
+	info_set *bs = reinterpret_cast<info_set *>(buffer.data());
+
+	b_info.ele_type = bs->ele_type;
+	b_info.ele_tag_count = bs->num_phy_tags;
+	b_info.ele_nodes = element_type_node_count(b_info.ele_type);
+	b_info.count_var = bs->num_to_follow;
+}
+
+
+void Parsers::GmshParser::parse_elem_binary(std::ifstream & input_stream, struct binary_parse_info & b_info)
+{
+	// Expect tag(int) n_tags*physTag(int) n_nodes*node_tag(int)
+	assert(b_info.parsing_binary);
+	assert(b_info.ele_nodes > 0);
+	assert(b_info.ele_tag_count > 0);
+	assert(input_stream.good());
+
+	int len = (1 + b_info.ele_tag_count + b_info.ele_nodes) * sizeof(int);
+	char *buffer = new char[len];
+	input_stream.read(buffer, (size_t)len);
+
+	int id = reinterpret_cast<int *>(buffer)[0];
+	std::vector<int> phy_tags(reinterpret_cast<int *>(buffer)+ 1, 
+		reinterpret_cast<int *>(buffer)+ 1 + b_info.ele_tag_count);
+	std::vector<int> nodes(reinterpret_cast<int *>(buffer) + 1 + b_info.ele_tag_count,
+		reinterpret_cast<int *>(buffer) + 1 + b_info.ele_tag_count + b_info.ele_nodes);
+
+	for (auto func = elem_funcs.begin(); func != elem_funcs.end(); func++) {
+		if (!(*func)(id, b_info.ele_type, phy_tags, nodes)) { break; };
+	}
+
+	delete [] buffer;
+	b_info.count_var--;
 	return;
 }
 
@@ -424,6 +535,26 @@ void Parsers::GmshParser::parse_phys_name_line(std::string inpt_string)
 }
 
 
+void Parsers::GmshParser::parse_file_info(std::string this_line, binary_parse_info & b_info, file_format_info & f_info)
+{
+	auto strings = tokenise(this_line);
+	f_info.version = std::stod(strings[0]);
+	f_info.binary = (bool)std::stoi(strings[1]);
+	f_info.data_size = (size_t)std::stoi(strings[2]);
+	if (f_info.binary) { b_info.parsing_binary = true; }
+	return;
+}
+
+void Parsers::GmshParser::parse_file_binary_endian(std::ifstream & input_stream, binary_parse_info & b_info, file_format_info & f_info)
+{
+	char *buf = new char[sizeof(int)];
+	input_stream.read(buf, sizeof(int));
+	f_info.matching_endian = *reinterpret_cast<int *>(buf) == 1;
+	b_info.parsing_binary = false;
+	delete[] buf;
+}
+
+
 std::vector<std::string> Parsers::GmshParser::tokenise(std::string input_string)
 {
 	std::regex no_whitespace("[\\s,]+");
@@ -432,6 +563,69 @@ std::vector<std::string> Parsers::GmshParser::tokenise(std::string input_string)
 		std::sregex_token_iterator());
 	return tokens;
 }
+
+
+int Parsers::GmshParser::element_type_node_count(int type)
+{
+	int nc;
+
+	switch (type) {
+		case 1: { nc = 2; break; }
+		case 2: { nc = 3; break; }
+		case 3: { nc = 4; break; }
+		case 4: { nc = 4; break; }
+		case 5: { nc = 8; break; }
+		case 6: { nc = 6; break; }
+		case 7: { nc = 5; break; }
+		case 8: { nc = 3; break; }
+		case 9: { nc = 6; break; }
+		case 10: { nc = 9; break; }
+		case 11: { nc = 10; break; }
+		case 12: { nc = 27; break; }
+		case 13: { nc = 18; break; }
+		case 14: { nc = 14; break; }
+		case 15: { nc = 1; break; }
+		case 16: { nc = 8; break; }
+		case 17: { nc = 20; break; }
+		case 18: { nc = 15; break; }
+		case 19: { nc = 13; break; }
+		case 20: { nc = 9; break; }
+		case 21: { nc = 10; break; }
+		case 22: { nc = 12; break; }
+		case 23: { nc = 15; break; }
+		case 24: { nc = 15; break; }
+		case 25: { nc = 21; break; }
+		case 26: { nc = 4; break; }
+		case 27: { nc = 5; break; }
+		case 28: { nc = 6; break; }
+		case 29: { nc = 20; break; }
+		case 30: { nc = 35; break; }
+		case 31: { nc = 56; break; }
+		case 92: { nc = 64; break; }
+		case 93: { nc = 125; break; }
+		default: { nc = -1; break; }
+	}
+	
+	return nc;
+}
+
+bool Parsers::GmshParser::expecting_object_count(file_section section, int line_difference)
+{
+	if (line_difference > 1) {
+		return false;
+	}
+	bool are_we;
+	switch (section) {
+		case file_info: { are_we = false; break; }
+		case nodes: { are_we = true; break; }
+		case elements: { are_we = true; break; }
+		case physical_names: { are_we = true; break; }
+		default: { are_we = false; break; }
+	}
+
+	return are_we;
+}
+
 
 void Parsers::GmshParser::print_section_name(file_section sect, std::ofstream & output)
 {
@@ -447,6 +641,8 @@ void Parsers::GmshParser::print_section_name(file_section sect, std::ofstream & 
 	case unsupported: output << "Unsupported file section (sorry)";
 		break;
 	case invalid: output << "[INVALID]";
+		break;
+	case no_section: output << "[No currently in section]";
 		break;
 	default: assert(false);
 	}
