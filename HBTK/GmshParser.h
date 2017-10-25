@@ -31,6 +31,8 @@ SOFTWARE.
 #include <filesystem>
 #include <fstream>
 
+#include "BasicParser.h"
+
 // This namespace is liable to be problematic.
 #ifdef _MSC_VER
 namespace fs = std::experimental::filesystem::v1;
@@ -41,7 +43,9 @@ namespace fs = std::filesystem;
 
 namespace Parsers {
 
-	class GmshParser {
+	class GmshParser :
+		public BasicParser<GmshParser>
+	{
 
 	public:
 		// Remember to see full Doxygen documentation!
@@ -58,13 +62,15 @@ namespace Parsers {
 		// Add a function to execute for elements on parsing.
 		// [tag, type, phys_group_tags, node_tags]
 		void add_elem_function(std::function<bool(int, int, std::vector<int>, std::vector<int>)> func);
-
+		/*
 		// Parse based on file system path.
 		void parse(fs::path file_path);
 		// Parse based on input file stream.
 		void parse(std::ifstream & input_stream);
 		void parse(std::ifstream & input_stream, std::ofstream & error_stream);	
-
+		*/
+		
+		void main_parser(std::ifstream & input_stream, std::ofstream & error_stream);
 	private:
 
 		// Generally, looking at http://gmsh.info/doc/texinfo/gmsh.html is useful!
@@ -116,9 +122,10 @@ namespace Parsers {
 		void parse_file_info(std::string this_line, binary_parse_info & b_info, file_format_info & f_info);
 		void parse_file_binary_endian(std::ifstream & input_stream, struct binary_parse_info & b_info, 
 			file_format_info & f_info);
-
+		/*
 		// Separate a string into substrings by whitespace.
 		std::vector<std::string> tokenise(std::string);
+		*/
 		// Get number of nodes for element type.
 		int element_type_node_count(int type);
 		// Get whether we're expecting to parse a object count line.

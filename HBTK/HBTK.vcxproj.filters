@@ -48,13 +48,16 @@
     <ClInclude Include="GmshParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BasicParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GmshParser.cpp">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

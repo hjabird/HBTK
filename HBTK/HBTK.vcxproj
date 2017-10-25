@@ -130,6 +130,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BasicParser.h" />
     <ClInclude Include="ElementGoemetry.h" />
     <ClInclude Include="ElementNodes.h" />
     <ClInclude Include="GaussLegendre.h" />

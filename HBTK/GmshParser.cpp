@@ -228,6 +228,8 @@ void Parsers::GmshParser::add_elem_function(std::function<bool(int, int, std::ve
 /// my_parser.parse(<MY_MSH_FILE>);
 /// // Where perhaps <MY_MESH_FILE> = C:\path\to\a\file.msh
 /// \endcode
+
+/*
 void Parsers::GmshParser::parse(fs::path file_path)
 {
 	if (file_path.empty()) { throw -1; }
@@ -241,8 +243,9 @@ void Parsers::GmshParser::parse(std::ifstream & input_stream)
 	std::ofstream err_stream(stderr);
 	parse(input_stream, err_stream);
 }
+*/
 
-void Parsers::GmshParser::parse(std::ifstream & input_stream, std::ofstream & error_stream)
+void Parsers::GmshParser::main_parser(std::ifstream & input_stream, std::ofstream & error_stream)
 {
 	if (!input_stream) { throw -1; }
 	if (!error_stream) { throw -1; }
@@ -563,7 +566,7 @@ void Parsers::GmshParser::parse_file_binary_endian(std::ifstream & input_stream,
 	delete[] buf;
 }
 
-
+/*
 std::vector<std::string> Parsers::GmshParser::tokenise(std::string input_string)
 {
 	std::vector<std::string> tokens;
@@ -590,6 +593,7 @@ std::vector<std::string> Parsers::GmshParser::tokenise(std::string input_string)
 
 	return tokens;
 }
+*/
 
 
 int Parsers::GmshParser::element_type_node_count(int type)
