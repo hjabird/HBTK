@@ -62,18 +62,22 @@ namespace Parsers {
 		// Add a function to execute for elements on parsing.
 		// [tag, type, phys_group_tags, node_tags]
 		void add_elem_function(std::function<bool(int, int, std::vector<int>, std::vector<int>)> func);
-		/*
-		// Parse based on file system path.
-		void parse(fs::path file_path);
-		// Parse based on input file stream.
-		void parse(std::ifstream & input_stream);
-		void parse(std::ifstream & input_stream, std::ofstream & error_stream);	
-		*/
 		
-		void main_parser(std::ifstream & input_stream, std::ofstream & error_stream);
+		// To set the parser going, one of the following may be used (inherited from BasicParser):
+		// void parse(fs::path file_path);
+		// void parse(std::ifstream & input_stream);
+		// void parse(std::ifstream & input_stream, std::ofstream & error_stream);	
+		// Where file_path is the path to the .msh file, or ifstream is the file
+		// stream already opened. The error output stream can be set using ofstream,
+		// by using the ifstream, ofstream overload. Otherwise stderr will be used.
+		
+		
 	private:
 
 		// Generally, looking at http://gmsh.info/doc/texinfo/gmsh.html is useful!
+
+		// Call main parser
+		void main_parser(std::ifstream & input_stream, std::ofstream & error_stream);
 
 		enum file_section {
 			no_section,
@@ -122,10 +126,7 @@ namespace Parsers {
 		void parse_file_info(std::string this_line, binary_parse_info & b_info, file_format_info & f_info);
 		void parse_file_binary_endian(std::ifstream & input_stream, struct binary_parse_info & b_info, 
 			file_format_info & f_info);
-		/*
-		// Separate a string into substrings by whitespace.
-		std::vector<std::string> tokenise(std::string);
-		*/
+
 		// Get number of nodes for element type.
 		int element_type_node_count(int type);
 		// Get whether we're expecting to parse a object count line.

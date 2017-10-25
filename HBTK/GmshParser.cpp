@@ -229,21 +229,7 @@ void Parsers::GmshParser::add_elem_function(std::function<bool(int, int, std::ve
 /// // Where perhaps <MY_MESH_FILE> = C:\path\to\a\file.msh
 /// \endcode
 
-/*
-void Parsers::GmshParser::parse(fs::path file_path)
-{
-	if (file_path.empty()) { throw -1; }
-	std::ifstream inpt_stream(file_path, std::ios::binary);
-	std::ofstream out_stream(stderr);
-	parse(inpt_stream, out_stream);
-}
 
-void Parsers::GmshParser::parse(std::ifstream & input_stream)
-{
-	std::ofstream err_stream(stderr);
-	parse(input_stream, err_stream);
-}
-*/
 
 void Parsers::GmshParser::main_parser(std::ifstream & input_stream, std::ofstream & error_stream)
 {
