@@ -432,16 +432,12 @@ void Parsers::GmshParser::parse_node_line_binary(std::ifstream & input_stream, b
 	struct node_data {
 		int tag;
 		double x, y, z;
-	};
+	} node_data;
 
-	std::array<char, (int)sizeof(node_data)> buffer;
-	if (!input_stream.read(buffer.data(), buffer.size())) {
-		throw - 1;
-	}
-	node_data *tn = reinterpret_cast<node_data *>(buffer.data());
+	unpack_binary_to_struct(input_stream, node_data);
 	
 	for (auto func = node_funcs.begin(); func != node_funcs.end(); func++) {
-		if (!(*func)(tn->tag, tn->x, tn->y, tn->z)) { break; };
+		if (!(*func)(node_data.tag, node_data.x, node_data.y, node_data.z)) { break; };
 	}
 	b_info.count_var--;
 	if (b_info.count_var < 1) { 
@@ -483,16 +479,14 @@ void Parsers::GmshParser::parse_elem_binary_spec(std::ifstream & input_stream, s
 	#pragma pack(1)
 	struct info_set {
 		int ele_type, num_to_follow, num_phy_tags;
-	};
+	} bs;
 
-	std::array<char, (int)sizeof(info_set)> buffer;
-	input_stream.read(buffer.data(), buffer.size());
-	info_set *bs = reinterpret_cast<info_set *>(buffer.data());
+	unpack_binary_to_struct(input_stream, bs);
 
-	b_info.ele_type = bs->ele_type;
-	b_info.ele_tag_count = bs->num_phy_tags;
+	b_info.ele_type = bs.ele_type;
+	b_info.ele_tag_count = bs.num_phy_tags;
 	b_info.ele_nodes = element_type_node_count(b_info.ele_type);
-	b_info.count_var = bs->num_to_follow;
+	b_info.count_var = bs.num_to_follow;
 }
 
 
@@ -559,42 +553,11 @@ void Parsers::GmshParser::parse_file_info(std::string this_line, binary_parse_in
 
 void Parsers::GmshParser::parse_file_binary_endian(std::ifstream & input_stream, binary_parse_info & b_info, file_format_info & f_info)
 {
-	char *buf = new char[sizeof(int)];
-	input_stream.read(buf, sizeof(int));
-	f_info.matching_endian = *reinterpret_cast<int *>(buf) == 1;
+	int test_integer;
+	unpack_binary_to_struct(input_stream, test_integer);
+	f_info.matching_endian = test_integer == 1;
 	b_info.parsing_binary = false;
-	delete[] buf;
 }
-
-/*
-std::vector<std::string> Parsers::GmshParser::tokenise(std::string input_string)
-{
-	std::vector<std::string> tokens;
-	char *token_begin, *token_end;
-	bool in_word = false;
-
-	auto idx = input_string.begin();
-	for (; idx != input_string.end(); idx++) {
-		if (isspace(*idx)) {
-			if (in_word) {
-				token_end = &(*idx);
-				tokens.emplace_back(std::string(token_begin, token_end));
-				in_word = false;
-			}
-		}
-		else if (!in_word) {
-			token_begin = &(*idx);
-			in_word = true;
-		}
-	}
-	if (in_word) {
-		tokens.emplace_back(std::string(token_begin, &(*(idx-1)) + 1));
-	}
-
-	return tokens;
-}
-*/
-
 
 int Parsers::GmshParser::element_type_node_count(int type)
 {
@@ -639,6 +602,7 @@ int Parsers::GmshParser::element_type_node_count(int type)
 	
 	return nc;
 }
+
 
 bool Parsers::GmshParser::expecting_object_count(file_section section, int line_difference)
 {

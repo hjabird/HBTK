@@ -69,7 +69,7 @@ namespace Parsers {
 	protected:
 		// Unpack chars to a Packed (!) structure
 		template<typename Tstruct>
-		inline void unpack_binary_to_struct(std::istream input_stream, Tstruct & structure)
+		inline void unpack_binary_to_struct(std::ifstream & input_stream, Tstruct & structure)
 		{
 			std::array<char, (int)sizeof(Tstruct)> buffer;
 			if (!input_stream.read(buffer.data(), buffer.size())) {
