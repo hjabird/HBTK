@@ -16,7 +16,7 @@ namespace TestHBTK
 	public:
 		TEST_METHOD(GMSH_test_file_1_ASCII)
 		{
-			Parsers::GmshParser parser;
+			Gmsh::GmshParser parser;
 
 			int node_count = 0;
 			int element_count = 0;
@@ -79,7 +79,7 @@ namespace TestHBTK
 
 		TEST_METHOD(GMSH_test_file_1_Binary)
 		{
-			Parsers::GmshParser parser;
+			Gmsh::GmshParser parser;
 
 			int node_count = 0;
 			int element_count = 0;

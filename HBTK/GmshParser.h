@@ -41,10 +41,10 @@ namespace fs = std::filesystem;
 #endif
 
 
-namespace Parsers {
+namespace Gmsh {
 
 	class GmshParser :
-		public BasicParser<GmshParser>
+		public Parsers::BasicParser<Gmsh::GmshParser>
 	{
 
 	public:
@@ -73,7 +73,7 @@ namespace Parsers {
 		
 		
 	private:
-
+		friend class Parsers::BasicParser<GmshParser>;
 		// Generally, looking at http://gmsh.info/doc/texinfo/gmsh.html is useful!
 
 		// Call main parser
