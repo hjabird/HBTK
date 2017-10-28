@@ -68,10 +68,15 @@ int Gmsh::GmshWriter::add_element(int ele_type, const std::vector<int> & node_id
 	return 0;
 }
 
-
-bool Gmsh::GmshWriter::write(std::string path)
-{
+bool Gmsh::GmshWriter::write(std::string path) {
 	std::ofstream output_stream(path);
+	return write(output_stream);
+}
+
+
+bool Gmsh::GmshWriter::write(std::ofstream & output_stream)
+{
+	if (!output_stream) { return false; }
 
 	// Write header
 	output_stream << "$MeshFormat\n2.2 0 0\n$EndMeshFormat\n";

@@ -53,6 +53,7 @@ namespace Gmsh {
 
 		// Write out file to path:
 		bool write(std::string path);
+		bool write(std::ofstream & output_stream);
 
 	private:
 		struct element {
