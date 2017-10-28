@@ -27,6 +27,8 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <fstream>
+#include <cassert>
+#include "GmshInfo.h"
 
 
 int Gmsh::GmshWriter::add_physical_group(int id, int dimensions, std::string name)
@@ -61,11 +63,13 @@ int Gmsh::GmshWriter::add_element(int ele_type, const std::vector<int> & node_id
 
 int Gmsh::GmshWriter::add_element(int ele_type, const std::vector<int> & node_ids, const std::vector<int> & phys_groups)
 {
+	assert(node_ids.size() == Gmsh::element_node_count(ele_type));
+
 	int id = m_elements.size();
 	m_elements.emplace(id, element{ ele_type,
 		std::make_unique<std::vector<int>>(node_ids),
 		std::make_unique<std::vector<int>>(phys_groups) });
-	return 0;
+	return id;
 }
 
 bool Gmsh::GmshWriter::write(std::string path) {
