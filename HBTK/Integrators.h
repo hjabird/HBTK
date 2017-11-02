@@ -143,6 +143,7 @@ namespace Quad {
 										Tf_in lower_limit, Tf_in upper_limit)
 	{
 		assert(tolerance > 0.0);
+		assert(upper_limit > lower_limit);
 
 		using R_Type = typename std::result_of<Tf(Tf_in)>::type;
 		R_Type result = 0;
@@ -223,6 +224,7 @@ namespace Quad {
 										Tf_in lower_limit, Tf_in upper_limit)
 	{
 		assert(tolerance > 0.0);
+		assert(lower_limit < upper_limit);
 
 		using R_Type = typename std::result_of<Tf(Tf_in)>::type;
 		R_Type result = 0;

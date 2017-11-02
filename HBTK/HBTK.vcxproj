@@ -131,12 +131,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicParser.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="ElementGoemetry.h" />
     <ClInclude Include="ElementNodes.h" />
     <ClInclude Include="GaussLegendre.h" />
     <ClInclude Include="GmshInfo.h" />
     <ClInclude Include="GmshParser.h" />
     <ClInclude Include="GmshWriter.h" />
+    <ClInclude Include="NumericalDifferentiation.h" />
     <ClInclude Include="PotentialFlowDistributions.h" />
     <ClInclude Include="Integrators.h" />
     <ClInclude Include="Remaps.h" />
