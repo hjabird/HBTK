@@ -27,6 +27,7 @@ SOFTWARE.
 
 #include <type_traits>
 #include <array>
+#include <cmath>
 #include "Tolerances.h"
 
 namespace Diff {
@@ -35,25 +36,25 @@ namespace Diff {
 	template<typename TFunc, typename TIn>
 	decltype(auto) central_difference_O1A2(TFunc function, TIn position);
 
-	template<typename TFunc, typename TIn>
-	decltype(auto) central_difference_O2A2(TFunc function, TIn position);
+	//template<typename TFunc, typename TIn>
+	//decltype(auto) central_difference_O2A2(TFunc function, TIn position);
 
 
 	template<typename TFunc, typename TIn>
 	decltype(auto) central_difference_O1A4(TFunc function, TIn position);
 
-	template<typename TFunc, typename TIn>
-	decltype(auto) central_difference_O2A4(TFunc function, TIn position);
+	//template<typename TFunc, typename TIn>
+	//decltype(auto) central_difference_O2A4(TFunc function, TIn position);
 
 
 	template<typename TFunc, typename TIn>
 	decltype(auto) central_difference_O1A6(TFunc function, TIn position);
 
-	template<typename TFunc, typename TIn>
-	decltype(auto) central_difference_O2A6(TFunc function, TIn position);
+	//template<typename TFunc, typename TIn>
+	//decltype(auto) central_difference_O2A6(TFunc function, TIn position);
 
 
-	template<typename TFunc, typename TIn, typename TArr>
+	template<int Torder, typename TFunc, typename TIn, typename TArr>
 	decltype(auto) apply_diff_weights_and_vertices(TFunc function, TIn position, TArr vertices, TArr weights);
 
 
@@ -61,60 +62,62 @@ namespace Diff {
 	template<typename TFunc, typename TIn>
 	decltype(auto) central_difference_O1A2(TFunc function, TIn position)
 	{
-		std::array<TIn, 2> vertices({ -1., 1. });
-		std::array<TIn, 2> weights({ -0.5, 0.5 });
-		return apply_diff_weights_and_vertices(function, position, vertices, weights);
+		std::array<TIn, 2> vertices { -1., 1. };
+		std::array<TIn, 2> weights { -0.5, 0.5 };
+		return apply_diff_weights_and_vertices<1>(function, position, vertices, weights);
 	}
 
 	template<typename TFunc, typename TIn>
 	decltype(auto) central_difference_O2A2(TFunc function, TIn position)
 	{
-		std::array<TIn, 3> vertices({ -1., 0, 1. });
-		std::array<TIn, 3> weights({ 1., -2., 1.});
-		return apply_diff_weights_and_vertices(function, position, vertices, weights);
+		std::array<TIn, 3> vertices { -1., 0., 1. };
+		std::array<TIn, 3> weights { 1., -2., 1.};
+		return apply_diff_weights_and_vertices<2>(function, position, vertices, weights);
 	}
 
 	template<typename TFunc, typename TIn>
 	decltype(auto) central_difference_O1A4(TFunc function, TIn position)
 	{
-		std::array<TIn, 4> vertices({ -2., -1., 1., 2. });
-		std::array<TIn, 4> weights({ 1. / 12., -2. / 3., 2. / 3., -1. / 12. });
-		return apply_diff_weights_and_vertices(function, position, vertices, weights);
+		std::array<TIn, 4> vertices { -2., -1., 1., 2. };
+		std::array<TIn, 4> weights { 1. / 12., -2. / 3., 2. / 3., -1. / 12. };
+		return apply_diff_weights_and_vertices<1>(function, position, vertices, weights);
 	}
 
 	template<typename TFunc, typename TIn>
 	decltype(auto) central_difference_O2A4(TFunc function, TIn position)
 	{
-		std::array<TIn, 5> vertices({ -2., -1., 0., 1., 2. });
-		std::array<TIn, 5> weights({ -1. / 12., 4. / 3., -5. / 2., 4. / 3., -1. / 12. });
-		return apply_diff_weights_and_vertices(function, position, vertices, weights);
+		std::array<TIn, 5> vertices { -2., -1., 0., 1., 2. };
+		std::array<TIn, 5> weights { -1. / 12., 4. / 3., -5. / 2., 4. / 3., -1. / 12. };
+		return apply_diff_weights_and_vertices<2>(function, position, vertices, weights);
 	}
 
 	template<typename TFunc, typename TIn>
 	decltype(auto) central_difference_O1A6(TFunc function, TIn position)
 	{
-		std::array<TIn, 6> vertices({ -3., -2., -1., 1., 2., 3. });
-		std::array<TIn, 6> weights({ -1./ 60., 3./20., -0.75., 0.75, -3./20., 1./60. });
-		return apply_diff_weights_and_vertices(function, position, vertices, weights);
+		std::array<TIn, 6> vertices { -3., -2., -1., 1., 2., 3. };
+		std::array<TIn, 6> weights { -1. / 60., 3. / 20., -0.75, 0.75, -3. / 20., 1. / 60. };
+		return apply_diff_weights_and_vertices<1>(function, position, vertices, weights);
 	}
 
 	template<typename TFunc, typename TIn>
 	decltype(auto) central_difference_O2A6(TFunc function, TIn position)
 	{
-		std::array<TIn, 7> vertices({ -3., -2., -1., 0., 1., 2., 3. });
-		std::array<TIn, 7> weights({ 1./90., -3./20., 3./2., -49./18.,  3. / 2., -3. / 20., 1. / 90., });
-		return apply_diff_weights_and_vertices(function, position, vertices, weights);
+		std::array<TIn, 7> vertices { -3., -2., -1., 0., 1., 2., 3. };
+		std::array<TIn, 7> weights { 1./90., -3./20., 3./2., -49./18.,  3. / 2., -3. / 20., 1. / 90., };
+		return apply_diff_weights_and_vertices<2>(function, position, vertices, weights);
 	}
 
-	template<typename TFunc, typename TIn, typename TArr>
+	template<int Torder, typename TFunc, typename TIn, typename TArr>
 	decltype(auto) apply_diff_weights_and_vertices(TFunc function, TIn position, TArr vertices, TArr weights)
 	{
-		TIn h = sqrt(Quad::tolerance<TIn>);
-		typename std::result_of<TFunc(TIn)>::type result = 0;
-		for (int idx i = 0; i < vertices.size(); i++) {
+		TIn h = sqrt(Quad::tolerance<TIn>());
+		static_assert(std::is_floating_point<decltype(h)>::value);
+		std::result_of<TFunc(TIn)>::type result = 0;
+		for (int idx = 0; idx < (int) vertices.size(); idx++) {
 			result += function(vertices[idx] * h + position) * weights[idx];
 		}
-		return results / h;
+		result = result / pow(h, Torder);
+		return result;
 	}
 
 }
