@@ -36,23 +36,23 @@ namespace Diff {
 	template<typename TFunc, typename TIn>
 	decltype(auto) central_difference_O1A2(TFunc function, TIn position);
 
-	//template<typename TFunc, typename TIn>
-	//decltype(auto) central_difference_O2A2(TFunc function, TIn position);
+	template<typename TFunc, typename TIn>
+	decltype(auto) central_difference_O2A2(TFunc function, TIn position);
 
 
 	template<typename TFunc, typename TIn>
 	decltype(auto) central_difference_O1A4(TFunc function, TIn position);
 
-	//template<typename TFunc, typename TIn>
-	//decltype(auto) central_difference_O2A4(TFunc function, TIn position);
+	template<typename TFunc, typename TIn>
+	decltype(auto) central_difference_O2A4(TFunc function, TIn position);
 
 
 	template<typename TFunc, typename TIn>
 	decltype(auto) central_difference_O1A6(TFunc function, TIn position);
 
-	//template<typename TFunc, typename TIn>
-	//decltype(auto) central_difference_O2A6(TFunc function, TIn position);
-
+	template<typename TFunc, typename TIn>
+	decltype(auto) central_difference_O2A6(TFunc function, TIn position);
+	
 
 	template<int Torder, typename TFunc, typename TIn, typename TArr>
 	decltype(auto) apply_diff_weights_and_vertices(TFunc function, TIn position, TArr vertices, TArr weights);
@@ -110,7 +110,7 @@ namespace Diff {
 	template<int Torder, typename TFunc, typename TIn, typename TArr>
 	decltype(auto) apply_diff_weights_and_vertices(TFunc function, TIn position, TArr vertices, TArr weights)
 	{
-		TIn h = sqrt(Quad::tolerance<TIn>());
+		TIn h = pow(Quad::tolerance<TIn>(), 1./(2*Torder));
 		static_assert(std::is_floating_point<decltype(h)>::value);
 		std::result_of<TFunc(TIn)>::type result = 0;
 		for (int idx = 0; idx < (int) vertices.size(); idx++) {
