@@ -26,6 +26,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <cmath>
+#include <cassert>
 
 namespace Quad {
 	
@@ -38,7 +39,7 @@ namespace Quad {
 
 	template<typename Ty>
 	constexpr void telles_quadratic_remap(Ty & point, Ty & weight, 
-										bool singularity_positive);
+										const Ty & singularity);
 
 	template<typename Ty>
 	constexpr void telles_cubic_remap(Ty & point, Ty & weight, 
@@ -99,7 +100,7 @@ namespace Quad {
 
 	/// \param point integration point - mutated.
 	/// \param point integration weight - mutated.
-	/// \param singularity_positive true if singularity is at +1, false if at -1
+	/// \param singularity position. Should be +1 or -1.
 	///
 	/// \brief Applies Telles' quadratic integral transfrom to a quadrature
 	/// point / weight
@@ -118,9 +119,10 @@ namespace Quad {
 	/// \endcode
 	template<typename Ty>
 	constexpr void telles_quadratic_remap(Ty & point, Ty & weight, 
-										  bool singularity_positive) 
+										  const Ty & singularity) 
 	{
-		Ty s_pos = singularity_positive ? 1.0 : -1.0;
+		assert(abs(singularity) == 1);
+		const Ty & s_pos = singularity;
 		Ty tmp_p, tmp_w;
 
 		tmp_p = (1 - point*point)*(s_pos + sqrt(s_pos*s_pos - 1)) / 2 + point;

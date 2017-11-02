@@ -41,22 +41,22 @@ namespace TestHBTK
 			double px, wx;
 			px = -1;
 			wx = 1;
-			Quad::telles_quadratic_remap(px, wx, true);
+			Quad::telles_quadratic_remap(px, wx, 1.);
 			Assert::AreEqual(-1.0, px, Quad::tolerance<double>(), L"Telles2", LINE_INFO());
 			Assert::AreEqual(2.0, wx, Quad::tolerance<double>(), L"Telles2", LINE_INFO());
 			px = 1;
 			wx = 1;
-			Quad::telles_quadratic_remap(px, wx, true);
+			Quad::telles_quadratic_remap(px, wx, 1.);
 			Assert::AreEqual(1.0, px, Quad::tolerance<double>(), L"Telles2", LINE_INFO());
 			Assert::AreEqual(0.0, wx, Quad::tolerance<double>(), L"Telles2", LINE_INFO());
 			px = 0;
 			wx = 1;
-			Quad::telles_quadratic_remap(px, wx, true);
+			Quad::telles_quadratic_remap(px, wx, 1.);
 			Assert::AreEqual(0.5, px, L"Telles2", LINE_INFO());
 			Assert::AreEqual(1.0, wx, L"Telles2", LINE_INFO());
 			px = 0;
 			wx = 1;
-			Quad::telles_quadratic_remap(px, wx, false);
+			Quad::telles_quadratic_remap(px, wx, -1.);
 			Assert::AreEqual(-0.5, px, L"Telles2", LINE_INFO());
 			Assert::AreEqual(1.0, wx, L"Telles2", LINE_INFO());
 		}
