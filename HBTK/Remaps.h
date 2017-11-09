@@ -48,6 +48,10 @@ namespace Quad {
 	template<int Torder, typename Ty>
 	constexpr void sato_remap(Ty & point, Ty & weight, 
 							  Ty singularity_pos);
+
+	template<typename Ty>
+	constexpr void exponential_remap(Ty & point, Ty & weight, Ty lower_limit);
+
 	// TODO:
 	// tanh_sinh
 	// Sigmoidal
@@ -210,6 +214,28 @@ namespace Quad {
 		point = tmp_p;
 		weight = tmp_w;
 		return;
+	}
+
+	/// \param point integration point - mutated.
+	/// \param point integration weight - mutated.
+	/// \param original_lower_limit 
+	///
+	/// \brief Applies an exponential transform to a semiinfinite
+	/// integral
+	///
+	/// Applies a tranformation of the the form:
+	/// \f[\int^\infty_{lower_limit}f(x)dx = \int^1_{-1}f(\phi(\lambda)d\lambda  ,\f]
+	///
+	template<typename Ty>
+	constexpr void exponential_remap(Ty & point, Ty & weight, Ty original_lower_limit)
+	{
+		Ty tmp_p, tmp;
+
+		tmp = exp(2 / (1 - point) - 1);
+		tmp_p = tmp - 1 + original_lower_limit;
+		weight = 2 * tmp / (pow(1 - point, 2));
+		point = tmp_p;
+		return void();
 	}
 
 }

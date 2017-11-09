@@ -110,5 +110,30 @@ namespace TestHBTK
 			Assert::AreEqual(-0.875, px, L"Sato", LINE_INFO());
 			Assert::AreEqual(0.5, wx, L"Sato", LINE_INFO());
 		}
+
+		TEST_METHOD(Exponential_remap)
+		{
+			double px, wx;
+			px = -1;
+			wx = 1;
+			Quad::exponential_remap(px, wx, -3.);
+			Assert::AreEqual(-3., px, L"EXPONENTIAL REMAP: satisfies lower limit 1.", LINE_INFO());
+			px = -1;
+			Quad::exponential_remap(px, wx, 5.);
+			Assert::AreEqual(5., px, L"EXPONENTIAL REMAP: satisfies lower limit 2.", LINE_INFO());
+			px = 1;
+			Quad::exponential_remap(px, wx, 2.);
+			Assert::AreEqual((double)INFINITY, px, L"EXPONENTIAL REMAP: satisfies upper limit.", LINE_INFO());
+			px = -1;
+			wx = 1;
+			Quad::exponential_remap(px, wx, 0.);
+			Assert::AreEqual(0., px, L"EXPONENTIAL REMAP: satisfies lower limit.", LINE_INFO());
+			Assert::AreEqual(0.5, wx, L"EXPONENTIAL REMAP: weight at lower limit.", LINE_INFO());
+			px = 1;
+			wx = 1;
+			Quad::exponential_remap(px, wx, 0.);
+			Assert::AreEqual((double)INFINITY, px, L"EXPONENTIAL REMAP: satisfies lower limit.", LINE_INFO());
+			Assert::AreEqual((double)INFINITY, wx, L"EXPONENTIAL REMAP: weight at lower limit.", LINE_INFO());
+		}
 	};
 }
