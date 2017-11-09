@@ -1,10 +1,11 @@
 # HBTK
-A C++ library containing what I consider to be 'useful stuff'.
+A C++ library containing what I consider to be 'useful stuff'. Very much liable to change.
 
-* Integral remaps
-* Integrations methods
+* Integral remaps - Telles, Sato
+* Integrations methods - Gauss-legendre, generic static, adaptive Simpsons / Trapezoidal. Not restricted to floats / doubles.
 * GMSH parser (ASCII & Binary v2.2 - physical groups, nodes and elements only)
-* GMSH elements
+* GMSH writer (ASCII 2.2, physical groups, nodes and elements only)
+* GMSH elements (element node coordinate (unchecked!), shape descriptions, element names)
 
 ## Getting Started
 
