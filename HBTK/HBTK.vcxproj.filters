@@ -63,6 +63,9 @@
     <ClInclude Include="NumericalDifferentiation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GnuPlot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -75,6 +78,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GmshWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GnuPlot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

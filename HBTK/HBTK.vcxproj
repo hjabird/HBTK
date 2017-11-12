@@ -138,6 +138,7 @@
     <ClInclude Include="GmshInfo.h" />
     <ClInclude Include="GmshParser.h" />
     <ClInclude Include="GmshWriter.h" />
+    <ClInclude Include="GnuPlot.h" />
     <ClInclude Include="NumericalDifferentiation.h" />
     <ClInclude Include="PotentialFlowDistributions.h" />
     <ClInclude Include="Integrators.h" />
@@ -150,6 +151,7 @@
     <ClCompile Include="GmshInfo.cpp" />
     <ClCompile Include="GmshParser.cpp" />
     <ClCompile Include="GmshWriter.cpp" />
+    <ClCompile Include="GnuPlot.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
