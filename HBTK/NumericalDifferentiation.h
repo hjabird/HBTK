@@ -30,7 +30,7 @@ SOFTWARE.
 #include <cmath>
 #include "Tolerances.h"
 
-namespace Diff {
+namespace HBTK {
 	// DECLARATIONS
 
 	template<typename TFunc, typename TIn>
@@ -110,7 +110,7 @@ namespace Diff {
 	template<int Torder, typename TFunc, typename TIn, typename TArr>
 	decltype(auto) apply_diff_weights_and_vertices(TFunc function, TIn position, TArr vertices, TArr weights)
 	{
-		TIn h = pow(Quad::tolerance<TIn>(), 1./(2*Torder));
+		TIn h = pow(HBTK::tolerance<TIn>(), 1./(2*Torder));
 		static_assert(std::is_floating_point<decltype(h)>::value);
 		std::result_of<TFunc(TIn)>::type result = 0;
 		for (int idx = 0; idx < (int) vertices.size(); idx++) {
@@ -120,4 +120,4 @@ namespace Diff {
 		return result;
 	}
 
-}
+} // END namespace HBTK

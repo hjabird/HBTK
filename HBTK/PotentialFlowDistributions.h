@@ -27,7 +27,7 @@ SOFTWARE.
 
 #include <cmath>
 
-namespace PotentialFlow
+namespace HBTK
 {
 
 	namespace PointDoublet 
@@ -140,6 +140,6 @@ namespace PotentialFlow
 		}
 
 	}
-}
+} // END namespace HBTK
 
 

@@ -27,115 +27,116 @@ SOFTWARE.
 
 #include <type_traits>
 
-namespace Elements
-{
-	class PointGeometry;
-	class LineGemoetry;
-	class RightAngleTriangleGeometry;
-	class QuadrangleGeometry;
-	class TetrahedronGeometry;
-	class HexahedronGeometry;
-	class RightAngleTrianglePrismGeometry;
-	class PyramidGeometry;
-}
+namespace HBTK {
+	namespace Elements
+	{
+		class PointGeometry;
+		class LineGemoetry;
+		class RightAngleTriangleGeometry;
+		class QuadrangleGeometry;
+		class TetrahedronGeometry;
+		class HexahedronGeometry;
+		class RightAngleTrianglePrismGeometry;
+		class PyramidGeometry;
+	}
 
-namespace Elements
-{
-	class PointGeometry {
-		const int local_number_of_dimensions = 0;
+	namespace Elements
+	{
+		class PointGeometry {
+			const int local_number_of_dimensions = 0;
 
-		template < typename TCoord >
-		constexpr bool is_local_coord_in_element(TCoord local_coord) {
-			return true;
-		}
-	};
-
-	class LineGeometry {
-		const int local_number_of_dimensions = 1;
-
-		template < typename TCoord >
-		constexpr bool is_local_coord_in_element(TCoord local_coord) {
-			if (std::is_floating_point<TCoord>::value)
-			{
-				static_assert(false)
-				// return local_coord >= -1.0 && local_coord <= 1.0
+			template < typename TCoord >
+			constexpr bool is_local_coord_in_element(TCoord local_coord) {
+				return true;
 			}
-			else
-			{
-				return local_coord[0] >= -1.0 && local_coord[0] <= 1.0
+		};
+
+		class LineGeometry {
+			const int local_number_of_dimensions = 1;
+
+			template < typename TCoord >
+			constexpr bool is_local_coord_in_element(TCoord local_coord) {
+				if (std::is_floating_point<TCoord>::value)
+				{
+					static_assert(false)
+						// return local_coord >= -1.0 && local_coord <= 1.0
+				}
+				else
+				{
+					return local_coord[0] >= -1.0 && local_coord[0] <= 1.0
+				}
 			}
-		}
-	};
+		};
 
-	class RightAngleTriangleGeometry {
-		const int local_number_of_dimensions = 2;
+		class RightAngleTriangleGeometry {
+			const int local_number_of_dimensions = 2;
 
-		template < typename TCoord >
-		constexpr bool is_local_coord_in_element(TCoord local_coord) {
-			return (local_coord[0] >= 0.0
-				&& local_coord[1] >= 0.0
-				&& local_coord[0] + local_coord[1] >= 1.0);
-		}
-	};
+			template < typename TCoord >
+			constexpr bool is_local_coord_in_element(TCoord local_coord) {
+				return (local_coord[0] >= 0.0
+					&& local_coord[1] >= 0.0
+					&& local_coord[0] + local_coord[1] >= 1.0);
+			}
+		};
 
-	class QuadrangleGeometry {
-		const int local_number_of_dimensions = 2;
+		class QuadrangleGeometry {
+			const int local_number_of_dimensions = 2;
 
-		template < typename TCoord >
-		constexpr bool is_local_coord_in_element(TCoord local_coord) {
-			return (local_coord[0] >= -1.0 && local_coord[0] <= 1.0
-				&& local_coord[1] >= -1.0 && local_coord[1] <= 1.0 );
-		}
-	};
+			template < typename TCoord >
+			constexpr bool is_local_coord_in_element(TCoord local_coord) {
+				return (local_coord[0] >= -1.0 && local_coord[0] <= 1.0
+					&& local_coord[1] >= -1.0 && local_coord[1] <= 1.0);
+			}
+		};
 
-	class TetrahedronGeometry {
-		const int local_number_of_dimensions = 3;
+		class TetrahedronGeometry {
+			const int local_number_of_dimensions = 3;
 
-		template < typename TCoord >
-		constexpr bool is_local_coord_in_element(TCoord local_coord) {
-			return (local_coord[0] >= 0.0
-				&& local_coord[1] >= 0.0
-				&& local_coord[2] >= 0.0
-				&& local_coord[0] + local_coord[1] + local_coord[2] >= 1.0);
-		}
-	};
+			template < typename TCoord >
+			constexpr bool is_local_coord_in_element(TCoord local_coord) {
+				return (local_coord[0] >= 0.0
+					&& local_coord[1] >= 0.0
+					&& local_coord[2] >= 0.0
+					&& local_coord[0] + local_coord[1] + local_coord[2] >= 1.0);
+			}
+		};
 
-	class HexahedronGeometry {
-		const int local_number_of_dimensions = 3;
+		class HexahedronGeometry {
+			const int local_number_of_dimensions = 3;
 
-		template < typename TCoord >
-		constexpr bool is_local_coord_in_element(TCoord local_coord) {
-			return (local_coord[0] >= -1.0 && local_coord[0] <= 1.0
-				&& local_coord[1] >= -1.0 && local_coord[1] <= 1.0
-				&& local_coord[2] >= -1.0 && local_coord[2] <= 1.0);
-		}
-	};
+			template < typename TCoord >
+			constexpr bool is_local_coord_in_element(TCoord local_coord) {
+				return (local_coord[0] >= -1.0 && local_coord[0] <= 1.0
+					&& local_coord[1] >= -1.0 && local_coord[1] <= 1.0
+					&& local_coord[2] >= -1.0 && local_coord[2] <= 1.0);
+			}
+		};
 
-	class RightAngleTrianglePrismGeometry {
-		const int local_number_of_dimensions = 3;
+		class RightAngleTrianglePrismGeometry {
+			const int local_number_of_dimensions = 3;
 
-		template < typename TCoord >
-		constexpr bool is_local_coord_in_element(TCoord local_coord) {
-			return (local_coord[0] >= 0.0
-				&& local_coord[1] >= 0.0
-				&& local_coord[0] + local_coord[1] >= 1.0
-				&& local_coord[2] >= -1.0 && local_coord[2] <= 1.0);
-		}
-	};
+			template < typename TCoord >
+			constexpr bool is_local_coord_in_element(TCoord local_coord) {
+				return (local_coord[0] >= 0.0
+					&& local_coord[1] >= 0.0
+					&& local_coord[0] + local_coord[1] >= 1.0
+					&& local_coord[2] >= -1.0 && local_coord[2] <= 1.0);
+			}
+		};
 
-	class PyramidGeometry {
-		const int local_number_of_dimensions = 3;
+		class PyramidGeometry {
+			const int local_number_of_dimensions = 3;
 
-		template < typename TCoord >
-		constexpr bool is_local_coord_in_element(TCoord local_coord) {
-			return (local_coord[0] >= -1.0 && local_coord[0] <= 1.0
-				&& local_coord[1] >= -1.0 && local_coord[1] <= 1.0
-				&& local_coord[2] >= 0.0 && local_coord[2] <= 1.0
-				&& local_coord[2] + abs(local_coord[0]) <= 1.0
-				&& local_coord[2] + abs(local_coord[1]) <= 1.0
-				);
-		}
-	};
+			template < typename TCoord >
+			constexpr bool is_local_coord_in_element(TCoord local_coord) {
+				return (local_coord[0] >= -1.0 && local_coord[0] <= 1.0
+					&& local_coord[1] >= -1.0 && local_coord[1] <= 1.0
+					&& local_coord[2] >= 0.0 && local_coord[2] <= 1.0
+					&& local_coord[2] + abs(local_coord[0]) <= 1.0
+					&& local_coord[2] + abs(local_coord[1]) <= 1.0
+					);
+			}
+		};
+	}
 }
-
 

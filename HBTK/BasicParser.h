@@ -37,7 +37,7 @@ namespace fs = std::filesystem;
 #endif
 
 
-namespace Parsers {
+namespace HBTK {
 	template <typename TParentClass>
 	class BasicParser
 	{

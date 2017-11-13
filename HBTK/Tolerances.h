@@ -26,7 +26,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 
-namespace Quad {
+namespace HBTK {
 
 	/// \brief returns the tolerance of a type Ty.
 	///

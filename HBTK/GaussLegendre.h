@@ -30,7 +30,7 @@ SOFTWARE.
 #include <vector>
 #include "Tolerances.h"
 
-namespace Quad {
+namespace HBTK {
 
 	// DECLARATIONS
 	template <typename Ty, typename TyStor>
@@ -92,7 +92,7 @@ namespace Quad {
 #pragma warning(suppress: 4244)
 			z = cos(M_PI * (idxO + 0.75) / (n_points + 0.5));
 			z1 = 12;
-			while (abs(z - z1) > Quad::tolerance<Ty>()) {
+			while (abs(z - z1) > HBTK::tolerance<Ty>()) {
 				p1 = 1;
 				p2 = 0;
 				for (idxI = 0; idxI < n_points; idxI++)

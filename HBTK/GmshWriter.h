@@ -30,49 +30,51 @@ SOFTWARE.
 #include <map>
 #include <memory>
 
-namespace Gmsh {
-	class GmshWriter
-	{
-	public:
+namespace HBTK {
+	namespace Gmsh {
+		class GmshWriter
+		{
+		public:
 
-		// Add a physical group.
-		// Returns -1 for physical group id already exists
-		int add_physical_group(int id, int dimensions, std::string name);
+			// Add a physical group.
+			// Returns -1 for physical group id already exists
+			int add_physical_group(int id, int dimensions, std::string name);
 
-		// Add a node of with id number id at x, y, z
-		// Returns -1 for node id already exists.
-		int add_node(int id, double x, double y, double z);
+			// Add a node of with id number id at x, y, z
+			// Returns -1 for node id already exists.
+			int add_node(int id, double x, double y, double z);
 
-		// Add an element of ele_type (see gmsh element ids) with nodes node_ids.
-		// Returns +ve: the assigned element number
-		// Returns -1: failed!
-		// First overload: do not make part of any physical group
-		int add_element(int ele_type, const std::vector<int> & node_ids);
-		// Second overload: make part of physical groups given in vector phys_grps.
-		int add_element(int ele_type, const std::vector<int> & node_ids, const std::vector<int> & phys_groups);
+			// Add an element of ele_type (see gmsh element ids) with nodes node_ids.
+			// Returns +ve: the assigned element number
+			// Returns -1: failed!
+			// First overload: do not make part of any physical group
+			int add_element(int ele_type, const std::vector<int> & node_ids);
+			// Second overload: make part of physical groups given in vector phys_grps.
+			int add_element(int ele_type, const std::vector<int> & node_ids, const std::vector<int> & phys_groups);
 
-		// Write out file to path:
-		bool write(std::string path);
-		bool write(std::ofstream & output_stream);
+			// Write out file to path:
+			bool write(std::string path);
+			bool write(std::ofstream & output_stream);
 
-	private:
-		struct element {
-			int element_type;
-			std::unique_ptr<std::vector<int>> nodes;
-			std::unique_ptr<std::vector<int>> phys_groups;
+		private:
+			struct element {
+				int element_type;
+				std::unique_ptr<std::vector<int>> nodes;
+				std::unique_ptr<std::vector<int>> phys_groups;
+			};
+
+			struct physical_group {
+				int dimensions;
+				std::string name;
+			};
+
+			struct node_coordinate {
+				double x, y, z;
+			};
+
+			std::map<int, element> m_elements;
+			std::map<int, physical_group> m_physical_groups;
+			std::map<int, node_coordinate> m_nodes;
 		};
-
-		struct physical_group {
-			int dimensions;
-			std::string name;
-		};
-
-		struct node_coordinate {
-			double x, y, z;
-		};
-
-		std::map<int, element> m_elements;
-		std::map<int, physical_group> m_physical_groups;
-		std::map<int, node_coordinate> m_nodes;
-	};
-}
+	}
+} // END namespace HBTK

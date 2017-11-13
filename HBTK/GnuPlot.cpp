@@ -489,7 +489,7 @@ namespace HBTK {
 			};
 		}
 
-		result = "lc " + colour + " lt " + dashes +" pt " + marker;
+		result = " lt " + dashes + "lc " + colour + " pt " + marker;
 		return result;
 	}
 

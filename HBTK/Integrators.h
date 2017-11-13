@@ -31,7 +31,7 @@ SOFTWARE.
 #include <type_traits>
 #include <stack>
 
-namespace Quad {
+namespace HBTK {
 
 	// DECLARATIONS
 	template< typename Tf, typename Tp, typename Tw>

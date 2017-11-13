@@ -27,7 +27,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 
-const std::string Gmsh::element_name(int ele_id)
+const std::string HBTK::Gmsh::element_name(int ele_id)
 {
 	std::string res;
 	switch (ele_id) {
@@ -138,7 +138,7 @@ const std::string Gmsh::element_name(int ele_id)
 }
 
 
-constexpr int Gmsh::element_node_count(int ele_id)
+constexpr int HBTK::Gmsh::element_node_count(int ele_id)
 {
 	int res = -1;
 	switch (ele_id) {
@@ -249,7 +249,7 @@ constexpr int Gmsh::element_node_count(int ele_id)
 }
 
 
-constexpr int Gmsh::element_dimensions(int ele_id)
+constexpr int HBTK::Gmsh::element_dimensions(int ele_id)
 {
 	int res = -1;
 	switch (ele_id) {

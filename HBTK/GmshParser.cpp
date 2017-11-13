@@ -82,7 +82,7 @@ SOFTWARE.
 /// // We can now run the parser:
 /// my_parser.parse(<MY_MSH_FILE>);
 /// \endcode 
-void Gmsh::GmshParser::add_phys_name_function(std::function<bool(int, int, std::string)> func)
+void HBTK::Gmsh::GmshParser::add_phys_name_function(std::function<bool(int, int, std::string)> func)
 {
 	phys_name_funcs.emplace_back(func);
 }
@@ -136,7 +136,7 @@ void Gmsh::GmshParser::add_phys_name_function(std::function<bool(int, int, std::
 /// // We can now run the parser:
 /// my_parser.parse(<MY_MSH_FILE>);
 /// \endcode 
-void Gmsh::GmshParser::add_node_function(std::function<bool(int, double, double, double)> func)
+void HBTK::Gmsh::GmshParser::add_node_function(std::function<bool(int, double, double, double)> func)
 {
 	node_funcs.emplace_back(func);
 }
@@ -199,7 +199,7 @@ void Gmsh::GmshParser::add_node_function(std::function<bool(int, double, double,
 /// // We can now run the parser:
 /// my_parser.parse(<MY_MSH_FILE>);
 /// \endcode 
-void Gmsh::GmshParser::add_elem_function(std::function<bool(int, int, std::vector<int>, std::vector<int>)> func)
+void HBTK::Gmsh::GmshParser::add_elem_function(std::function<bool(int, int, std::vector<int>, std::vector<int>)> func)
 {
 	elem_funcs.emplace_back(func);
 }
@@ -231,7 +231,7 @@ void Gmsh::GmshParser::add_elem_function(std::function<bool(int, int, std::vecto
 
 
 
-void Gmsh::GmshParser::main_parser(std::ifstream & input_stream, std::ofstream & error_stream)
+void HBTK::Gmsh::GmshParser::main_parser(std::ifstream & input_stream, std::ofstream & error_stream)
 {
 	if (!input_stream) { throw -1; }
 	if (!error_stream) { throw -1; }
@@ -362,7 +362,7 @@ void Gmsh::GmshParser::main_parser(std::ifstream & input_stream, std::ofstream &
 }
 
 
-Gmsh::GmshParser::file_section Gmsh::GmshParser::parse_file_section(std::string input_string, Gmsh::GmshParser::file_section current_section)
+HBTK::Gmsh::GmshParser::file_section HBTK::Gmsh::GmshParser::parse_file_section(std::string input_string, HBTK::Gmsh::GmshParser::file_section current_section)
 {
 	// Expects "$<section-name>" or "$End<section-name>"
 	file_section section = invalid;
@@ -391,7 +391,7 @@ Gmsh::GmshParser::file_section Gmsh::GmshParser::parse_file_section(std::string 
 }
 
 
-void Gmsh::GmshParser::parse_node_line(std::string line)
+void HBTK::Gmsh::GmshParser::parse_node_line(std::string line)
 {
 	auto strings = tokenise(line);
 	if (strings.size() != 4) {
@@ -412,7 +412,7 @@ void Gmsh::GmshParser::parse_node_line(std::string line)
 }
 
 
-void Gmsh::GmshParser::parse_node_line_binary(std::ifstream & input_stream, binary_parse_info & b_info)
+void HBTK::Gmsh::GmshParser::parse_node_line_binary(std::ifstream & input_stream, binary_parse_info & b_info)
 {
 #pragma pack(1)
 	struct node_data {
@@ -433,7 +433,7 @@ void Gmsh::GmshParser::parse_node_line_binary(std::ifstream & input_stream, bina
 }
 
 
-void Gmsh::GmshParser::parse_elem_line(std::string input_string)
+void HBTK::Gmsh::GmshParser::parse_elem_line(std::string input_string)
 {
 	auto strings = tokenise(input_string);
 	std::vector<int> values;
@@ -456,7 +456,7 @@ void Gmsh::GmshParser::parse_elem_line(std::string input_string)
 }
 
 
-void Gmsh::GmshParser::parse_elem_binary_spec(std::ifstream & input_stream, struct binary_parse_info & b_info)
+void HBTK::Gmsh::GmshParser::parse_elem_binary_spec(std::ifstream & input_stream, struct binary_parse_info & b_info)
 {
 	// Expects 3 ints: ele_type, num_elem_to_follow, num_tags
 	assert(b_info.parsing_binary);
@@ -476,7 +476,7 @@ void Gmsh::GmshParser::parse_elem_binary_spec(std::ifstream & input_stream, stru
 }
 
 
-void Gmsh::GmshParser::parse_elem_binary(std::ifstream & input_stream, struct binary_parse_info & b_info)
+void HBTK::Gmsh::GmshParser::parse_elem_binary(std::ifstream & input_stream, struct binary_parse_info & b_info)
 {
 	// Expect tag(int) n_tags*physTag(int) n_nodes*node_tag(int)
 	assert(b_info.parsing_binary);
@@ -504,7 +504,7 @@ void Gmsh::GmshParser::parse_elem_binary(std::ifstream & input_stream, struct bi
 }
 
 
-void Gmsh::GmshParser::parse_phys_name_line(std::string inpt_string)
+void HBTK::Gmsh::GmshParser::parse_phys_name_line(std::string inpt_string)
 {
 	// Expects <dimensions> <tag-id-thing> "<name>"
 	auto strings = tokenise(inpt_string);
@@ -527,7 +527,7 @@ void Gmsh::GmshParser::parse_phys_name_line(std::string inpt_string)
 }
 
 
-void Gmsh::GmshParser::parse_file_info(std::string this_line, binary_parse_info & b_info, file_format_info & f_info)
+void HBTK::Gmsh::GmshParser::parse_file_info(std::string this_line, binary_parse_info & b_info, file_format_info & f_info)
 {
 	auto strings = tokenise(this_line);
 	f_info.version = std::stod(strings[0]);
@@ -537,7 +537,7 @@ void Gmsh::GmshParser::parse_file_info(std::string this_line, binary_parse_info 
 	return;
 }
 
-void Gmsh::GmshParser::parse_file_binary_endian(std::ifstream & input_stream, binary_parse_info & b_info, file_format_info & f_info)
+void HBTK::Gmsh::GmshParser::parse_file_binary_endian(std::ifstream & input_stream, binary_parse_info & b_info, file_format_info & f_info)
 {
 	int test_integer;
 	unpack_binary_to_struct(input_stream, test_integer);
@@ -545,7 +545,7 @@ void Gmsh::GmshParser::parse_file_binary_endian(std::ifstream & input_stream, bi
 	b_info.parsing_binary = false;
 }
 
-int Gmsh::GmshParser::element_type_node_count(int type)
+int HBTK::Gmsh::GmshParser::element_type_node_count(int type)
 {
 	int nc;
 
@@ -590,7 +590,7 @@ int Gmsh::GmshParser::element_type_node_count(int type)
 }
 
 
-bool Gmsh::GmshParser::expecting_object_count(file_section section, int line_difference)
+bool HBTK::Gmsh::GmshParser::expecting_object_count(file_section section, int line_difference)
 {
 	if (line_difference > 1) {
 		return false;
@@ -608,7 +608,7 @@ bool Gmsh::GmshParser::expecting_object_count(file_section section, int line_dif
 }
 
 
-void Gmsh::GmshParser::print_section_name(file_section sect, std::ofstream & output)
+void HBTK::Gmsh::GmshParser::print_section_name(file_section sect, std::ofstream & output)
 {
 	switch (sect) {
 	case file_info: output << "MeshFormat"; 

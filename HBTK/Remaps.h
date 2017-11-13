@@ -28,7 +28,7 @@ SOFTWARE.
 #include <cmath>
 #include <cassert>
 
-namespace Quad {
+namespace HBTK {
 	
 	// Declarations
 

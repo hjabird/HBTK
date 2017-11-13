@@ -31,7 +31,7 @@ SOFTWARE.
 #include "GmshInfo.h"
 
 
-int Gmsh::GmshWriter::add_physical_group(int id, int dimensions, std::string name)
+int HBTK::Gmsh::GmshWriter::add_physical_group(int id, int dimensions, std::string name)
 {
 	if (m_physical_groups.find(id) == m_physical_groups.end()) {
 		m_physical_groups.emplace(id, physical_group{ dimensions, name });
@@ -43,7 +43,7 @@ int Gmsh::GmshWriter::add_physical_group(int id, int dimensions, std::string nam
 }
 
 
-int Gmsh::GmshWriter::add_node(int id, double x, double y, double z)
+int HBTK::Gmsh::GmshWriter::add_node(int id, double x, double y, double z)
 {
 	if (m_nodes.find(id) == m_nodes.end()) {
 		m_nodes.emplace(id, node_coordinate{ x, y, z });
@@ -55,13 +55,13 @@ int Gmsh::GmshWriter::add_node(int id, double x, double y, double z)
 }
 
 
-int Gmsh::GmshWriter::add_element(int ele_type, const std::vector<int> & node_ids)
+int HBTK::Gmsh::GmshWriter::add_element(int ele_type, const std::vector<int> & node_ids)
 {
 	return add_element(ele_type, node_ids, std::vector<int>());
 }
 
 
-int Gmsh::GmshWriter::add_element(int ele_type, const std::vector<int> & node_ids, const std::vector<int> & phys_groups)
+int HBTK::Gmsh::GmshWriter::add_element(int ele_type, const std::vector<int> & node_ids, const std::vector<int> & phys_groups)
 {
 	assert(node_ids.size() == Gmsh::element_node_count(ele_type));
 
@@ -72,13 +72,13 @@ int Gmsh::GmshWriter::add_element(int ele_type, const std::vector<int> & node_id
 	return id;
 }
 
-bool Gmsh::GmshWriter::write(std::string path) {
+bool HBTK::Gmsh::GmshWriter::write(std::string path) {
 	std::ofstream output_stream(path);
 	return write(output_stream);
 }
 
 
-bool Gmsh::GmshWriter::write(std::ofstream & output_stream)
+bool HBTK::Gmsh::GmshWriter::write(std::ofstream & output_stream)
 {
 	if (!output_stream) { return false; }
 
