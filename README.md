@@ -6,6 +6,7 @@ A C++ library containing what I consider to be 'useful stuff'. Very much liable 
 * GMSH parser (ASCII & Binary v2.2 - physical groups, nodes and elements only)
 * GMSH writer (ASCII 2.2, physical groups, nodes and elements only)
 * GMSH elements (element node coordinate (unchecked!), shape descriptions, element names)
+* MATLAB-like GNUPlot interface for 2D plotting.
 
 ## Getting Started
 
