@@ -149,6 +149,7 @@
     <ClInclude Include="Tolerances.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Checks.cpp" />
     <ClCompile Include="GmshInfo.cpp" />
     <ClCompile Include="GmshParser.cpp" />
     <ClCompile Include="GmshWriter.cpp" />

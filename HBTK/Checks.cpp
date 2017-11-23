@@ -1,6 +1,7 @@
-#pragma once
+#include "stdafx.h"
+#include "Checks.h"
 /*////////////////////////////////////////////////////////////////////////////
-Checks.h
+Checks.cpp
 
 Methods to check validity of numbers (ie. finite) inc. in vectors, other std
 containers, LibEigen's matrices.
@@ -26,29 +27,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
+#include <cmath>
 #include <complex>
 
 namespace HBTK {
 
-	bool check_finite(float x);
-
-	bool check_finite(double x);
-
-	bool check_finite(const long double x);
-
-	template<typename Ty>
-	bool check_finite(const std::complex<Ty> x) {
-		return check_finite(x.real()) && check_finite(x.imag());
+	bool check_finite(float x) {
+		return std::isfinite(x);
 	}
 
-	template<typename Ty>
-	bool check_finite(const std::vector<Ty> & x) {
-		bool result = true;
-		for (auto &a : x) {
-			if (!check_finite(a)) { result = false; break; }
-		}
-		return result;
+	bool check_finite(double x) {
+		return std::isfinite(x);
+	}
+
+	bool check_finite(const long double x) {
+		return std::isfinite(x);
 	}
 
 }
