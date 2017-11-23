@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicParser.h" />
+    <ClInclude Include="Checks.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="ElementGoemetry.h" />
     <ClInclude Include="ElementNodes.h" />
