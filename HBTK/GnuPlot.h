@@ -32,7 +32,9 @@ namespace HBTK {
 	{
 	public:
 		GnuPlot();
-		~GnuPlot();
+		~GnuPlot();    
+		GnuPlot(GnuPlot const &) = delete;
+		void operator=(GnuPlot const &x) = delete;
 
 		bool plot(std::vector<double> Y);
 		bool plot(std::vector<double> X, std::vector<double> Y);
