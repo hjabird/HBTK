@@ -42,7 +42,7 @@ namespace HBTK {
 		m_terminal_type = "wxt";
 	// We need piped gnuplot on Windows.
 #ifdef WIN32
-		m_gnuplot_pipe = _popen("pgnuplot -persist", "w");
+		m_gnuplot_pipe = _popen("gnuplot -persist > /nul 2>&1", "w");
 #else
 		m_gnuplot_pipe = popen("gnuplot", "w");
 #endif
@@ -261,7 +261,7 @@ namespace HBTK {
 		}
 		int num_coords = (int)m_Xs[data_idx].size();
 		for (int idx = 0; idx < num_coords; idx++) {
-			fprintf(m_gnuplot_pipe, "%f %f %f\n", m_Xs[data_idx][idx], 
+			fprintf(m_gnuplot_pipe, "%E %E %E\n", m_Xs[data_idx][idx], 
 				m_Ys[data_idx][idx], m_Zs[data_idx][idx]);
 		}
 		fprintf(m_gnuplot_pipe, "e\n");
