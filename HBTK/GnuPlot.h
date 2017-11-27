@@ -59,7 +59,9 @@ namespace HBTK {
 		
 		void logscale(std::string axis);
 		void logscale(std::string axis, int base);
-
+		
+		void axis_equal_on();
+		void axis_equal_off();
 
 		void size(int x_size, int y_size);
 
@@ -96,6 +98,7 @@ namespace HBTK {
 		bool send_canvas_size_to_gnuplot_pipe();
 		bool send_grid_setting_to_gnuplot_pipe();
 		bool send_key_setting_to_gnuplot_pipe();
+		bool send_axis_setting_to_gnuplot_pipe();
 
 		// Data handling methods.
 		bool plotting_data_already();
@@ -111,6 +114,7 @@ namespace HBTK {
 		int m_canvas_xsize, m_canvas_ysize;
 		bool m_grid_on;
 		bool m_key_on;
+		bool m_axis_equal_on;
 		std::string m_terminal_type;
 	};
 }

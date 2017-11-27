@@ -207,6 +207,7 @@ namespace HBTK {
 		send_canvas_size_to_gnuplot_pipe();
 		send_grid_setting_to_gnuplot_pipe();
 		send_key_setting_to_gnuplot_pipe();
+		send_axis_setting_to_gnuplot_pipe();
 
 		// Main line
 		tmp_line = "plot ";
@@ -319,6 +320,19 @@ namespace HBTK {
 		return false;
 	}
 
+	bool GnuPlot::send_axis_setting_to_gnuplot_pipe()
+	{
+		if (m_gnuplot_pipe) {
+			if (m_axis_equal_on) {
+				fprintf(m_gnuplot_pipe, "set size ratio -1\n");
+			}
+			else {
+				// Cross that bridge when we come to it?
+			}
+		}
+		return false;
+	}
+
 	bool GnuPlot::clear()
 	{
 		m_Xs.clear();
@@ -351,6 +365,18 @@ namespace HBTK {
 	{
 		assert(base > 1);
 		m_scale_string = "logscale " + axis + " " + std::to_string(base);
+		return;
+	}
+
+	void GnuPlot::axis_equal_on()
+	{
+		m_axis_equal_on = true;
+		return;
+	}
+
+	void GnuPlot::axis_equal_off()
+	{
+		m_axis_equal_on = false;
 		return;
 	}
 
