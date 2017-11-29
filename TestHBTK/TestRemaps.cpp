@@ -135,5 +135,20 @@ namespace TestHBTK
 			Assert::AreEqual((double)INFINITY, px, L"EXPONENTIAL REMAP: satisfies lower limit.", LINE_INFO());
 			Assert::AreEqual((double)INFINITY, wx, L"EXPONENTIAL REMAP: weight at lower limit.", LINE_INFO());
 		}
+
+		TEST_METHOD(doblare_remap)
+		{
+			double px, wx;
+			px = -1;
+			wx = 1;
+			HBTK::doblare_remap(px, wx, 0.5);
+			Assert::AreEqual(-1.0, px, HBTK::tolerance<double>(), L"Doblare - -1 -> -1", LINE_INFO());
+			Assert::AreEqual(5., wx, HBTK::tolerance<double>(), L"Doblare weight 1", LINE_INFO());
+			px = 1;
+			wx = 1;
+			HBTK::doblare_remap(px, wx, 0.5);
+			Assert::AreEqual(1.0, px, HBTK::tolerance<double>(), L"Doblare", LINE_INFO());
+			Assert::AreEqual(1., wx, HBTK::tolerance<double>(), L"Doblare", LINE_INFO());
+		}
 	};
 }

@@ -50,6 +50,10 @@ namespace HBTK {
 							  Ty singularity_pos);
 
 	template<typename Ty>
+	constexpr void doblare_remap(Ty & point, Ty & weight,
+										Ty singularity_pos);
+
+	template<typename Ty>
 	constexpr void exponential_remap(Ty & point, Ty & weight, Ty lower_limit);
 
 	// TODO:
@@ -175,7 +179,7 @@ namespace HBTK {
 
 	/// \param point integration point - mutated.
 	/// \param point integration weight - mutated.
-	/// \param singularity_positive true if singularity is at +1, false if at -1
+	/// \param singularity_pos either -1 or 1 are valid.
 	/// \param Torder the order of the transfromation to use.
 	///
 	/// \brief Applies Sato's transform of order Torder to point and weight.
@@ -206,11 +210,32 @@ namespace HBTK {
 	constexpr void sato_remap(Ty & point, Ty & weight, Ty singularity_pos)
 	{
 		static_assert(Torder > 1);
+		assert(abs(singularity_pos) == 1);
 		Ty tmp_p, tmp_w;
 		tmp_p = singularity_pos - (singularity_pos / pow(2, Torder - 1)) 
 								* pow(1 - singularity_pos * point, Torder);
 		tmp_w = Torder * pow(2, 1 - Torder) * singularity_pos*singularity_pos 
 						* pow(1 - singularity_pos*point, Torder - 1) * weight;
+		point = tmp_p;
+		weight = tmp_w;
+		return;
+	}
+
+	/// \param point integration point - mutated.
+	/// \param point integration weight - mutated.
+	/// \param singularity_positive between -1, 1
+	///
+	/// \brief Applies Doblare transform for a CPV or weakly singular integrand.
+	///
+	///
+	template<typename Ty>
+	constexpr void doblare_remap(Ty & point, Ty & weight, Ty singularity_pos)
+	{
+		assert(abs(singularity_pos) < 1.);
+		assert(abs(point) <= 1);
+		Ty tmp_p, tmp_w;
+		tmp_p = singularity_pos * ( 1 - pow(point, 4) ) + pow(point, 3);
+		tmp_w = weight * (-4. * pow(point, 3) * singularity_pos + 3 * point * point);
 		point = tmp_p;
 		weight = tmp_w;
 		return;

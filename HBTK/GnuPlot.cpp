@@ -40,8 +40,12 @@ namespace HBTK {
 		m_canvas_xsize = 600;
 		m_canvas_ysize = 400;
 		m_terminal_type = "wxt";
+		m_default_line_specs = { "k-+", "b-x", "r-o", "g-d", "c-*", "m-^", "y-v" };
+		m_xrange_set = false;
+		m_yrange_set = false;
+
 	// We need piped gnuplot on Windows.
-#ifdef WIN32
+#ifdef _MSC_VER
 		m_gnuplot_pipe = _popen("gnuplot -persist > /nul 2>&1", "w");
 #else
 		m_gnuplot_pipe = popen("gnuplot", "w");
@@ -56,7 +60,7 @@ namespace HBTK {
 	{
 		if (m_gnuplot_pipe) {
 			fprintf(m_gnuplot_pipe, "exit\n");
-#ifdef WIN32
+#ifdef _MSC_VER
 			_pclose(m_gnuplot_pipe);
 #else
 			pclose(m_gnuplot_pipe);
@@ -75,7 +79,8 @@ namespace HBTK {
 
 	bool GnuPlot::plot(std::vector<double> X, std::vector<double> Y)
 	{
-		return plot(X, Y, "k-");
+		std::string ln_spec = m_default_line_specs[m_Xs.size()];
+		return plot(X, Y, ln_spec);
 	}
 
 	bool GnuPlot::plot(std::vector<double> X, std::vector<double> Y, std::string line_spec)
@@ -188,6 +193,32 @@ namespace HBTK {
 		return true;
 	}
 
+	bool GnuPlot::xrange(double x_min, double x_max)
+	{
+		if (x_min != x_max) {
+			m_xrange_set = true;
+			m_x_max = x_max;
+			m_x_min = x_min;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	bool GnuPlot::yrange(double y_min, double y_max)
+	{
+		if (y_min != y_max) {
+			m_yrange_set = true;
+			m_y_max = y_max;
+			m_y_min = y_min;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	void GnuPlot::real_plot()
 	{
 		assert(m_Xs.size() > 0);
@@ -207,7 +238,8 @@ namespace HBTK {
 		send_canvas_size_to_gnuplot_pipe();
 		send_grid_setting_to_gnuplot_pipe();
 		send_key_setting_to_gnuplot_pipe();
-		send_axis_setting_to_gnuplot_pipe();
+		send_axis_setting_to_gnuplot_pipe(); 
+		send_range_setting_to_gnuplot_pipe();
 
 		// Main line
 		tmp_line = "plot ";
@@ -325,6 +357,25 @@ namespace HBTK {
 		if (m_gnuplot_pipe) {
 			if (m_axis_equal_on) {
 				fprintf(m_gnuplot_pipe, "set size ratio -1\n");
+			}
+			else {
+				// Cross that bridge when we come to it?
+			}
+		}
+		return false;
+	}
+
+	bool GnuPlot::send_range_setting_to_gnuplot_pipe()
+	{
+		if (m_gnuplot_pipe) {
+			if (m_xrange_set) {
+				fprintf(m_gnuplot_pipe, "set xrange [%E : %E]\n", m_x_min, m_x_max);
+			}
+			else {
+				// Cross that bridge when we come to it?
+			}
+			if (m_yrange_set) {
+				fprintf(m_gnuplot_pipe, "set yrange [%E : %E]\n", m_y_min, m_y_max);
 			}
 			else {
 				// Cross that bridge when we come to it?
@@ -462,7 +513,7 @@ namespace HBTK {
 				colour = "rgb \"red\"";
 				break;
 			case 'm':
-				colour = "3";
+				colour = "4";
 				break;
 			case 'y':
 				colour = "6";

@@ -157,7 +157,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\HBTK\HBTK.vcxproj">
+    <ProjectReference Include="..\..\HBTK\HBTK.vcxproj">
       <Project>{0f21df6f-7069-43c7-8161-42347bdfdf9a}</Project>
     </ProjectReference>
   </ItemGroup>
