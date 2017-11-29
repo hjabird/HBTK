@@ -161,6 +161,7 @@
     </ClCompile>
     <ClCompile Include="TestDiff.cpp" />
     <ClCompile Include="TestGaussLegendre.cpp" />
+    <ClCompile Include="TestGenerators.cpp" />
     <ClCompile Include="TestGmshParser.cpp" />
     <ClCompile Include="TestIntegrators.cpp" />
     <ClCompile Include="TestRemaps.cpp" />

@@ -4,7 +4,7 @@
 Checks.cpp
 
 Methods to check validity of numbers (ie. finite) inc. in vectors, other std
-containers, LibEigen's matrices.
+containers.
 
 Copyright 2017 HJA Bird
 

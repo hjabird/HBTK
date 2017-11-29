@@ -136,6 +136,7 @@
     <ClInclude Include="ElementGoemetry.h" />
     <ClInclude Include="ElementNodes.h" />
     <ClInclude Include="GaussLegendre.h" />
+    <ClInclude Include="Generators.h" />
     <ClInclude Include="GmshInfo.h" />
     <ClInclude Include="GmshParser.h" />
     <ClInclude Include="GmshWriter.h" />
@@ -150,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Checks.cpp" />
+    <ClCompile Include="Generators.cpp" />
     <ClCompile Include="GmshInfo.cpp" />
     <ClCompile Include="GmshParser.cpp" />
     <ClCompile Include="GmshWriter.cpp" />
