@@ -26,6 +26,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 #include <vector>
 #include <fstream>
+#include <functional>
 
 namespace HBTK {
 	class GnuPlot
@@ -39,6 +40,7 @@ namespace HBTK {
 		bool plot(std::vector<double> Y);
 		bool plot(std::vector<double> X, std::vector<double> Y);
 		bool plot(std::vector<double> X, std::vector<double> Y, std::string line_spec);
+		bool plot(std::function<double(double)> func, double x_min, double x_max, std::string line_spec);
 		bool clear();
 		bool replot();
 

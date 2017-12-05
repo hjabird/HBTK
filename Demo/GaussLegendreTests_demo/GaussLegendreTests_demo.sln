@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GaussLegendreTests_demo", "GaussLegendreTests_demo.vcxproj", "{0B09B63C-BBC9-4828-A4B6-5D5A4C8C6CE3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HBTK", "..\..\..\HBTK\HBTK.vcxproj", "{0F21DF6F-7069-43C7-8161-42347BDFDF9A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HBTK", "..\..\HBTK\HBTK.vcxproj", "{0F21DF6F-7069-43C7-8161-42347BDFDF9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

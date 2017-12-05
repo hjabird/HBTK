@@ -29,6 +29,8 @@ SOFTWARE.
 #include <iostream>
 #include <string>
 #include <cassert>
+#include <algorithm>
+#include "Generators.h"
 
 namespace HBTK {
 	GnuPlot::GnuPlot()
@@ -90,6 +92,17 @@ namespace HBTK {
 		add_line_specification(translate_matlab_linespec(line_spec));
 		auto_replot();
 		return true;
+	}
+
+	bool GnuPlot::plot(std::function<double(double)> func, double x_min, double x_max, std::string line_spec)
+	{
+		assert(func);
+		auto x = HBTK::linspace(x_min, x_max, 100);
+		std::vector<double> y;
+		y.reserve(x.size());
+		std::transform(x.begin(), x.end(), std::back_inserter(y), func);
+		plot(x, y, line_spec);
+		return false;
 	}
 
 	void GnuPlot::title(std::string str)
@@ -566,7 +579,7 @@ namespace HBTK {
 			};
 		}
 
-		result = " lt " + dashes + "lc " + colour + " pt " + marker;
+		result = " lt " + dashes + " lc " + colour + " pt " + marker;
 		return result;
 	}
 

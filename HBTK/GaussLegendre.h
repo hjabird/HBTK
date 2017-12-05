@@ -28,6 +28,7 @@ SOFTWARE.
 #include <cmath>
 #include <array>
 #include <vector>
+#include "Constants.h"
 #include "Tolerances.h"
 
 namespace HBTK {
@@ -81,8 +82,6 @@ namespace HBTK {
 		Ty z, z1;
 		Ty p1, p2, p3, pp;
 		int idxO, idxI;
-#pragma warning(suppress: 4305)
-		const Ty M_PI = 3.14159265358979323846264338327950288419716939937510;
 
 #pragma warning(suppress: 4244)
 		m = (n_points + 1.0) / 2.0;
@@ -90,7 +89,7 @@ namespace HBTK {
 		for (idxO = 0; idxO < floor(m - 1) + 1; idxO++)
 		{
 #pragma warning(suppress: 4244)
-			z = cos(M_PI * (idxO + 0.75) / (n_points + 0.5));
+			z = cos(HBTK::Constants::pi<Ty>() * (idxO + 0.75) / (n_points + 0.5));
 			z1 = 12;
 			while (abs(z - z1) > HBTK::tolerance<Ty>()) {
 				p1 = 1;
