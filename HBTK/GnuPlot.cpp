@@ -97,9 +97,9 @@ namespace HBTK {
 	bool GnuPlot::plot(std::function<double(double)> func, double x_min, double x_max)
 	{
 		assert(func);
-		auto x = HBTK::linspace(x_min, x_max, 100);
+		auto x = HBTK::linspace(x_min, x_max, 300);
 		std::vector<double> y;
-		y.reserve(x.size);
+		y.reserve(x.size());
 		std::transform(x.begin(), x.end(), std::back_inserter(y), func);
 		plot(x, y);
 		return true;
@@ -108,7 +108,7 @@ namespace HBTK {
 	bool GnuPlot::plot(std::function<double(double)> func, double x_min, double x_max, std::string line_spec)
 	{
 		assert(func);
-		auto x = HBTK::linspace(x_min, x_max, 100);
+		auto x = HBTK::linspace(x_min, x_max, 300);
 		std::vector<double> y;
 		y.reserve(x.size());
 		std::transform(x.begin(), x.end(), std::back_inserter(y), func);
