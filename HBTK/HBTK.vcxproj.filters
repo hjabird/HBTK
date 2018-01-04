@@ -72,6 +72,12 @@
     <ClInclude Include="Generators.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Interpolators.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GaussianQuadrature.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -93,6 +99,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Generators.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GaussLegendre.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GaussianQuadrature.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

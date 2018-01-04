@@ -34,6 +34,9 @@ SOFTWARE.
 namespace HBTK {
 
 	// DECLARATIONS
+
+	std::pair<std::vector<double>, std::vector<double>> gauss_legendre(int n_points);
+
 	template <typename Ty, typename TyStor>
 	constexpr void gauss_legendre(int n_points, TyStor & points, 
 												TyStor & weights);

@@ -51,6 +51,11 @@ namespace HBTK {
 	template< typename Ty >
 	void geomspace(double start, double end, int number_of_points, double base, Ty & target_indexible);
 
+	std::vector<double> uniform(double value, int number_of_points);
+	template<typename TyStore, typename TyVal>
+	void uniform(TyStore & target_indexable, TyVal fill_value);
+
+
 } // End Namespace HBTK - Declarations
 
 namespace HBTK // Definitions
@@ -96,6 +101,14 @@ namespace HBTK // Definitions
 		auto log_end = log(end) / log(base);
 		logspace(log_start, log_end, number_of_points, base, target_indexible);
 		return;
+	}
+
+	template<typename TyStore, typename TyVal>
+	void uniform(TyStore & target_indexable, TyVal uniform_value)
+	{
+		for (int idx = 0; idx < (int) target_indexable.size(); idx++) {
+			target_indexable[idx] = uniform_value;
+		}
 	}
 
 } // End HBTK namespace

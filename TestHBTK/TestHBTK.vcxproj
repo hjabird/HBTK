@@ -160,7 +160,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TestDiff.cpp" />
-    <ClCompile Include="TestGaussLegendre.cpp" />
+    <ClCompile Include="TestGaussQuadrature.cpp" />
     <ClCompile Include="TestGenerators.cpp" />
     <ClCompile Include="TestGmshParser.cpp" />
     <ClCompile Include="TestIntegrators.cpp" />

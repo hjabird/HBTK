@@ -84,3 +84,11 @@ std::vector<double> HBTK::geomspace(double start, double end, int number_of_poin
 	geomspace(start, end, number_of_points, base, result);
 	return result;
 }
+
+std::vector<double> HBTK::uniform(double value, int number_of_points)
+{
+	std::vector<double> output;
+	output.resize(number_of_points);
+	uniform(output, value);
+	return output;
+}
