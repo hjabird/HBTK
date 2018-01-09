@@ -43,9 +43,9 @@ void HBTK::Plot3D::Plot3DParser::main_parser(std::ifstream & input_stream, std::
 	if (number_of_dimensions == 2) {
 		parse_2d(input_stream, error_stream);
 	}
-	//else if (number_of_dimensions == 3) {
-	//	parse_3d(input_stream, error_stream);
-	//}
+	else if (number_of_dimensions == 3) {
+		parse_3d(input_stream, error_stream);
+	}
 	else {
 		assert(false);
 	}
@@ -59,7 +59,17 @@ void HBTK::Plot3D::Plot3DParser::parse_2d(std::ifstream & input_stream, std::ofs
 		parse_2d_binary(input_stream, error_stream);
 	}
 	else {
-		parse_2d_ascii(input_stream, error_stream);
+		parse_ascii(input_stream, error_stream, 2);
+	}
+}
+
+void HBTK::Plot3D::Plot3DParser::parse_3d(std::ifstream & input_stream, std::ofstream & error_stream)
+{
+	if (parse_as_binary) {
+		assert(false);
+	}
+	else {
+		parse_ascii(input_stream, error_stream, 3);
 	}
 }
 
@@ -117,7 +127,7 @@ void HBTK::Plot3D::Plot3DParser::parse_2d_binary(std::ifstream & input_stream, s
 
 	return;
 }
-
+/*
 void HBTK::Plot3D::Plot3DParser::parse_2d_ascii(std::ifstream & input_stream, std::ofstream & error_stream)
 {
 	int number_of_blocks;
@@ -170,6 +180,102 @@ void HBTK::Plot3D::Plot3DParser::parse_2d_ascii(std::ifstream & input_stream, st
 			for (auto & function : m_mesh_2d_functions) {
 				if (!function(mesh)) break;
 			}
+		} // End iteration over blocks.
+	}
+	catch (...) { throw line_number; }
+}
+*/
+void HBTK::Plot3D::Plot3DParser::parse_ascii(std::ifstream & input_stream, std::ofstream & error_stream, int dimensions)
+{
+	assert(dimensions <= 3);
+	assert(dimensions >= 2);
+	int number_of_blocks;
+	std::vector<std::vector<int>> extents;
+	extents.resize(dimensions);
+	std::string this_line;
+	int line_number = 1;
+
+	try {
+		if (single_block) {
+			number_of_blocks = 1;
+		}
+		else {
+			std::getline(input_stream, this_line);
+			line_number++;
+			number_of_blocks = std::atoi(this_line.data());
+		}
+
+		for (auto &vect : extents) { vect.resize(number_of_blocks); }
+
+		for (int n = 0; n < number_of_blocks; n++) {
+			std::getline(input_stream, this_line);
+			line_number++;
+			auto strings = tokenise(this_line);
+			if ((int)strings.size() < dimensions) throw line_number;
+			for (int m = 0; m < dimensions; m++) {
+				extents[m][n] = std::stoi(strings[m]);
+			}
+		}
+
+		for (int n = 0; n < number_of_blocks; n++) {
+			HBTK::StructuredMeshBlock3D mesh;
+			int i_ext = extents[0][n];
+			int j_ext = extents[1][n];
+			int k_ext = (dimensions == 3 ? extents[2][n] : 1);
+			mesh.set_extent(i_ext, j_ext, k_ext);
+
+			for (int k = 0; k < k_ext; k++) {
+				for (int j = 0; j < j_ext; j++) {
+					for (int i = 0; i < i_ext; i++) {
+						std::getline(input_stream, this_line);
+						line_number++;
+						auto coord = mesh.coord(i, j, k);
+						std::get<0>(coord) = std::stod(this_line);
+					}
+				}
+			}
+			for (int k = 0; k < k_ext; k++) {
+				for (int j = 0; j < j_ext; j++) {
+					for (int i = 0; i < i_ext; i++) {
+						std::getline(input_stream, this_line);
+						line_number++;
+						auto coord = mesh.coord(i, j, k);
+						std::get<1>(coord) = std::stod(this_line);
+					}
+				}
+			}
+			if (dimensions == 3) {
+				for (int k = 0; k < k_ext; k++) {
+					for (int j = 0; j < j_ext; j++) {
+						for (int i = 0; i < i_ext; i++) {
+							std::getline(input_stream, this_line);
+							line_number++;
+							auto coord = mesh.coord(i, j, k);
+							std::get<1>(coord) = std::stod(this_line);
+						}
+					}
+				}
+				for (auto & function : m_mesh_3d_functions) {
+					if (!function(mesh)) break;
+				}
+			}
+			else {
+				HBTK::StructuredMeshBlock2D mesh2d;
+				mesh2d.set_extent(i_ext, j_ext);
+				for (int i = 0; i < i_ext; i++) {
+					for (int j = 0; j < j_ext; j++) {
+						double x, y, z;
+						std::tie(x, y, z) = mesh.coord(i, j, 0);
+						mesh2d.coord(i, j) = std::tie(x, y);
+					}
+				}
+				for (auto & function : m_mesh_2d_functions) {
+					if (!function(mesh2d)) break;
+				}
+			}
+
+
+
 		} // End iteration over blocks.
 	}
 	catch (...) { throw line_number; }

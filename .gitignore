@@ -263,3 +263,4 @@ __pycache__/
 # Doxygen generated documentation
 doc/html/
 doc/latex/
+/Demo/Plot3D_converter_demo/Plot3D_converter_demo/TestFiles/ascci_3d.p3d
