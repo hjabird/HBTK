@@ -29,9 +29,9 @@ SOFTWARE.
 
 namespace HBTK {
 	StructuredMeshBlock3D::StructuredMeshBlock3D()
-		: i_extent(-1),
-		j_extent(-1),
-		k_extent(-1)
+		: m_i_extent(-1),
+		m_j_extent(-1),
+		m_k_extent(-1)
 	{
 	}
 
@@ -47,9 +47,12 @@ namespace HBTK {
 		assert(j >= 0);
 		assert(k >= 0);
 		int size = i * j * k;
-		m_x_coords.resize(i);
-		m_y_coords.resize(j);
-		m_z_coords.resize(k);
+		m_i_extent = i;
+		m_j_extent = j;
+		m_k_extent = k;
+		m_x_coords.resize(size);
+		m_y_coords.resize(size);
+		m_z_coords.resize(size);
 	}
 
 	void StructuredMeshBlock3D::set_coord(int i, int j, int k, double x, double y, double z)
@@ -61,24 +64,24 @@ namespace HBTK {
 
 	std::tuple<int, int, int> StructuredMeshBlock3D::extent()
 	{
-		int i = m_x_coords.size();
-		int j = m_y_coords.size();
-		int k = m_z_coords.size();
+		int i = m_i_extent;
+		int j = m_j_extent;
+		int k = m_k_extent;
 		return std::make_tuple(i, j, k);
 	}
 
-	std::tuple<double, double, double>& StructuredMeshBlock3D::coord(int i, int j, int k)
+	std::tuple<double&, double&, double&> StructuredMeshBlock3D::coord(int i, int j, int k)
 	{
 		assert(check_valid_idx(i, j, k));
 		int lin_idx = generate_linear_index(i, j, k);
-		return std::make_tuple(m_x_coords[lin_idx], m_y_coords[lin_idx], m_z_coords[lin_idx]);
+		return std::forward_as_tuple(m_x_coords[lin_idx], m_y_coords[lin_idx], m_z_coords[lin_idx]);
 	}
 
 
 	bool StructuredMeshBlock3D::check_valid_idx(int i, int j, int k)
 	{
 		if ((i >= 0) && (j >= 0) && (k >= 0) &&
-			(i < i_extent) && (j < j_extent) && (k < k_extent)) {
+			(i < m_i_extent) && (j < m_j_extent) && (k < m_k_extent)) {
 			return true;
 		}
 		else {
@@ -89,7 +92,7 @@ namespace HBTK {
 
 	int StructuredMeshBlock3D::generate_linear_index(int i, int j, int k)
 	{
-		int lin_idx = i + j * i_extent + k * i_extent * j_extent;
+		int lin_idx = i + j * m_i_extent + k * m_i_extent * m_j_extent;
 		return lin_idx;
 	}
 }

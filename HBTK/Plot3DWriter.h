@@ -14,6 +14,7 @@ namespace HBTK {
 			~Plot3DWriter();
 
 			bool write_binary;
+			bool no_block_count;
 			bool three_dimensional;
 
 			void add_mesh_block2d(HBTK::StructuredMeshBlock2D mesh);

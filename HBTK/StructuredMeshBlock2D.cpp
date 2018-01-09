@@ -26,11 +26,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 #include <cassert>
+#include <vector>
+
+#include "Generators.h"
 
 namespace HBTK {
 	StructuredMeshBlock2D::StructuredMeshBlock2D()
-		: i_extent(-1),
-		j_extent(-1)
+		: m_i_extent(-1),
+		m_j_extent(-1)
 	{
 	}
 
@@ -45,8 +48,10 @@ namespace HBTK {
 		assert(i >= 0);
 		assert(j >= 0);
 		int size = i * j;
-		m_x_coords.resize(i);
-		m_y_coords.resize(j);
+		m_i_extent = i;
+		m_j_extent = j;
+		m_x_coords.resize(size);
+		m_y_coords.resize(size);
 	}
 
 	void StructuredMeshBlock2D::set_coord(int i, int j, double x, double y)
@@ -58,23 +63,45 @@ namespace HBTK {
 
 	std::tuple<int, int> StructuredMeshBlock2D::extent()
 	{
-		int i = m_x_coords.size();
-		int j = m_y_coords.size();
+		int i = m_i_extent;
+		int j = m_j_extent;
 		return std::make_tuple(i, j);
 	}
 
-	std::tuple<double, double>& StructuredMeshBlock2D::coord(int i, int j)
+	std::tuple<double&, double&> StructuredMeshBlock2D::coord(int i, int j)
 	{
 		assert(check_valid_idx(i, j));
 		int lin_idx = generate_linear_index(i, j);
-		return std::make_tuple(m_x_coords[lin_idx], m_y_coords[lin_idx]);
+		return std::forward_as_tuple(m_x_coords[lin_idx], m_y_coords[lin_idx]);
+	}
+
+	HBTK::StructuredMeshBlock3D StructuredMeshBlock2D::extrude_to_3D(std::vector<double> z_values)
+	{
+		assert((int)z_values.size() > 1);
+
+		std::sort(z_values.begin(), z_values.end());
+		HBTK::StructuredMeshBlock3D mesh3d;
+		int k_dim = (int)z_values.size();
+
+		mesh3d.set_extent(m_i_extent, m_j_extent, k_dim);
+		double x, y, z;
+		for (int i = 0; i < m_i_extent; i++) {
+			for (int j = 0; j < m_j_extent; j++) {
+				std::tie(x, y) = coord(i, j);
+				for (int k = 0; k < k_dim; k++) {
+					z = z_values[k];
+					mesh3d.coord(i, j, k) = std::tie(x, y, z);
+				}
+			}
+		}
+		return mesh3d;
 	}
 
 
 	bool StructuredMeshBlock2D::check_valid_idx(int i, int j)
 	{
 		if ((i >= 0) && (j >= 0) &&
-			(i < i_extent) && (j < j_extent)) {
+			(i < m_i_extent) && (j < m_j_extent)) {
 			return true;
 		}
 		else {
@@ -85,7 +112,7 @@ namespace HBTK {
 
 	int StructuredMeshBlock2D::generate_linear_index(int i, int j)
 	{
-		int lin_idx = i + j * i_extent;
+		int lin_idx = i + j * m_i_extent;
 		return lin_idx;
 	}
 }

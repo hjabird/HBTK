@@ -28,6 +28,8 @@ SOFTWARE.
 #include <array>
 #include <vector>
 
+#include "StructuredMeshBlock3D.h"
+
 namespace HBTK {
 	class StructuredMeshBlock2D
 	{
@@ -43,11 +45,14 @@ namespace HBTK {
 		// Get extent as tuple;
 		std::tuple<int, int> extent();
 		// Get a coordinate for a node on the grid (given as RHS val).
-		std::tuple<double, double>&
+		std::tuple<double&, double&>
 			coord(int i, int j);
 
+		// Extrude a 2D mesh into a 3D mesh.
+		HBTK::StructuredMeshBlock3D extrude_to_3D(std::vector<double> z_values);
+
 	private:
-		int i_extent, j_extent;
+		int m_i_extent, m_j_extent;
 		std::vector<double> m_x_coords;
 		std::vector<double> m_y_coords;
 

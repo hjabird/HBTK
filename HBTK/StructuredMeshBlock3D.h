@@ -44,11 +44,11 @@ namespace HBTK {
 		// Extent as tuple
 		std::tuple<int, int, int> extent();
 		// Get a coordinate for a node on the grid (given as RHS val).
-		std::tuple<double, double, double>&
+		std::tuple<double&, double&, double&>
 			coord(int i, int j, int k);
 
 	private:
-		int i_extent, j_extent, k_extent;
+		int m_i_extent, m_j_extent, m_k_extent;
 		std::vector<double> m_x_coords;
 		std::vector<double> m_y_coords;
 		std::vector<double> m_z_coords;

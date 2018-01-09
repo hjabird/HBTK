@@ -6,6 +6,9 @@
 #include <fstream>
 
 HBTK::Plot3D::Plot3DParser::Plot3DParser()
+	: single_block(false),
+	parse_as_binary(true),
+	number_of_dimensions(-1)
 {
 }
 
@@ -69,10 +72,10 @@ void HBTK::Plot3D::Plot3DParser::parse_2d_binary(std::ifstream & input_stream, s
 	struct double_buffer {
 		double value;
 	} double_buffer;
+#pragma pack(1)
 	struct int_buffer {
 		int value;
 	} int_buffer;
-#pragma pack(pop)
 
 	if (single_block) {
 		number_of_blocks = 1;
@@ -80,7 +83,7 @@ void HBTK::Plot3D::Plot3DParser::parse_2d_binary(std::ifstream & input_stream, s
 	else {
 		unpack_binary_to_struct(input_stream, int_buffer);
 		number_of_blocks = int_buffer.value;
-		if (number_of_blocks < 1) throw - 1;
+		if (number_of_blocks < 1) throw -1;
 	}
 	i_extent.resize(number_of_blocks);
 	j_extent.resize(number_of_blocks);
@@ -137,7 +140,9 @@ void HBTK::Plot3D::Plot3DParser::parse_2d_ascii(std::ifstream & input_stream, st
 
 		for (int n = 0; n < number_of_blocks; n++) {
 			std::getline(input_stream, this_line);
+			line_number++;
 			auto strings = tokenise(this_line);
+			if (strings.size() < 2) throw line_number;
 			i_extent[n] = std::stoi(strings[0]);
 			j_extent[n] = std::stoi(strings[1]);
 		}
