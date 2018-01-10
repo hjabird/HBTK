@@ -110,7 +110,7 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 		for (int k = 0; k < std::get<2>(m_meshes_3d[block].extent()); k++) {
 			for (int j = 0; j < std::get<1>(m_meshes_3d[block].extent()); j++) {
 				for (int i = 0; i < std::get<0>(m_meshes_3d[block].extent()); i++) {
-					double val = std::get<2>(m_meshes_3d[block].coord(i, j, k));
+					double val = std::get<1>(m_meshes_3d[block].coord(i, j, k));
 					if (write_binary) {
 						output_stream.write(reinterpret_cast<char*>(&val), sizeof(val));
 					}
@@ -159,6 +159,6 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 			}
 		}
 	}
-
+	output_stream.flush();
 	return;
 }

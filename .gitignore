@@ -264,3 +264,6 @@ __pycache__/
 doc/html/
 doc/latex/
 /Demo/Plot3D_converter_demo/Plot3D_converter_demo/TestFiles/ascci_3d.p3d
+/Demo/Plot3D_converter_demo/Plot3D_converter_demo/TestFiles/naca0004_fine_g.xyz
+/Demo/Plot3D_converter_demo/Plot3D_converter_demo/TestFiles/naca0004_bin2.xyz
+/Demo/Plot3D_converter_demo/Plot3D_converter_demo/TestFiles/naca0004_bin.xyz

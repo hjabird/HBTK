@@ -166,25 +166,24 @@ void HBTK::Plot3D::Plot3DParser::parse_ascii(std::ifstream & input_stream, std::
 			int i_ext = extents[0][n];
 			int j_ext = extents[1][n];
 			int k_ext = (dimensions == 3 ? extents[2][n] : 1);
+			double tmp_val;
 			mesh.set_extent(i_ext, j_ext, k_ext);
 
 			for (int k = 0; k < k_ext; k++) {
 				for (int j = 0; j < j_ext; j++) {
 					for (int i = 0; i < i_ext; i++) {
-						std::getline(input_stream, this_line);
-						line_number++;
+						input_stream >> tmp_val;
 						auto coord = mesh.coord(i, j, k);
-						std::get<0>(coord) = std::stod(this_line);
+						std::get<0>(coord) = tmp_val;
 					}
 				}
 			}
 			for (int k = 0; k < k_ext; k++) {
 				for (int j = 0; j < j_ext; j++) {
 					for (int i = 0; i < i_ext; i++) {
-						std::getline(input_stream, this_line);
-						line_number++;
+						input_stream >> tmp_val;
 						auto coord = mesh.coord(i, j, k);
-						std::get<1>(coord) = std::stod(this_line);
+						std::get<1>(coord) = tmp_val;
 					}
 				}
 			}
@@ -192,10 +191,9 @@ void HBTK::Plot3D::Plot3DParser::parse_ascii(std::ifstream & input_stream, std::
 				for (int k = 0; k < k_ext; k++) {
 					for (int j = 0; j < j_ext; j++) {
 						for (int i = 0; i < i_ext; i++) {
-							std::getline(input_stream, this_line);
-							line_number++;
+							input_stream >> tmp_val;
 							auto coord = mesh.coord(i, j, k);
-							std::get<1>(coord) = std::stod(this_line);
+							std::get<2>(coord) = tmp_val;
 						}
 					}
 				}
@@ -275,7 +273,7 @@ void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std:
 				for (int j = 0; j < j_ext; j++) {
 					for (int i = 0; i < i_ext; i++) {
 						unpack_binary_to_struct(input_stream, double_buffer);
-						std::get<0>(mesh.coord(i, j, k)) = double_buffer.value;
+						std::get<1>(mesh.coord(i, j, k)) = double_buffer.value;
 					}
 				}
 			}
@@ -284,7 +282,7 @@ void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std:
 					for (int j = 0; j < j_ext; j++) {
 						for (int i = 0; i < i_ext; i++) {
 							unpack_binary_to_struct(input_stream, double_buffer);
-							std::get<0>(mesh.coord(i, j, k)) = double_buffer.value;
+							std::get<2>(mesh.coord(i, j, k)) = double_buffer.value;
 						}
 					}
 				}
@@ -312,3 +310,5 @@ void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std:
 
 	return;
 }
+
+
