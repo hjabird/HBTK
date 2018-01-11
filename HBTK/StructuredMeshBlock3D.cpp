@@ -111,7 +111,9 @@ namespace HBTK {
 		for (idx[0] = 0; idx[0] < m_extents[0]; idx[0]++) {
 			for (idx[1] = 0; idx[1] < m_extents[1]; idx[1]++) {
 				for (idx[2] = 0; idx[2] < m_extents[2]; idx[2]++) {
-					std::array<int, 3> idx_new = idx;
+					std::array<int, 3> idx_new;
+					// To satify the right hand rule, the unswitched axis changes dir.
+					for (int l = 0; l < 3; l++) { idx_new[l] = m_extents[l] - idx[l] - 1; }
 					idx_new[first_idx] = idx[second_idx];
 					idx_new[second_idx] = idx[first_idx];
 					lin_idx_new = generate_linear_index(
