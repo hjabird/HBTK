@@ -419,7 +419,6 @@ void HBTK::Gmsh::GmshParser::parse_node_line_binary(std::ifstream & input_stream
 		int tag;
 		double x, y, z;
 	} node_data;
-#pragma pack(pop)
 
 	unpack_binary_to_struct(input_stream, node_data);
 	
@@ -467,7 +466,6 @@ void HBTK::Gmsh::GmshParser::parse_elem_binary_spec(std::ifstream & input_stream
 	struct info_set {
 		int ele_type, num_to_follow, num_phy_tags;
 	} bs;
-	#pragma pack(pop)
 
 	unpack_binary_to_struct(input_stream, bs);
 
