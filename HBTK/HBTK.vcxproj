@@ -135,6 +135,8 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="ElementGoemetry.h" />
     <ClInclude Include="ElementNodes.h" />
+    <ClInclude Include="FortranSequentialInputStream.h" />
+    <ClInclude Include="FortranSequentialOutputStream.h" />
     <ClInclude Include="GaussianQuadrature.h" />
     <ClInclude Include="GaussLegendre.h" />
     <ClInclude Include="Generators.h" />
@@ -157,6 +159,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Checks.cpp" />
+    <ClCompile Include="FortranSequentialInputStream.cpp" />
+    <ClCompile Include="FortranSequentialOutputStream.cpp" />
     <ClCompile Include="GaussianQuadrature.cpp" />
     <ClCompile Include="GaussLegendre.cpp" />
     <ClCompile Include="Generators.cpp" />

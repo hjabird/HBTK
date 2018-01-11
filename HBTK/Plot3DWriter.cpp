@@ -3,6 +3,8 @@
 
 #include <cassert>
 
+#include "FortranSequentialOutputStream.h"
+
 HBTK::Plot3D::Plot3DWriter::Plot3DWriter()
 	: write_binary(true),
 	no_block_count(false),
@@ -28,27 +30,35 @@ void HBTK::Plot3D::Plot3DWriter::add_mesh_block3d(HBTK::StructuredMeshBlock3D me
 
 bool HBTK::Plot3D::Plot3DWriter::write(std::string path)
 {
-	std::ofstream output_stream(path);
+	std::ofstream output_stream(path, std::ios::binary);
 	return write(output_stream);
 }
 
 
 bool HBTK::Plot3D::Plot3DWriter::write(std::ofstream & output_stream)
 {
+	HBTK::FortranSequentialOutputStream fortran_output;
 	if (!output_stream) { return false; }
 	else {
 		int blocks = (three_dimensional ? (int)m_meshes_3d.size() : (int)m_meshes_2d.size());
 		if (!no_block_count) {
 			if (write_binary) { 
+				fortran_output.record_start(output_stream);
 				output_stream.write(reinterpret_cast<char*>(&blocks), sizeof(blocks));
+				fortran_output.record_end(output_stream);
 			}
 			else { output_stream << blocks << "\n"; }
 		}
+		if(write_binary) fortran_output.record_start(output_stream);
 		for (int n = 0; n < blocks; n++) {
 			write_block_extent(n, output_stream);
 		}
+		if (write_binary) fortran_output.record_end(output_stream);
+
 		for (int n = 0; n < blocks; n++) {
+			if (write_binary) fortran_output.record_start(output_stream);
 			write_nodes(n, output_stream);
+			if (write_binary) fortran_output.record_end(output_stream);
 		}
 	}
 	return true;
@@ -92,7 +102,9 @@ void HBTK::Plot3D::Plot3DWriter::write_block_extent(int block, std::ofstream & o
 void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_stream)
 {
 	assert(block >= 0);
+	int pos, count = 0;
 	if (three_dimensional) {
+		pos = output_stream.tellp();
 		assert(block < (int)m_meshes_3d.size());
 		for (int k = 0; k < std::get<2>(m_meshes_3d[block].extent()); k++) {
 			for (int j = 0; j < std::get<1>(m_meshes_3d[block].extent()); j++) {
@@ -104,6 +116,7 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 					else {
 						output_stream << std::scientific << val << "\n";
 					}
+					count++;
 				}
 			}
 		}
@@ -117,9 +130,11 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 					else {
 						output_stream << std::scientific << val << "\n";
 					}
+					count++;
 				}
 			}
 		}
+		pos = output_stream.tellp();
 		for (int k = 0; k < std::get<2>(m_meshes_3d[block].extent()); k++) {
 			for (int j = 0; j < std::get<1>(m_meshes_3d[block].extent()); j++) {
 				for (int i = 0; i < std::get<0>(m_meshes_3d[block].extent()); i++) {
@@ -130,10 +145,12 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 					else {
 						output_stream << std::scientific << val << "\n";
 					}
+					count++;
 				}
 			}
 		}
-	}
+		pos = output_stream.tellp();
+	} // End If three dimensional
 	else {
 		assert(block < (int)m_meshes_2d.size());
 		for (int j = 0; j < std::get<1>(m_meshes_2d[block].extent()); j++) {

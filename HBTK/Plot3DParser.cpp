@@ -5,6 +5,8 @@
 #include <string>
 #include <fstream>
 
+#include "FortranSequentialInputStream.h"
+
 HBTK::Plot3D::Plot3DParser::Plot3DParser()
 	: single_block(false),
 	parse_as_binary(true),
@@ -224,6 +226,7 @@ void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std:
 {
 	assert(dimensions > 1);
 	assert(dimensions <= 3);
+	HBTK::FortranSequentialInputStream fortran_input;
 	int number_of_blocks;
 	std::vector<std::vector<int>> extents;
 	extents.resize(dimensions);
@@ -240,18 +243,22 @@ void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std:
 		number_of_blocks = 1;
 	}
 	else {
+		fortran_input.record_start(input_stream);
 		unpack_binary_to_struct(input_stream, int_buffer);
 		number_of_blocks = int_buffer.value;
+		fortran_input.record_end(input_stream);
 		if (number_of_blocks < 1) throw - 1;
 	}
 	for (auto &extent : extents) { extent.resize(number_of_blocks); }
 
+	fortran_input.record_start(input_stream);
 	for (int n = 0; n < number_of_blocks; n++) {
 		for (int m = 0; m < dimensions; m++) {
 			unpack_binary_to_struct(input_stream, int_buffer);
 			extents[m][n] = int_buffer.value;
 		}
 	}
+	fortran_input.record_end(input_stream);
 
 	try {
 		for (int n = 0; n < number_of_blocks; n++) {
@@ -261,6 +268,7 @@ void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std:
 			int k_ext = (dimensions == 3 ? extents[2][n] : 1);
 			mesh.set_extent(i_ext, j_ext, k_ext);
 
+			fortran_input.record_start(input_stream);
 			for (int k = 0; k < k_ext; k++) {
 				for (int j = 0; j < j_ext; j++) {
 					for (int i = 0; i < i_ext; i++) {
@@ -304,8 +312,9 @@ void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std:
 					if (!function(mesh2d)) break;
 				}
 			}
-		} // End try
-	}
+			fortran_input.record_end(input_stream);
+		} // End For over mesh blocks
+	} // End try
 	catch(...) { throw 1; }
 
 	return;

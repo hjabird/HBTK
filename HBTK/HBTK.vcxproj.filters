@@ -90,6 +90,12 @@
     <ClInclude Include="Plot3DWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FortranSequentialInputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FortranSequentialOutputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -129,6 +135,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Plot3DWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FortranSequentialInputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FortranSequentialOutputStream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
