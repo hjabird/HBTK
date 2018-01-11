@@ -2,6 +2,7 @@
 #include "Plot3DWriter.h"
 
 #include <cassert>
+#include <iomanip>
 
 #include "FortranSequentialOutputStream.h"
 
@@ -102,9 +103,7 @@ void HBTK::Plot3D::Plot3DWriter::write_block_extent(int block, std::ofstream & o
 void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_stream)
 {
 	assert(block >= 0);
-	int pos, count = 0;
 	if (three_dimensional) {
-		pos = output_stream.tellp();
 		assert(block < (int)m_meshes_3d.size());
 		for (int k = 0; k < std::get<2>(m_meshes_3d[block].extent()); k++) {
 			for (int j = 0; j < std::get<1>(m_meshes_3d[block].extent()); j++) {
@@ -114,9 +113,8 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 						output_stream.write(reinterpret_cast<char*>(&val), sizeof(val));
 					}
 					else {
-						output_stream << std::scientific << val << "\n";
+						output_stream << std::setprecision(15) << std::scientific << val << "\n";
 					}
-					count++;
 				}
 			}
 		}
@@ -128,13 +126,11 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 						output_stream.write(reinterpret_cast<char*>(&val), sizeof(val));
 					}
 					else {
-						output_stream << std::scientific << val << "\n";
+						output_stream << std::setprecision(15) << std::scientific << val << "\n";
 					}
-					count++;
 				}
 			}
 		}
-		pos = output_stream.tellp();
 		for (int k = 0; k < std::get<2>(m_meshes_3d[block].extent()); k++) {
 			for (int j = 0; j < std::get<1>(m_meshes_3d[block].extent()); j++) {
 				for (int i = 0; i < std::get<0>(m_meshes_3d[block].extent()); i++) {
@@ -143,13 +139,11 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 						output_stream.write(reinterpret_cast<char*>(&val), sizeof(val));
 					}
 					else {
-						output_stream << std::scientific << val << "\n";
+						output_stream << std::setprecision(15) << std::scientific << val << "\n";
 					}
-					count++;
 				}
 			}
 		}
-		pos = output_stream.tellp();
 	} // End If three dimensional
 	else {
 		assert(block < (int)m_meshes_2d.size());
@@ -160,7 +154,7 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 					output_stream.write(reinterpret_cast<char*>(&val), sizeof(val));
 				}
 				else {
-					output_stream << std::scientific << val << "\n";
+					output_stream << std::setprecision(15) << std::scientific << val << "\n";
 				}
 			}
 		}
@@ -171,7 +165,7 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 					output_stream.write(reinterpret_cast<char*>(&val), sizeof(val));
 				}
 				else {
-					output_stream << std::scientific << val << "\n";
+					output_stream << std::setprecision(15) << std::scientific << val << "\n";
 				}
 			}
 		}

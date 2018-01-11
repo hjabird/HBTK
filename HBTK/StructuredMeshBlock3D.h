@@ -47,14 +47,24 @@ namespace HBTK {
 		std::tuple<double&, double&, double&>
 			coord(int i, int j, int k);
 
+		// Swaps internal array coordinates.
+		// Eg swap_..._ij turns 200x100x50 -> 100x200x50 
+		// whilst keeping the grid coordinates identical.
+		void swap_internal_coordinates_ij();
+		void swap_internal_coordinates_ik();
+		void swap_internal_coordinates_jk();
+
 	private:
-		int m_i_extent, m_j_extent, m_k_extent;
-		std::vector<double> m_x_coords;
-		std::vector<double> m_y_coords;
-		std::vector<double> m_z_coords;
+		// Array of {i_extent, j_extent, k_extent}
+		std::array<int, 3> m_extents;
+		// Array of {x_coords, y_coords, z_coords}
+		std::array<std::vector<double>, 3> m_coords;
+
+		void swap_block_coordinates(int first_idx, int second_idx);
 
 		bool check_valid_idx(int i, int j, int k);
 		int generate_linear_index(int i, int j, int k);
+		constexpr int generate_linear_index(int i, int j, int k, int i_ext, int j_ext, int k_ext);
 	};
 }
 
