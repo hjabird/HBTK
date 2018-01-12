@@ -512,7 +512,7 @@ namespace HBTK {
 
 	std::string GnuPlot::translate_matlab_linespec(std::string line_spec)
 	{
-		int length = line_spec.size();
+		int length = (int)line_spec.size();
 		std::string colour = "black";
 		std::string marker = "0";
 		std::string dashes = "solid";

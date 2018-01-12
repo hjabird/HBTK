@@ -37,19 +37,19 @@ namespace HBTK {
 	std::vector<double> linspace(double start, double end);
 	std::vector<double> linspace(double start, double end, int number_of_points);
 	template< typename Ty >
-	void linspace(double start, double end, int number_of_points, Ty & target_indexible);
+	void linspace(double start, double end, int number_of_points, Ty & target_indexable);
 
 	std::vector<double> logspace(double start_power, double end_power);
 	std::vector<double> logspace(double start_power, double end_power, int number_of_points);
 	std::vector<double> logspace(double start_power, double end_power, int number_of_points, double base);
 	template< typename Ty >
-	void logspace(double start_power, double end_power, int number_of_points, double base, Ty & target_indexible);
+	void logspace(double start_power, double end_power, int number_of_points, double base, Ty & target_indexable);
 
 	std::vector<double> geomspace(double start, double end);
 	std::vector<double> geomspace(double start, double end, int number_of_points);
 	std::vector<double> geomspace(double start, double end, int number_of_points, double base);
 	template< typename Ty >
-	void geomspace(double start, double end, int number_of_points, double base, Ty & target_indexible);
+	void geomspace(double start, double end, int number_of_points, double base, Ty & target_indexable);
 
 	std::vector<double> uniform(double value, int number_of_points);
 	template<typename TyStore, typename TyVal>
@@ -62,50 +62,66 @@ namespace HBTK // Definitions
 {
 
 	template<typename Ty>
-	void linspace(double start, double end, int number_of_points, Ty & target_indexible)
+	void linspace(double start, double end, int number_of_points, Ty & target_indexable)
 	{
+		using TyIdx = decltype(target_indexable[0]);
+		static_assert(std::is_floating_point<std::remove_reference<TyIdx>::type>::value,
+			"Output container must hold floating points");
+		static_assert(std::is_reference<TyIdx>::value,
+			"target_indexable[idx] must be something you can assign to.");
 		assert(HBTK::check_finite(start));
 		assert(HBTK::check_finite(end));
 		assert(number_of_points > 0);
-		//decltype(target_indexible[int])
-		static_assert(std::is_floating_point<double>::value);
 		for (int idx = 0; idx < number_of_points; idx++) {
-			target_indexible[idx] = start + idx * (end - start) / (number_of_points - 1);
+			target_indexable[idx] = start + idx * (end - start) / (number_of_points - 1);
 		}
 		return;
 	}
 
 	template<typename Ty>
-	void logspace(double start, double end, int number_of_points, double base, Ty & target_indexible)
+	void logspace(double start, double end, int number_of_points, double base, Ty & target_indexable)
 	{
+		using TyIdx = decltype(target_indexable[0]);
+		static_assert(std::is_floating_point<std::remove_reference<TyIdx>::type>::value,
+				"Output container must hold floating points");
+		static_assert(std::is_reference<TyIdx>::value,
+			"target_indexable[idx] must be something you can assign to.");
 		assert(HBTK::check_finite(start));
 		assert(HBTK::check_finite(end));
 		assert(number_of_points > 0);
 
-		//static_assert(std::is_floating_point<decltype(target_indexible[int])>::value);
 		for (int idx = 0; idx < number_of_points; idx++) {
 			auto linear_pos = start + idx * (end - start) / (number_of_points - 1);
-			target_indexible[idx] = pow(base, linear_pos);
+			target_indexable[idx] = pow(base, linear_pos);
 		}
 		return;
 	}
 
 	template<typename Ty>
-	void geomspace(double start, double end, int number_of_points, double base, Ty & target_indexible)
+	void geomspace(double start, double end, int number_of_points, double base, Ty & target_indexable)
 	{
+		using TyIdx = decltype(target_indexable[0]);
+		static_assert(std::is_floating_point<std::remove_reference<TyIdx>::type>::value,
+			"Output container must hold floating points");
+		static_assert(std::is_reference<TyIdx>::value,
+			"target_indexable[idx] must be something you can assign to.");
 		assert(HBTK::check_finite(start) && (start > 0));
 		assert(HBTK::check_finite(end) && (end > 0));
 		assert(number_of_points > 0);
 		
 		auto log_start = log(start) / log(base);
 		auto log_end = log(end) / log(base);
-		logspace(log_start, log_end, number_of_points, base, target_indexible);
+		logspace(log_start, log_end, number_of_points, base, target_indexable);
 		return;
 	}
 
 	template<typename TyStore, typename TyVal>
 	void uniform(TyStore & target_indexable, TyVal uniform_value)
 	{
+		using TyIdx = decltype(target_indexable[0]);
+		static_assert(std::is_reference<TyIdx>::value,
+			"target_indexable[idx] must be something you can assign to.");
+
 		for (int idx = 0; idx < (int) target_indexable.size(); idx++) {
 			target_indexable[idx] = uniform_value;
 		}
