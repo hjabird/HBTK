@@ -4,7 +4,7 @@ StructuredMeshBlock3D.h
 
 A class to represent a 3D structured mesh.
 
-Copyright 2017 HJA Bird
+Copyright 2018 HJA Bird
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

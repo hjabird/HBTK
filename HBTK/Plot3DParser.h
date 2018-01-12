@@ -4,7 +4,7 @@ Plot3DParser.h
 
 Parse a Plot3D file.
 
-Copyright 2017 HJA Bird
+Copyright 2018 HJA Bird
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
