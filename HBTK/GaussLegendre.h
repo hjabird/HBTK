@@ -83,7 +83,7 @@ namespace HBTK {
 	{
 		Ty m;
 		Ty z, z1;
-		Ty p1, p2, p3, pp;
+		Ty p1, p2, p3, pp = 0;
 		int idxO, idxI;
 
 #pragma warning(suppress: 4244)

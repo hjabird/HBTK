@@ -45,7 +45,7 @@ std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_jacobi(int num_
 	auto A = [=](int k) {return 2 * k*(k + alpha + beta)*(2 * k + alpha + beta - 2); };
 	auto B = [=](int k) {return 2 * k + alpha + beta - 1; };
 	auto C = [=](int k) {return (2 * k + alpha + beta)*(2 * k + alpha + beta - 2); };
-	auto D = [=](int k) {return alpha * alpha - beta * beta; };
+	auto D = [=](int k) {(void)k;  return alpha * alpha - beta * beta; };
 	auto E = [=](int k) {return 2 * (k + alpha - 1)*(k + beta - 1)*(2 * k + alpha + beta); };
 
 	auto a_i = [=](int k) {return B(k) * C(k) / A(k); };
@@ -70,7 +70,7 @@ std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_legendre_from_j
 {
 	assert(num_terms >= 0);
 	auto a_i = [](int k)->double {return (2 * k - 1.0) / k; };
-	auto b_i = [](int k)->double {return 0.0; };
+	auto b_i = [](int k)->double {(void)k; return 0.0; };
 	auto c_i = [](int k)->double {return (k - 1.0) / k; };
 
 	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms);

@@ -83,7 +83,7 @@ namespace HBTK {
 		std::vector<std::string> tokenise(const std::string & input_string)
 		{
 			std::vector<std::string> tokens;
-			int token_begin, token_end, idx, string_length;
+			int token_end, idx, string_length, token_begin = -1;
 			bool in_word = false;
 
 			string_length = input_string.length();
