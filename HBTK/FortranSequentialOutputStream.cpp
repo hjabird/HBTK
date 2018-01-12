@@ -46,7 +46,7 @@ void HBTK::FortranSequentialOutputStream::record_start(std::ofstream & output_st
 	// Skip over the header - we'll fill that in once we've written the record.
 	char buffer[sizeof(int)];
 	output_stream.write(buffer, sizeof(int));
-	m_last_record_start = output_stream.tellp();
+	m_last_record_start = (int)output_stream.tellp();
 	return;
 }
 
@@ -54,7 +54,7 @@ void HBTK::FortranSequentialOutputStream::record_start(std::ofstream & output_st
 void HBTK::FortranSequentialOutputStream::record_end(std::ofstream & output_stream)
 {
 	assert(m_last_record_start != -1);
-	int record_end = output_stream.tellp();
+	int record_end = (int)output_stream.tellp();
 	int record_length = record_end - m_last_record_start;
 	output_stream.seekp(m_last_record_start - sizeof(int));
 	output_stream.write(reinterpret_cast<char*>(&record_length), sizeof(record_length));

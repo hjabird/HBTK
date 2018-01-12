@@ -48,7 +48,7 @@ void HBTK::FortranSequentialInputStream::record_start(std::ifstream & input_stre
 	char buffer[sizeof(m_record_length)];
 	input_stream.read(buffer, sizeof(m_record_length));
 	m_record_length = *reinterpret_cast<int*>(buffer);
-	m_last_record_start = input_stream.tellg();
+	m_last_record_start = (int)input_stream.tellg();
 	if (m_record_length < 0) { throw m_record_length; }
 	return;
 }
@@ -58,7 +58,7 @@ void HBTK::FortranSequentialInputStream::record_end(std::ifstream & input_stream
 	assert(m_record_length != -1);
 	assert(m_last_record_start != -1);
 
-	int pos = input_stream.tellg();
+	int pos = (int)input_stream.tellg();
 	int end_bytes;
 	char buffer[sizeof(end_bytes)];
 	input_stream.read(buffer, sizeof(end_bytes));
