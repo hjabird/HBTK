@@ -42,11 +42,11 @@ std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_jacobi(int num_
 	assert(false); // Untested. Not ready for use.
 	assert(num_terms > 0);
 	const int n = num_terms;
-	auto A = [=](int k) {return 2 * n*(n + alpha + beta)*(2 * n + alpha + beta - 2); };
-	auto B = [=](int k) {return 2 * n + alpha + beta - 1; };
-	auto C = [=](int k) {return (2 * n + alpha + beta)*(2 * n + alpha + beta - 2); };
+	auto A = [=](int k) {return 2 * k*(k + alpha + beta)*(2 * k + alpha + beta - 2); };
+	auto B = [=](int k) {return 2 * k + alpha + beta - 1; };
+	auto C = [=](int k) {return (2 * k + alpha + beta)*(2 * k + alpha + beta - 2); };
 	auto D = [=](int k) {return alpha * alpha - beta * beta; };
-	auto E = [=](int k) {return 2 * (n + alpha - 1)*(n + beta - 1)*(2 * n + alpha + beta); };
+	auto E = [=](int k) {return 2 * (k + alpha - 1)*(k + beta - 1)*(2 * k + alpha + beta); };
 
 	auto a_i = [=](int k) {return B(k) * C(k) / A(k); };
 	auto b_i = [=](int k) {return B(k) * D(k) / A(k); };

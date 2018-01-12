@@ -364,6 +364,7 @@ void HBTK::Gmsh::GmshParser::main_parser(std::ifstream & input_stream, std::ofst
 
 HBTK::Gmsh::GmshParser::file_section HBTK::Gmsh::GmshParser::parse_file_section(std::string input_string, HBTK::Gmsh::GmshParser::file_section current_section)
 {
+	(void)current_section; // Make this look used - we might want to improve our error messages at some point.
 	// Expects "$<section-name>" or "$End<section-name>"
 	file_section section = invalid;
 	auto strings = tokenise(input_string);

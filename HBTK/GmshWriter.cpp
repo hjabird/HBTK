@@ -63,7 +63,7 @@ int HBTK::Gmsh::GmshWriter::add_element(int ele_type, const std::vector<int> & n
 
 int HBTK::Gmsh::GmshWriter::add_element(int ele_type, const std::vector<int> & node_ids, const std::vector<int> & phys_groups)
 {
-	assert(node_ids.size() == Gmsh::element_node_count(ele_type));
+	assert((int)node_ids.size() == Gmsh::element_node_count(ele_type));
 
 	int id = m_elements.size();
 	m_elements.emplace(id, element{ ele_type,
