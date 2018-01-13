@@ -26,6 +26,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <array>
+#include <tuple>
 #include <vector>
 
 namespace HBTK {
@@ -64,7 +65,7 @@ namespace HBTK {
 
 		bool check_valid_idx(int i, int j, int k);
 		int generate_linear_index(int i, int j, int k);
-		constexpr int generate_linear_index(int i, int j, int k, int i_ext, int j_ext, int k_ext);
+		int generate_linear_index(int i, int j, int k, int i_ext, int j_ext, int k_ext);
 	};
 }
 

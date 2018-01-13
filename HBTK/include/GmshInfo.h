@@ -34,9 +34,9 @@ namespace HBTK {
 		const std::string element_name(int ele_id);
 
 		// Returns the number of nodes of element given by ele_id
-		constexpr int element_node_count(int ele_id);
+		const int element_node_count(int ele_id);
 
 		// Returns the number of dimensions of an element given by ele_id
-		constexpr int element_dimensions(int ele_id);
+		const int element_dimensions(int ele_id);
 	}
 }

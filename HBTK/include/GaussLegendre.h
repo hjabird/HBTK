@@ -135,7 +135,7 @@ namespace HBTK {
 	constexpr void gauss_legendre(std::array<Ty, n_points> & points, 
 								  std::array<Ty, n_points> & weights) 
 	{
-		static_assert(n_points > 0);
+		static_assert(n_points > 0, "Output array have length more than 0");
 		gauss_legendre < Ty, std::array<Ty, n_points>>(n_points, points, 
 																weights);
 	}

@@ -27,6 +27,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 #include <cassert>
 #include <iomanip>
+#include <tuple>
 
 #include "FortranSequentialOutputStream.h"
 

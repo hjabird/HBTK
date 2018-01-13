@@ -65,7 +65,7 @@ namespace HBTK // Definitions
 	void linspace(double start, double end, int number_of_points, Ty & target_indexable)
 	{
 		using TyIdx = decltype(target_indexable[0]);
-		static_assert(std::is_floating_point<std::remove_reference<TyIdx>::type>::value,
+		static_assert(std::is_floating_point<typename std::remove_reference<TyIdx>::type>::value,
 			"Output container must hold floating points");
 		static_assert(std::is_reference<TyIdx>::value,
 			"target_indexable[idx] must be something you can assign to.");
@@ -82,7 +82,7 @@ namespace HBTK // Definitions
 	void logspace(double start, double end, int number_of_points, double base, Ty & target_indexable)
 	{
 		using TyIdx = decltype(target_indexable[0]);
-		static_assert(std::is_floating_point<std::remove_reference<TyIdx>::type>::value,
+		static_assert(std::is_floating_point<typename std::remove_reference<TyIdx>::type>::value,
 				"Output container must hold floating points");
 		static_assert(std::is_reference<TyIdx>::value,
 			"target_indexable[idx] must be something you can assign to.");
@@ -101,7 +101,7 @@ namespace HBTK // Definitions
 	void geomspace(double start, double end, int number_of_points, double base, Ty & target_indexable)
 	{
 		using TyIdx = decltype(target_indexable[0]);
-		static_assert(std::is_floating_point<std::remove_reference<TyIdx>::type>::value,
+		static_assert(std::is_floating_point<typename std::remove_reference<TyIdx>::type>::value,
 			"Output container must hold floating points");
 		static_assert(std::is_reference<TyIdx>::value,
 			"target_indexable[idx] must be something you can assign to.");

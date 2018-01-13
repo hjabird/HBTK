@@ -28,17 +28,9 @@ SOFTWARE.
 #include <functional>
 #include <vector>
 #include <string>
-#include <filesystem>
 #include <fstream>
 
 #include "BasicParser.h"
-
-// This namespace is liable to be problematic.
-#ifdef _MSC_VER
-namespace fs = std::experimental::filesystem::v1;
-#else
-namespace fs = std::filesystem;
-#endif
 
 namespace HBTK {
 	namespace Gmsh {

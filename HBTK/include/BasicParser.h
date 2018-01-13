@@ -26,15 +26,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 #include <vector>
 #include <string>
-#include <filesystem>
 #include <fstream>
-
-// This namespace is liable to be problematic.
-#ifdef _MSC_VER
-namespace fs = std::experimental::filesystem::v1;
-#else
-namespace fs = std::filesystem;
-#endif
 
 
 namespace HBTK {
@@ -45,9 +37,9 @@ namespace HBTK {
 		// DECLARATIONS
 
 		// Parse file at path.
-		void parse(fs::path file_path) {
+		void parse(std::string file_path) {
 			if (file_path.empty()) { throw - 1; }
-			std::ifstream inpt_stream(file_path, std::ios::binary);
+			std::ifstream inpt_stream(file_path.c_str(), std::ios::binary);
 			std::ofstream out_stream(stderr);
 			parse(inpt_stream, out_stream);
 		}

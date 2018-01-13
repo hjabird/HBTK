@@ -550,7 +550,7 @@ namespace HBTK {
 				if (idx + 1 < length && line_spec.c_str()[idx + 1] == '-') {
 					dashes = "2";//dashes
 				}
-				else if (idx + 1 < length && line_spec.c_str()[idx + 1] == '-.') {
+				else if (idx + 1 < length && line_spec.c_str()[idx + 1] == '.') {
 					dashes = "5"; //dot dashed
 				}
 				break;

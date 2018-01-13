@@ -149,7 +149,7 @@ namespace HBTK {
 	}
 
 
-	constexpr int StructuredMeshBlock3D::generate_linear_index(int i, int j, int k, int i_ext, int j_ext, int k_ext)
+	int StructuredMeshBlock3D::generate_linear_index(int i, int j, int k, int i_ext, int j_ext, int k_ext)
 	{
 		assert(i >= 0);
 		assert(j >= 0);
