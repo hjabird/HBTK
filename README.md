@@ -6,30 +6,28 @@ A C++ library containing what I consider to be 'useful stuff'. Very much liable 
 * GMSH parser (ASCII & Binary v2.2 - physical groups, nodes and elements only)
 * GMSH writer (ASCII 2.2, physical groups, nodes and elements only)
 * GMSH elements (element node coordinate (unchecked!), shape descriptions, element names)
+* Plot3D reader, Plot3D writer.
 * MATLAB-like GNUPlot interface for 2D plotting.
 
 ## Getting Started
 
-HBTK is a static library. If using Visual Studio, first, go to team explorer and pull this Repo. Probably best at this point to run the Unit tests (Test explorer - run all). 
+To build HBTK and the demo programs you'll need CMake and a modern c++ compiler (C++14 is used, so GCC 4.9, MSVC 19). 
 
-To use this in a project in VS add HBTK to your references (References, add references). Otherwise, for most of the library you'll certainly need headers (so add include path directory in the appropriate place) and you may need to link .obj / .lib files if you use certain parts of the library - ie. if you get lnk2019 in VS.
+To build the first step is to download/clone the library. Once you have it, cd to the directory.
+Set up your enviroment by using "cmake CMakeLists.txt".
 
-### Prerequisites
+If you are on Windows, you'll end up with a series of vsxproj files. To modify the library, or build any of the examples,
+open a vsxproj file in Visual Studio. Getting the Unit Tests to work with cmake is still in the TODO phase.
 
-To use the library you'll need an up to date C++ compiler (most importantly, one that's capable
-of constexprs that include loops, etc.) such as msvc 19.10 or whatever the most recent GCC or
-clang/LLVM is. Whilst there is no Windows only code intentionally in the library, the library
-has only been tested with msvc on Windows. It is suggested that Visual Studio is used - 
-especially since the unit tests use MSTest.
+If you're on Linux, you'll be able to just go for "make" and everything work.
 
-To generate the documentation you'll need Doxygen (and optionally Latex / Miktex if
-you want .pdfs).
+To generate any documentation you'll need Doxygen. I've not checked whether documentation is workiing at the moment.
+Sorry...
 
 ## Running the tests
 
-The library uses MSTest. Open the project in Visual Studio, and run all test.
-Due to the use of constexpr and templates, some of the function are (intentionally)
-evaluated at compile time. Hence, debugging can be interesting.
+The library uses MSTest. Currently getting the tests working again is on the TODO lists - most of the
+libary is lacking in unit tests sadly - I've not time to to this as thoroughly as I should.
 
 ## Authors
 
