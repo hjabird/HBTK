@@ -231,7 +231,7 @@ void HBTK::Gmsh::GmshParser::add_elem_function(std::function<bool(int, int, std:
 
 
 
-void HBTK::Gmsh::GmshParser::main_parser(std::ifstream & input_stream, std::ofstream & error_stream)
+void HBTK::Gmsh::GmshParser::main_parser(std::ifstream & input_stream, std::ostream & error_stream)
 {
 	if (!input_stream) { throw -1; }
 	if (!error_stream) { throw -1; }
@@ -609,7 +609,7 @@ bool HBTK::Gmsh::GmshParser::expecting_object_count(file_section section, int li
 }
 
 
-void HBTK::Gmsh::GmshParser::print_section_name(file_section sect, std::ofstream & output)
+void HBTK::Gmsh::GmshParser::print_section_name(file_section sect, std::ostream & output)
 {
 	switch (sect) {
 	case file_info: output << "MeshFormat"; 

@@ -60,7 +60,7 @@ void HBTK::Plot3D::Plot3DParser::add_3D_block_function(std::function<bool(HBTK::
 }
 
 
-void HBTK::Plot3D::Plot3DParser::main_parser(std::ifstream & input_stream, std::ofstream & error_stream)
+void HBTK::Plot3D::Plot3DParser::main_parser(std::ifstream & input_stream, std::ostream & error_stream)
 {
 	if (!input_stream) { throw - 1; }
 	if (!error_stream) { throw - 1; }
@@ -79,7 +79,7 @@ void HBTK::Plot3D::Plot3DParser::main_parser(std::ifstream & input_stream, std::
 }
 
 
-void HBTK::Plot3D::Plot3DParser::parse_2d(std::ifstream & input_stream, std::ofstream & error_stream)
+void HBTK::Plot3D::Plot3DParser::parse_2d(std::ifstream & input_stream, std::ostream & error_stream)
 {
 	if (parse_as_binary) {
 		parse_binary(input_stream, error_stream, 2);
@@ -89,7 +89,7 @@ void HBTK::Plot3D::Plot3DParser::parse_2d(std::ifstream & input_stream, std::ofs
 	}
 }
 
-void HBTK::Plot3D::Plot3DParser::parse_3d(std::ifstream & input_stream, std::ofstream & error_stream)
+void HBTK::Plot3D::Plot3DParser::parse_3d(std::ifstream & input_stream, std::ostream & error_stream)
 {
 	if (parse_as_binary) {
 		parse_binary(input_stream, error_stream, 3);
@@ -100,7 +100,7 @@ void HBTK::Plot3D::Plot3DParser::parse_3d(std::ifstream & input_stream, std::ofs
 }
 
 
-void HBTK::Plot3D::Plot3DParser::parse_2d_binary(std::ifstream & input_stream, std::ofstream & error_stream)
+void HBTK::Plot3D::Plot3DParser::parse_2d_binary(std::ifstream & input_stream, std::ostream & error_stream)
 {
 	int number_of_blocks;
 	std::vector<int> i_extent, j_extent;
@@ -155,7 +155,7 @@ void HBTK::Plot3D::Plot3DParser::parse_2d_binary(std::ifstream & input_stream, s
 }
 
 
-void HBTK::Plot3D::Plot3DParser::parse_ascii(std::ifstream & input_stream, std::ofstream & error_stream, int dimensions)
+void HBTK::Plot3D::Plot3DParser::parse_ascii(std::ifstream & input_stream, std::ostream & error_stream, int dimensions)
 {
 	assert(dimensions <= 3);
 	assert(dimensions >= 2);
@@ -246,7 +246,7 @@ void HBTK::Plot3D::Plot3DParser::parse_ascii(std::ifstream & input_stream, std::
 	catch (...) { throw line_number; }
 }
 
-void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std::ofstream & error_stream, int dimensions)
+void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std::ostream & error_stream, int dimensions)
 {
 	assert(dimensions > 1);
 	assert(dimensions <= 3);
