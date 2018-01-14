@@ -1,0 +1,4 @@
+add_subdirectory(Plot3D_converter_demo)
+add_subdirectory(GmshParser_demo)
+add_subdirectory(GaussLegendreTests_demo)
+
