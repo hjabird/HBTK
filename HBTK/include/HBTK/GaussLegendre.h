@@ -81,10 +81,10 @@ namespace HBTK {
 	constexpr void gauss_legendre(int n_points, TyStor & points, 
 												TyStor & weights) 
 	{
-		Ty m;
-		Ty z, z1;
-		Ty p1, p2, p3, pp = 0;
-		int idxO, idxI;
+		Ty m(0);
+		Ty z(0), z1(0);
+		Ty p1(0), p2(0), p3(0), pp(0);
+		int idxO(0), idxI(0);
 
 #pragma warning(suppress: 4244)
 		m = (n_points + 1.0) / 2.0;
