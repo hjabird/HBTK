@@ -58,16 +58,17 @@ namespace HBTK {
 			void parse_2d(std::ifstream & input_stream, std::ostream & error_stream);
 			void parse_3d(std::ifstream & input_stream, std::ostream & error_stream);
 
-			void parse_2d_binary(std::ifstream & input_stream, std::ostream & error_stream);
-			//void parse_2d_ascii(std::ifstream & input_stream, std::ofstream & error_stream);
-			//void parse_3d_binary(std::ifstream & input_stream, std::ofstream & error_stream);
-			//void parse_3d_ascii(std::ifstream & input_stream, std::ofstream & error_stream);
 			void parse_ascii(std::ifstream & input_stream, std::ostream & error_stream, int dimensions);
 			void parse_binary(std::ifstream & input_stream, std::ostream & error_stream, int dimensions);
 
-
+			// The functions to apply to the mesh blocks once they're parsed.
 			std::vector<std::function<bool(HBTK::StructuredMeshBlock2D)>> m_mesh_2d_functions;
 			std::vector<std::function<bool(HBTK::StructuredMeshBlock3D)>> m_mesh_3d_functions;
+
+			// Applies a function to the input stream, such that the function recieves 
+			// the correct i, j, k (assuming in reads the correct amount from the stream)
+			void apply_function_to_input_array(int i_ext, int j_ext, int k_ext,
+				std::function<void(int, int, int, std::ifstream&)>, std::ifstream&);
 		};
 	}
 }
