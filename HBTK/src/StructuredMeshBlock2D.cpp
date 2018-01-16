@@ -3,7 +3,7 @@
 /*////////////////////////////////////////////////////////////////////////////
 StructuredMeshBlock2D.cpp
 
-A class to represent a 2D structured mesh.
+A class to represent a 3D structured mesh.
 
 Copyright 2018 HJA Bird
 
@@ -25,17 +25,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
-#include <algorithm>
 #include <cassert>
-#include <tuple>
-#include <vector>
-
-#include "Generators.h"
 
 namespace HBTK {
 	StructuredMeshBlock2D::StructuredMeshBlock2D()
-		: m_i_extent(-1),
-		m_j_extent(-1)
 	{
 	}
 
@@ -45,38 +38,40 @@ namespace HBTK {
 	}
 
 
-	void StructuredMeshBlock2D::set_extent(int i, int j)
+	void StructuredMeshBlock2D::set_extent(std::array<int, 2> indexes)
 	{
-		assert(i >= 0);
-		assert(j >= 0);
-		int size = i * j;
-		m_i_extent = i;
-		m_j_extent = j;
-		m_x_coords.resize(size);
-		m_y_coords.resize(size);
+		for (auto &block : m_coordinates) { block.extent(indexes); }
+		return;
 	}
 
-	void StructuredMeshBlock2D::set_coord(int i, int j, double x, double y)
+	void StructuredMeshBlock2D::set_coord(std::array<int, 2> indexes, std::array<int, 3> coordinate)
 	{
-		coord(i, j) = std::make_tuple(x, y);
+		for (int i = 0; i < 3; i++) {
+			m_coordinates[i].value(indexes) = coordinate[i];
+		}
 		return;
 	}
 
 
-	std::tuple<int, int> StructuredMeshBlock2D::extent()
+	std::array<int, 2> StructuredMeshBlock2D::extent()
 	{
-		int i = m_i_extent;
-		int j = m_j_extent;
-		return std::make_tuple(i, j);
+		return m_coordinates[0].extent();
 	}
 
-	std::tuple<double&, double&> StructuredMeshBlock2D::coord(int i, int j)
+	std::array<double, 2> StructuredMeshBlock2D::coord(std::array<int, 2> indexes)
 	{
-		assert(check_valid_idx(i, j));
-		int lin_idx = generate_linear_index(i, j);
-		return std::forward_as_tuple(m_x_coords[lin_idx], m_y_coords[lin_idx]);
+		return { m_coordinates[0].value(indexes),
+			m_coordinates[1].value(indexes) };
 	}
 
+	void StructuredMeshBlock2D::swap_internal_coordinates_ij()
+	{
+		for (auto &block : m_coordinates) {
+			block.swap(1, 2);
+		}
+		return;
+	}
+	
 	HBTK::StructuredMeshBlock3D StructuredMeshBlock2D::extrude_to_3D(std::vector<double> z_values)
 	{
 		assert((int)z_values.size() > 1);
@@ -85,38 +80,22 @@ namespace HBTK {
 		HBTK::StructuredMeshBlock3D mesh3d;
 		int k_dim = (int)z_values.size();
 
-		mesh3d.set_extent(m_i_extent, m_j_extent, k_dim);
-		double x, y, z;
-		for (int i = 0; i < m_i_extent; i++) {
-			for (int j = 0; j < m_j_extent; j++) {
-				std::tie(x, y) = coord(i, j);
+		mesh3d.set_extent({ extent()[0],
+							extent()[1],
+							k_dim });
+		for (int i = 0; i < extent()[0]; i++) {
+			for (int j = 0; j < extent()[1]; j++) {
+				auto phys_2d = coord({ i, j });
 				for (int k = 0; k < k_dim; k++) {
-					z = z_values[k];
-					mesh3d.coord(i, j, k) = std::tie(x, y, z);
+					double z = z_values[k];
+					mesh3d.set_coord({ i, j, k }, { phys_2d[0], phys_2d[1], z });
 				}
 			}
 		}
 		return mesh3d;
 	}
-
-
-	bool StructuredMeshBlock2D::check_valid_idx(int i, int j)
-	{
-		if ((i >= 0) && (j >= 0) &&
-			(i < m_i_extent) && (j < m_j_extent)) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-
-	int StructuredMeshBlock2D::generate_linear_index(int i, int j)
-	{
-		int lin_idx = i + j * m_i_extent;
-		return lin_idx;
-	}
 }
 
 
+
+	

@@ -15,30 +15,34 @@ void print_mesh_info(std::vector<HBTK::StructuredMeshBlock2D> mesh2d,
 	std::cout << "\tNumber of blocks:\t" << n_blocks << "\n";
 	std::cout << "\tBlock\ti\tj\tk\n";
 	for (int n = 0; n < n_blocks; n++) {
-		int i, j, k;
-		if (three_dimensional) std::tie(i, j, k) = mesh3d[n].extent();
+		std::array<int, 3> idxs;
+		if (three_dimensional) idxs = mesh3d[n].extent();
 		if (!three_dimensional) {
-			std::tie(i, j) = mesh2d[n].extent();
-			k = 1;
+			auto idxs2d = mesh2d[n].extent();
+			idxs[0] = idxs2d[0];
+			idxs[1] = idxs2d[1];
+			idxs[2] = 1;
 		}
-		std::cout << "\t" << n << "\t" << i << "\t" << j << "\t" << k << "\n";
+		std::cout << "\t" << n << "\t" << idxs[0] << "\t" << idxs[1] << "\t" << idxs[2] << "\n";
 	}
 	std::cout << "\n";
 	for (int n = 0; (n < n_blocks) && three_dimensional; n++) {
 		std::cout << "\tBlock " << n << "\n";
-		double x, y, z;
-		int ei, ej, ek;
-		std::tie(ei, ej, ek) = mesh3d[n].extent();
-		std::tie(x, y, z) = mesh3d[n].coord(0, 0, 0);
-		std::cout << "\t\ti0,j0,k0:\t" << x << " " << y << " " << z << "\n";
-		std::tie(x, y, z) = mesh3d[n].coord(ei-1, 0, 0);
-		std::cout << "\t\tid,j0,k0:\t" << x << " " << y << " " << z << "\n";
-		std::tie(x, y, z) = mesh3d[n].coord(0, ej-1, 0);
-		std::cout << "\t\ti0,jd,k0:\t" << x << " " << y << " " << z << "\n";
-		std::tie(x, y, z) = mesh3d[n].coord(0, 0, ek-1);
-		std::cout << "\t\ti0,j0,kd:\t" << x << " " << y << " " << z << "\n";
-		std::tie(x, y, z) = mesh3d[n].coord(ei-1, ej-1, ek-1);
-		std::cout << "\t\tid,jd,kd:\t" << x << " " << y << " " << z << "\n\n";
+		std::array<int, 3> extents = mesh3d[n].extent();
+		int ei = extents[0];
+		int ej = extents[1];
+		int ek = extents[2];
+		std::array<double, 3> coord;
+		coord = mesh3d[n].coord({ 0, 0, 0 });
+		std::cout << "\t\ti0,j0,k0:\t" << coord[0] << " " << coord[1] << " " << coord[2] << "\n";
+		coord = mesh3d[n].coord({ei - 1, 0, 0});
+		std::cout << "\t\tid,j0,k0:\t" << coord[0] << " " << coord[1] << " " << coord[2] << "\n";
+		coord = mesh3d[n].coord({ 0, ej - 1, 0 });
+		std::cout << "\t\ti0,jd,k0:\t" << coord[0] << " " << coord[1] << " " << coord[2] << "\n";
+		coord = mesh3d[n].coord({ 0, 0, ek - 1 });
+		std::cout << "\t\ti0,j0,kd:\t" << coord[0] << " " << coord[1] << " " << coord[2] << "\n";
+		coord = mesh3d[n].coord({ ei - 1, ej - 1, ek - 1 });
+		std::cout << "\t\tid,jd,kd:\t" << coord[0] << " " << coord[1] << " " << coord[2] << "\n\n";
 	}
 	std::cout << "\n";
 	return;

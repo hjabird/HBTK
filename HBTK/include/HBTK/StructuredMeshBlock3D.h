@@ -26,8 +26,8 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <array>
-#include <tuple>
-#include <vector>
+
+#include "StructuredMeshValueBlockND.h"
 
 namespace HBTK {
 	class StructuredMeshBlock3D
@@ -37,16 +37,15 @@ namespace HBTK {
 		~StructuredMeshBlock3D();
 
 		// Set the number of nodes in i, j and k directions.
-		void set_extent(int i, int j, int k);
-
-		// Set the coordinate of a node on the grid.
-		void set_coord(int i, int j, int k, double x, double y, double z);
-
+		void set_extent(std::array<int, 3> indexes);
+		
 		// Extent as tuple
-		std::tuple<int, int, int> extent();
-		// Get a coordinate for a node on the grid (given as RHS val).
-		std::tuple<double&, double&, double&>
-			coord(int i, int j, int k);
+		std::array<int, 3> extent();
+
+		// Set a coordinate for a node on the grid.
+		void set_coord(std::array<int, 3> indexes, std::array<double, 3> coord);
+		// Get a coordinate for a node on the grid.
+		std::array<double, 3> coord(std::array<int, 3> indexes);
 
 		// Swaps internal array coordinates.
 		// Eg swap_..._ij turns 200x100x50 -> 100x200x50 
@@ -56,16 +55,8 @@ namespace HBTK {
 		void swap_internal_coordinates_jk();
 
 	private:
-		// Array of {i_extent, j_extent, k_extent}
-		std::array<int, 3> m_extents;
-		// Array of {x_coords, y_coords, z_coords}
-		std::array<std::vector<double>, 3> m_coords;
-
-		void swap_block_coordinates(int first_idx, int second_idx);
-
-		bool check_valid_idx(int i, int j, int k);
-		int generate_linear_index(int i, int j, int k);
-		int generate_linear_index(int i, int j, int k, int i_ext, int j_ext, int k_ext);
+		// Three Structured mesh value blocks. I'm sure it could be optimised...
+		std::array<StructuredMeshValueBlockND<3>, 3> m_coordinates;
 	};
 }
 

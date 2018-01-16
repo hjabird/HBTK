@@ -96,8 +96,10 @@ void HBTK::Plot3D::Plot3DWriter::write_block_extent(int block, std::ofstream & o
 	assert(block >= 0);
 	if (three_dimensional) {
 		assert(block < (int)m_meshes_3d.size());
-		int i, j, k;
-		std::tie(i, j, k) = m_meshes_3d[block].extent();
+		auto extent = m_meshes_3d[block].extent();
+		int i = extent[0]; 
+		int j = extent[1]; 
+		int k = extent[2];
 		if (write_binary) {
 			output_stream.write(reinterpret_cast<char*>(&i), sizeof(i));
 			output_stream.write(reinterpret_cast<char*>(&j), sizeof(j));
@@ -112,7 +114,9 @@ void HBTK::Plot3D::Plot3DWriter::write_block_extent(int block, std::ofstream & o
 	else {
 		assert(block < (int)m_meshes_2d.size());
 		int i, j;
-		std::tie(i, j) = m_meshes_2d[block].extent();
+		auto extent = m_meshes_2d[block].extent();
+		i = extent[0];
+		j = extent[1];
 		if (write_binary) {
 			output_stream.write(reinterpret_cast<char*>(&i), sizeof(i));
 			output_stream.write(reinterpret_cast<char*>(&j), sizeof(j));
@@ -130,10 +134,10 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 	assert(block >= 0);
 	if (three_dimensional) {
 		assert(block < (int)m_meshes_3d.size());
-		for (int k = 0; k < std::get<2>(m_meshes_3d[block].extent()); k++) {
-			for (int j = 0; j < std::get<1>(m_meshes_3d[block].extent()); j++) {
-				for (int i = 0; i < std::get<0>(m_meshes_3d[block].extent()); i++) {
-					double val = std::get<0>(m_meshes_3d[block].coord(i, j, k));
+		for (int k = 0; k < m_meshes_3d[block].extent()[2]; k++) {
+			for (int j = 0; j < m_meshes_3d[block].extent()[1]; j++) {
+				for (int i = 0; i < m_meshes_3d[block].extent()[0]; i++) {
+					double val = std::get<0>(m_meshes_3d[block].coord({ i, j, k }));
 					if (write_binary) {
 						output_stream.write(reinterpret_cast<char*>(&val), sizeof(val));
 					}
@@ -143,10 +147,10 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 				}
 			}
 		}
-		for (int k = 0; k < std::get<2>(m_meshes_3d[block].extent()); k++) {
-			for (int j = 0; j < std::get<1>(m_meshes_3d[block].extent()); j++) {
-				for (int i = 0; i < std::get<0>(m_meshes_3d[block].extent()); i++) {
-					double val = std::get<1>(m_meshes_3d[block].coord(i, j, k));
+		for (int k = 0; k < m_meshes_3d[block].extent()[2]; k++) {
+			for (int j = 0; j < m_meshes_3d[block].extent()[1]; j++) {
+				for (int i = 0; i < m_meshes_3d[block].extent()[0]; i++) {
+					double val = std::get<1>(m_meshes_3d[block].coord({ i, j, k }));
 					if (write_binary) {
 						output_stream.write(reinterpret_cast<char*>(&val), sizeof(val));
 					}
@@ -156,10 +160,10 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 				}
 			}
 		}
-		for (int k = 0; k < std::get<2>(m_meshes_3d[block].extent()); k++) {
-			for (int j = 0; j < std::get<1>(m_meshes_3d[block].extent()); j++) {
-				for (int i = 0; i < std::get<0>(m_meshes_3d[block].extent()); i++) {
-					double val = std::get<2>(m_meshes_3d[block].coord(i, j, k));
+		for (int k = 0; k < m_meshes_3d[block].extent()[2]; k++) {
+			for (int j = 0; j < m_meshes_3d[block].extent()[1]; j++) {
+				for (int i = 0; i < m_meshes_3d[block].extent()[0]; i++) {
+					double val = std::get<2>(m_meshes_3d[block].coord({ i, j, k }));
 					if (write_binary) {
 						output_stream.write(reinterpret_cast<char*>(&val), sizeof(val));
 					}
@@ -172,9 +176,9 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 	} // End If three dimensional
 	else {
 		assert(block < (int)m_meshes_2d.size());
-		for (int j = 0; j < std::get<1>(m_meshes_2d[block].extent()); j++) {
-			for (int i = 0; i < std::get<0>(m_meshes_2d[block].extent()); i++) {
-				double val = std::get<0>(m_meshes_2d[block].coord(i, j));
+		for (int j = 0; j < m_meshes_3d[block].extent()[1]; j++) {
+			for (int i = 0; i < m_meshes_3d[block].extent()[0]; i++) {
+				double val = std::get<0>(m_meshes_2d[block].coord({ i, j }));
 				if (write_binary) {
 					output_stream.write(reinterpret_cast<char*>(&val), sizeof(val));
 				}
@@ -185,7 +189,7 @@ void HBTK::Plot3D::Plot3DWriter::write_nodes(int block, std::ofstream & output_s
 		}
 		for (int j = 0; j < std::get<1>(m_meshes_2d[block].extent()); j++) {
 			for (int i = 0; i < std::get<0>(m_meshes_2d[block].extent()); i++) {
-				double val = std::get<1>(m_meshes_2d[block].coord(i, j));
+				double val = std::get<1>(m_meshes_2d[block].coord({ i, j }));
 				if (write_binary) {
 					output_stream.write(reinterpret_cast<char*>(&val), sizeof(val));
 				}

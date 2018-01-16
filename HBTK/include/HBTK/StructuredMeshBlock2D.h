@@ -38,27 +38,30 @@ namespace HBTK {
 		~StructuredMeshBlock2D();
 
 		// Set the number of nodes in i, j and k directions.
-		void set_extent(int i, int j);
-		// Set the coordinate of a node on the grid.
-		void set_coord(int i, int j, double x, double y);
+		void set_extent(std::array<int, 2> indexes);
 
-		// Get extent as tuple;
-		std::tuple<int, int> extent();
-		// Get a coordinate for a node on the grid (given as RHS val).
-		std::tuple<double&, double&>
-			coord(int i, int j);
+		// Set the coordinate of a node on the grid.
+		void set_coord(std::array<int, 2> indexes, std::array<int, 3> coordinate);
+
+		// Extent as tuple
+		std::array<int, 2> extent();
+
+		// Set a coordinate for a node on the grid.
+		void set_coord(std::array<int, 2> indexes, std::array<double, 2> coord);
+		// Get a coordinate for a node on the grid.
+		std::array<double, 2> coord(std::array<int, 2> indexes);
+
+		// Swaps internal array coordinates.
+		// Eg swap_..._ij turns 200x100 -> 100x200 
+		// whilst keeping the grid coordinates identical.
+		void swap_internal_coordinates_ij();
 
 		// Extrude a 2D mesh into a 3D mesh.
 		HBTK::StructuredMeshBlock3D extrude_to_3D(std::vector<double> z_values);
 
 	private:
-		int m_i_extent, m_j_extent;
-		std::vector<double> m_x_coords;
-		std::vector<double> m_y_coords;
-
-		bool check_valid_idx(int i, int j);
-		int generate_linear_index(int i, int j);
-	};
+		// Three Structured mesh value blocks. I'm sure it could be optimised...
+		std::array<StructuredMeshValueBlockND<2>, 2> m_coordinates;
+		};
 }
-
 

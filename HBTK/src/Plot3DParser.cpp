@@ -137,24 +137,14 @@ void HBTK::Plot3D::Plot3DParser::parse_ascii(std::ifstream & input_stream, std::
 			int i_ext = extents[0][n];
 			int j_ext = extents[1][n];
 			int k_ext = (dimensions == 3 ? extents[2][n] : 1);
-			mesh.set_extent(i_ext, j_ext, k_ext);
-
-			auto put_in_x = [&](int i, int j, int k, double val) {
-				std::get<0>(mesh.coord(i, j, k)) = val;
-			};
-			auto put_in_y = [&](int i, int j, int k, double val) {
-				std::get<1>(mesh.coord(i, j, k)) = val;
-			};
-			auto put_in_z = [&](int i, int j, int k, double val) {
-				std::get<2>(mesh.coord(i, j, k)) = val;
-			};
+			mesh.set_extent({ i_ext, j_ext, k_ext } );
 
 			auto read_bin = [&](int i, int j, int k, std::ifstream & input, int xyz_idx) {
 				double tmp_val = 0;
 				input_stream >> tmp_val;
-				if (xyz_idx == 0) { put_in_x(i, j, k, tmp_val); }
-				else if (xyz_idx == 1) { put_in_y(i, j, k, tmp_val); }
-				else if (xyz_idx == 2) { put_in_z(i, j, k, tmp_val); }
+				auto coord = mesh.coord({ i, j, k });
+				coord[xyz_idx] = tmp_val;
+				mesh.set_coord({ i, j, k }, coord);
 			};
 
 			apply_function_to_input_array(i_ext, j_ext, k_ext,
@@ -174,12 +164,11 @@ void HBTK::Plot3D::Plot3DParser::parse_ascii(std::ifstream & input_stream, std::
 			}
 			else {
 				HBTK::StructuredMeshBlock2D mesh2d;
-				mesh2d.set_extent(i_ext, j_ext);
+				mesh2d.set_extent({ i_ext, j_ext });
 				for (int i = 0; i < i_ext; i++) {
 					for (int j = 0; j < j_ext; j++) {
-						double x, y, z;
-						std::tie(x, y, z) = mesh.coord(i, j, 0);
-						mesh2d.coord(i, j) = std::tie(x, y);
+						auto coord = mesh.coord({ i, j, 0 });
+						mesh2d.coord({ i, j }) = { coord[0], coord[1] };
 					}
 				}
 				for (auto & function : m_mesh_2d_functions) {
@@ -235,23 +224,14 @@ void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std:
 			int i_ext = extents[0][n];
 			int j_ext = extents[1][n];
 			int k_ext = (dimensions == 3 ? extents[2][n] : 1);
-			mesh.set_extent(i_ext, j_ext, k_ext);
+			mesh.set_extent({ i_ext, j_ext, k_ext });
 
-			auto put_in_x = [&](int i, int j, int k, double val) {
-				std::get<0>(mesh.coord(i, j, k)) = val;
-			};
-			auto put_in_y = [&](int i, int j, int k, double val) {
-				std::get<1>(mesh.coord(i, j, k)) = val;
-			};
-			auto put_in_z = [&](int i, int j, int k, double val) {
-				std::get<2>(mesh.coord(i, j, k)) = val;
-			};
 
 			auto read_bin = [&](int i, int j, int k, std::ifstream & input, int xyz_idx) {
 				unpack_binary_to_struct(input_stream, double_buffer);
-				if (xyz_idx == 0) { put_in_x(i, j, k, double_buffer.value); }
-				else if (xyz_idx == 1) { put_in_y(i, j, k, double_buffer.value); }
-				else if (xyz_idx == 2) { put_in_z(i, j, k, double_buffer.value); }
+				auto coord = mesh.coord({ i, j, k });
+				coord[xyz_idx] = double_buffer.value;
+				mesh.set_coord({ i, j, k }, coord);
 			};
 
 
@@ -273,12 +253,11 @@ void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std:
 			}
 			else {
 				HBTK::StructuredMeshBlock2D mesh2d;
-				mesh2d.set_extent(i_ext, j_ext);
+				mesh2d.set_extent({ i_ext, j_ext });
 				for (int i = 0; i < i_ext; i++) {
 					for (int j = 0; j < j_ext; j++) {
-						double x, y, z;
-						std::tie(x, y, z) = mesh.coord(i, j, 0);
-						mesh2d.coord(i, j) = std::tie(x, y);
+						auto coord = mesh.coord({ i, j, 0 });
+						mesh2d.coord({ i, j }) = { coord[0], coord[1] };
 					}
 				}
 				for (auto & function : m_mesh_2d_functions) {
