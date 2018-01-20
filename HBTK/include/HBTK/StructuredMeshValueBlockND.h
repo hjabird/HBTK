@@ -27,11 +27,12 @@ SOFTWARE.
 
 #include <array>
 #include <cassert>
+#include <cmath>
 #include <vector>
 
 
 namespace HBTK {
-	template<int TNumDimensions>
+	template<int TNumDimensions, typename TType>
 	class StructuredMeshValueBlockND
 	{
 	public:
@@ -45,14 +46,14 @@ namespace HBTK {
 
 		// Get a reference to the value for a coordinate in the 
 		// mesh block.
-		double& value(std::array<int, TNumDimensions> coordinate);
+		TType& value(std::array<int, TNumDimensions> coordinate);
 
 		// Swap local coordinates around
 		void swap(int first_dim, int second_dim);
 
 	private:
 		std::array<int, TNumDimensions> m_extents;
-		std::vector<double> m_value;
+		std::vector<TType> m_value;
 
 		static int generate_linear_index(std::array<int, TNumDimensions> extent,
 			std::array<int, TNumDimensions> index);
@@ -75,8 +76,8 @@ namespace HBTK {
 
 	// DEFINITIONS
 
-	template<int TNumDimensions>
-	inline StructuredMeshValueBlockND<TNumDimensions>::StructuredMeshValueBlockND()
+	template<int TNumDimensions, typename TType>
+	inline StructuredMeshValueBlockND<TNumDimensions, TType>::StructuredMeshValueBlockND()
 		: m_extents()
 	{
 		for (int &extent : m_extents) { extent = 0; }
@@ -84,14 +85,14 @@ namespace HBTK {
 	}
 
 
-	template<int TNumDimensions>
-	inline StructuredMeshValueBlockND<TNumDimensions>::~StructuredMeshValueBlockND()
+	template<int TNumDimensions, typename TType>
+	inline StructuredMeshValueBlockND<TNumDimensions, TType>::~StructuredMeshValueBlockND()
 	{
 		// INTENTIONALLY BLANK
 	}
 
-	template<int TNumDimensions>
-	inline void StructuredMeshValueBlockND<TNumDimensions>::extent(std::array<int, TNumDimensions> extents)
+	template<int TNumDimensions, typename TType>
+	inline void StructuredMeshValueBlockND<TNumDimensions, TType>::extent(std::array<int, TNumDimensions> extents)
 	{
 		assert_valid_extents(extents);
 		m_extents = extents;
@@ -99,14 +100,14 @@ namespace HBTK {
 		return;
 	}
 
-	template<int TNumDimensions>
-	inline std::array<int, TNumDimensions> StructuredMeshValueBlockND<TNumDimensions>::extent()
+	template<int TNumDimensions, typename TType>
+	inline std::array<int, TNumDimensions> StructuredMeshValueBlockND<TNumDimensions, TType>::extent()
 	{
 		return m_extents;
 	}
 
-	template<int TNumDimensions>
-	inline double & StructuredMeshValueBlockND<TNumDimensions>::value(std::array<int, TNumDimensions> coordinate)
+	template<int TNumDimensions, typename TType>
+	inline TType & StructuredMeshValueBlockND<TNumDimensions, TType>::value(std::array<int, TNumDimensions> coordinate)
 	{
 		assert_valid_extents();
 		assert_valid_indices(coordinate);
@@ -114,8 +115,8 @@ namespace HBTK {
 		return m_value[linear_index];
 	}
 
-	template<int TNumDimensions>
-	inline void StructuredMeshValueBlockND<TNumDimensions>::swap(int first_dim, int second_dim)
+	template<int TNumDimensions, typename TType>
+	inline void StructuredMeshValueBlockND<TNumDimensions, TType>::swap(int first_dim, int second_dim)
 	{
 		assert(first_dim < TNumDimensions);
 		assert(second_dim < TNumDimensions);
@@ -124,7 +125,7 @@ namespace HBTK {
 
 		if (first_dim == second_dim) { return; }
 		else {
-			std::vector<double> new_values;
+			std::vector<TType> new_values;
 			new_values.resize(number_of_elements(m_extents));
 			std::array<int, TNumDimensions> coordinate;
 			std::array<int, TNumDimensions> new_extent;
@@ -148,8 +149,8 @@ namespace HBTK {
 	}
 
 
-	template<int TNumDimensions>
-	inline int StructuredMeshValueBlockND<TNumDimensions>::generate_linear_index(std::array<int, TNumDimensions> extent, 
+	template<int TNumDimensions, typename TType>
+	inline int StructuredMeshValueBlockND<TNumDimensions, TType>::generate_linear_index(std::array<int, TNumDimensions> extent,
 		std::array<int, TNumDimensions> index)
 	{
 		assert_valid_extents(extent);
@@ -166,8 +167,8 @@ namespace HBTK {
 		return linear_index;
 	}
 
-	template<int TNumDimensions>
-	inline std::array<int, TNumDimensions> StructuredMeshValueBlockND<TNumDimensions>::generate_coordinate_index(
+	template<int TNumDimensions, typename TType>
+	inline std::array<int, TNumDimensions> StructuredMeshValueBlockND<TNumDimensions, TType>::generate_coordinate_index(
 		std::array<int, TNumDimensions> extent, int linear_index)
 	{
 		assert_valid_extents(extent);
@@ -188,8 +189,8 @@ namespace HBTK {
 		return coordinate;
 	}
 
-	template<int TNumDimensions>
-	inline int StructuredMeshValueBlockND<TNumDimensions>::number_of_elements(std::array<int, TNumDimensions> extent)
+	template<int TNumDimensions, typename TType>
+	inline int StructuredMeshValueBlockND<TNumDimensions, TType>::number_of_elements(std::array<int, TNumDimensions> extent)
 	{
 		assert_valid_extents(extent);
 		int size(1);
@@ -198,22 +199,22 @@ namespace HBTK {
 	}
 
 
-	template<int TNumDimensions>
-	inline void StructuredMeshValueBlockND<TNumDimensions>::assert_valid_extents()
+	template<int TNumDimensions, typename TType >
+	inline void StructuredMeshValueBlockND<TNumDimensions, TType>::assert_valid_extents()
 	{
 		assert_valid_extents(m_extents);
 	}
 
-	template<int TNumDimensions>
-	inline void StructuredMeshValueBlockND<TNumDimensions>::assert_valid_indices(std::array<int, TNumDimensions> indexes)
+	template<int TNumDimensions, typename TType>
+	inline void StructuredMeshValueBlockND<TNumDimensions, TType>::assert_valid_indices(std::array<int, TNumDimensions> indexes)
 	{
 		assert_valid_indices(m_extents, indexes);
 		return;
 	}
 
 
-	template<int TNumDimensions>
-	inline void StructuredMeshValueBlockND<TNumDimensions>::assert_valid_extents(std::array<int, TNumDimensions> extents)
+	template<int TNumDimensions, typename TType>
+	inline void StructuredMeshValueBlockND<TNumDimensions, TType>::assert_valid_extents(std::array<int, TNumDimensions> extents)
 	{
 		for (auto &extent : extents) {
 			assert(extent > 0);
@@ -222,8 +223,8 @@ namespace HBTK {
 	}
 
 
-	template<int TNumDimensions>
-	inline void StructuredMeshValueBlockND<TNumDimensions>::assert_valid_indices(std::array<int, TNumDimensions> extent, 
+	template<int TNumDimensions, typename TType>
+	inline void StructuredMeshValueBlockND<TNumDimensions, TType>::assert_valid_indices(std::array<int, TNumDimensions> extent,
 		std::array<int, TNumDimensions> index)
 	{
 		for (int i = 0; i < TNumDimensions; i++) {

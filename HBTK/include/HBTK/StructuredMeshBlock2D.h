@@ -61,7 +61,7 @@ namespace HBTK {
 
 	private:
 		// Three Structured mesh value blocks. I'm sure it could be optimised...
-		std::array<StructuredMeshValueBlockND<2>, 2> m_coordinates;
+		std::array<StructuredMeshValueBlockND<2, double>, 2> m_coordinates;
 		};
 }
 
