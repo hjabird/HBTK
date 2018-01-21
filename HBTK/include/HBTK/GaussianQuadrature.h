@@ -49,10 +49,17 @@ namespace HBTK {
 			std::function<double(int)> a_i,
 			std::function<double(int)> b_i,
 			std::function<double(int)> c_i,
-			int number_of_terms	);
+			int number_of_terms, double domain_weight_integral);
 
 
 	// Compute a Gauss quadrature from a Jacobi matrix.
 	static std::tuple<std::vector<double>, std::vector<double>>
 		jacobi_tridiagonal_to_quadrature(std::vector<double> off_diagonal, std::vector<double> diagonal);
+
+	// Compute the integral of a jacobi polynomial 
+	// (1-x)^alpha (1+x)^beta
+	// Only works for some inputs:
+	// alpha or beta is integer and the other if negitive has greater magnitude.
+	// If alpha==beta, n/2 where n is integer >= -1
+	static double jacobi_integral(double alpha, double beta);
 }

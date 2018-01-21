@@ -30,8 +30,6 @@ SOFTWARE.
 #include <algorithm>
 #include "Generators.h"
 
-
-
 std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_laguerre(int num_terms)
 {
 	assert(false); // This code is not ready for use yet.
@@ -52,18 +50,19 @@ std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_jacobi(int num_
 	auto a_i = [=](int k) {return B(k) * C(k) / A(k); };
 	auto b_i = [=](int k) {return B(k) * D(k) / A(k); };
 	auto c_i = [=](int k) {return E(k) / A(k); };
-	return recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms);
+	return recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, jacobi_integral(alpha, beta));
 }
 
 std::tuple<std::vector<double>, std::vector<double>> HBTK::generalised_gauss_laguerre(int num_terms, double alpha)
 {
 	assert(false); // Yeilds incorrect result.
 	assert(num_terms >= 0);
+	assert(alpha > -1);
 	auto a_i = [](int k)->double {return -1.0 / k; };
 	auto b_i = [=](int k)->double {return 2 + (alpha - 1.0)/k; };
 	auto c_i = [=](int k)->double {return 1 + (alpha - 1.0)/k; };
 
-	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms);
+	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, std::tgamma(alpha + 1));
 	return return_value;
 }
 
@@ -74,15 +73,15 @@ std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_legendre_from_j
 	auto b_i = [](int k)->double {(void)k; return 0.0; };
 	auto c_i = [](int k)->double {return (k - 1.0) / k; };
 
-	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms);
+	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, 2.0);
 	return return_value;
 }
 
 std::tuple<std::vector<double>, std::vector<double>> 
-HBTK::recurrence_relation_to_quadrature(std::function<double(int)> a_i, 
-	std::function<double(int)> b_i, 
+HBTK::recurrence_relation_to_quadrature(std::function<double(int)> a_i,
+	std::function<double(int)> b_i,
 	std::function<double(int)> c_i,
-	int number_of_terms)
+	int number_of_terms, double domain_weight_integral)
 {
 	assert(false); //Weight calculation is wrong - needs integral of 
 	// weight function instead of just "2" (correct for Gauss Legendre).
@@ -100,6 +99,8 @@ HBTK::recurrence_relation_to_quadrature(std::function<double(int)> a_i,
 		off_diagonal[idx - 1] = sqrt(c_i(idx + 1) / (a_i(idx) * (a_i(idx + 1))));
 	}
 	auto result = jacobi_tridiagonal_to_quadrature(off_diagonal, diagonal);
+	std::transform(std::get<1>(result).begin(), std::get<1>(result).end(), std::get<1>(result).begin(),
+		[=](double w_i)->double { return domain_weight_integral * w_i * w_i; });
 	return result;
 }
 
@@ -113,14 +114,19 @@ HBTK::jacobi_tridiagonal_to_quadrature(std::vector<double> off_diagonal, std::ve
 	// Recipes in C (first Ed). Modifications are made to so that only the first
 	// value in the eigenvector is computed, and to correct errors (especially 
 	// indexing) in Numerical Recipes.
+	// Outputs points and almost_weights
+	// So called almost_weights because they need to be multiplied by the integral 
+	// of the wieght funtion over the orthogonality domain.
+
+
 	assert(off_diagonal.size() == diagonal.size() - 1);
 	off_diagonal.push_back(0);
 
-	std::vector<double> points, weights;
+	std::vector<double> points, almost_weights;
 	points.resize(diagonal.size());
-	weights.resize(diagonal.size());
-	uniform(weights, 0.0);
-	weights[0] = 1.0;
+	almost_weights.resize(diagonal.size());
+	uniform(almost_weights, 0.0);
+	almost_weights[0] = 1.0;
 
 	double iterations, c, g, p, r, s;
 
@@ -169,9 +175,9 @@ HBTK::jacobi_tridiagonal_to_quadrature(std::vector<double> off_diagonal, std::ve
 					g = c * r - b;
 
 					// Compute the first value of the eigenvector.
-					f = weights[j + 1];
-					weights[j + 1] = s * weights[j] + c * f;
-					weights[j] = c * weights[j] - s * f;
+					f = almost_weights[j + 1];
+					almost_weights[j + 1] = s * almost_weights[j] + c * f;
+					almost_weights[j] = c * almost_weights[j] - s * f;
 				} // End for(j >=1 )
 				diagonal[i] = diagonal[i] - p;
 				off_diagonal[i] = g;
@@ -182,7 +188,43 @@ HBTK::jacobi_tridiagonal_to_quadrature(std::vector<double> off_diagonal, std::ve
 
 	points = diagonal;
 	// Compute the actual weights from the first of the eigenvectors.
-	std::transform(weights.begin(), weights.end(), weights.begin(),
-		[](double w_i)->double { return 2 * w_i * w_i; });
-	return std::make_tuple(points, weights);
+	return std::make_tuple(points, almost_weights);
+}
+
+double HBTK::jacobi_integral(double alpha, double beta)
+{
+	auto fact = [](int n)->int {
+		int f = n;
+		for (int i = n - 1; i > 0; i--) { f *= i; }
+		return f;
+	};
+
+	double result =0;
+	if (std::round(alpha) == alpha) {
+		if (beta < 0) { assert(-beta > alpha); }
+		result = fact((int)alpha) * pow(2, alpha + beta + 1) / (alpha + beta + 1);
+		for (int n = 1; n <= alpha; n++) result /= beta + n;
+	}
+	else if (std::round(beta) == beta) {
+		if (alpha < 0) { assert(-alpha > beta); }
+		result = fact((int)beta) * pow(2, alpha + beta + 1) / (alpha + beta + 1);
+		for (int n = 1; n <= beta; n++) result /= alpha + n;
+	}
+	else if ((alpha == beta) && (std::round(alpha * 2) == alpha * 2)) {
+		assert(alpha > -1);
+		if (alpha == -0.5) { result = HBTK::Constants::pi(); }
+		else {
+			int n = 2 * alpha;
+			result = HBTK::Constants::pi() * fact(n) / 
+				(fact((n + 1) / 2) * fact((n - 1) / 2) * pow(2, n));
+		}
+	}
+	else if (alpha == -beta) {
+		if (abs(alpha) == 0.5) { result == HBTK::Constants::pi(); }
+		else { assert(false); }
+	}
+	else { assert(false); } // Perhaps numerically integrate?
+
+
+	return result;
 }
