@@ -185,7 +185,7 @@ namespace HBTK {
 			mutable_idx /= extent[i];
 		}
 
-		assert(linear_index == generate_linear_index(coordinate));
+		assert(linear_index == generate_linear_index(extent, coordinate));
 		return coordinate;
 	}
 
