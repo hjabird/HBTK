@@ -10,7 +10,6 @@
 void print_mesh_info(std::vector<HBTK::StructuredMeshBlock2D> mesh2d,
 	std::vector<HBTK::StructuredMeshBlock3D> mesh3d, bool three_dimensional) {
 	int n_blocks = (three_dimensional ? (int)mesh3d.size() : (int)mesh2d.size());
-	std::cout << "Mesh info:\n";
 	std::cout << "\t3D mesh:\t" << (three_dimensional ? "True" : "False") << "\n";
 	std::cout << "\tNumber of blocks:\t" << n_blocks << "\n";
 	std::cout << "\tBlock\ti\tj\tk\n";
@@ -23,25 +22,41 @@ void print_mesh_info(std::vector<HBTK::StructuredMeshBlock2D> mesh2d,
 			idxs[1] = idxs2d[1];
 			idxs[2] = 1;
 		}
-		std::cout << "\t" << n << "\t" << idxs[0] << "\t" << idxs[1] << "\t" << idxs[2] << "\n";
+		std::cout << "\t" << n+1 << "\t" << idxs[0] << "\t" << idxs[1] << "\t" << idxs[2] << "\n";
 	}
 	std::cout << "\n";
-	for (int n = 0; (n < n_blocks) && three_dimensional; n++) {
-		std::cout << "\tBlock " << n << "\n";
-		std::array<int, 3> extents = mesh3d[n].extent();
+	for (int n = 0; n < n_blocks; n++) {
+		std::cout << "\tBlock " << n+1 << "\n";
+		std::array<int, 3> extents = { 1, 1, 1 };
+		if (three_dimensional) {
+			extents = mesh3d[n].extent();
+		}
+		else {
+			extents = { mesh2d[n].extent()[0], mesh2d[n].extent()[1], 1 };
+		}
 		int ei = extents[0];
 		int ej = extents[1];
 		int ek = extents[2];
+		auto get_coord = [&](std::array<int, 3> c) {
+			if (three_dimensional) {
+				return mesh3d[n].coord(c);
+			}
+			else {
+				std::array<double, 2> coord2d = mesh2d[n].coord({c[0], c[1]});
+				return std::array<double, 3>({ coord2d[0], coord2d[1], coord2d[2] });
+			}
+		};
+
 		std::array<double, 3> coord;
-		coord = mesh3d[n].coord({ 0, 0, 0 });
+		coord = get_coord({ 0, 0, 0 });
 		std::cout << "\t\ti0,j0,k0:\t" << coord[0] << " " << coord[1] << " " << coord[2] << "\n";
-		coord = mesh3d[n].coord({ei - 1, 0, 0});
+		coord = get_coord({ei - 1, 0, 0});
 		std::cout << "\t\tid,j0,k0:\t" << coord[0] << " " << coord[1] << " " << coord[2] << "\n";
-		coord = mesh3d[n].coord({ 0, ej - 1, 0 });
+		coord = get_coord({ 0, ej - 1, 0 });
 		std::cout << "\t\ti0,jd,k0:\t" << coord[0] << " " << coord[1] << " " << coord[2] << "\n";
-		coord = mesh3d[n].coord({ 0, 0, ek - 1 });
+		coord = get_coord({ 0, 0, ek - 1 });
 		std::cout << "\t\ti0,j0,kd:\t" << coord[0] << " " << coord[1] << " " << coord[2] << "\n";
-		coord = mesh3d[n].coord({ ei - 1, ej - 1, ek - 1 });
+		coord = get_coord({ ei - 1, ej - 1, ek - 1 });
 		std::cout << "\t\tid,jd,kd:\t" << coord[0] << " " << coord[1] << " " << coord[2] << "\n\n";
 	}
 	std::cout << "\n";
@@ -83,6 +98,7 @@ void write_mesh_out_3d(std::vector<HBTK::StructuredMeshBlock3D> mesh3d, bool asc
 }
 
 void print_help() {
+	std::cout << "Plot3D parser demo - HJAB 2018\n";
 	std::cout << "Help:\n";
 	std::cout << "This program reads in a Plot3D mesh, and can spit it out in a different format.\n";
 	std::cout << "Usage: $PROGRAM inputfile.ext1 [optional outputfile.ext]\n";
@@ -188,8 +204,6 @@ int parse_command_line(int argc, char *argv[], bool &ascii_in, bool &three_dimen
 
 int main(int argc, char *argv[])
 {
-	std::cout << "Plot3D demo\nHJA Bird 2018\n";
-
 	std::string input_path, output_path;
 	int swap_axis = -1;
 	bool three_dimensional, ascii_in, no_block_count_in;
@@ -226,6 +240,9 @@ int main(int argc, char *argv[])
 
 	try {
 		parser.parse(input_path);
+		std::cout << "Mesh information:\n";
+		std::cout << "\tIs ASCII:\t" << (ascii_in ? "TRUE" : "FALSE") << "\n";
+		std::cout << "\tInclude block count:\t" << (!no_block_count_in ? "TRUE" : "FALSE") << "\n";
 		print_mesh_info(meshes_2d, meshes_3d, three_dimensional);
 	}
 	catch (int i) {
