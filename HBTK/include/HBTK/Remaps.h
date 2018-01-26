@@ -209,7 +209,7 @@ namespace HBTK {
 	template<int Torder, typename Ty>
 	constexpr void sato_remap(Ty & point, Ty & weight, Ty singularity_pos)
 	{
-		static_assert(Torder > 1);
+		static_assert(Torder > 1, "Sato remaps must have order of more than one.");
 		assert(abs(singularity_pos) == 1);
 		Ty tmp_p, tmp_w;
 		tmp_p = singularity_pos - (singularity_pos / pow(2, Torder - 1)) 

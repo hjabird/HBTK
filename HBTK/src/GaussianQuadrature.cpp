@@ -214,13 +214,13 @@ double HBTK::jacobi_integral(double alpha, double beta)
 		assert(alpha > -1);
 		if (alpha == -0.5) { result = HBTK::Constants::pi(); }
 		else {
-			int n = 2 * alpha;
+			int n = 2 * (int)alpha;
 			result = HBTK::Constants::pi() * fact(n) / 
 				(fact((n + 1) / 2) * fact((n - 1) / 2) * pow(2, n));
 		}
 	}
 	else if (alpha == -beta) {
-		if (abs(alpha) == 0.5) { result == HBTK::Constants::pi(); }
+		if (abs(alpha) == 0.5) { result = HBTK::Constants::pi(); }
 		else { assert(false); }
 	}
 	else { assert(false); } // Perhaps numerically integrate?

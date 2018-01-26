@@ -48,7 +48,7 @@ namespace HBTK {
 		/// \endcode 
 		template<typename Ty = double>
 		Ty constexpr pi() {
-			return 3.1415926535897932384626433832795028841971693993751058209749445;
+			return (Ty)3.1415926535897932384626433832795028841971693993751058209749445;
 		}
 
 		/// \brief Returns the value of e = 2.71828....
@@ -69,7 +69,7 @@ namespace HBTK {
 		/// \endcode 
 		template<typename Ty = double>
 		Ty constexpr e() {
-			return 2.71828182845904523536028747135266249775724709369995;
+			return (Ty)2.71828182845904523536028747135266249775724709369995;
 		}
 
 		/// \brief Returns the value of the euler constant gamma = 0.577....
@@ -90,7 +90,7 @@ namespace HBTK {
 		/// \endcode 
 		template<typename Ty = double>
 		Ty constexpr euler() {
-			return 0.5772156649015328606065120900824024310421;
+			return (Ty)0.5772156649015328606065120900824024310421;
 		}
 
 		/// \brief Returns the value of i = 0 + 1i

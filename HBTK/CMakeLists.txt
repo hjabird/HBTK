@@ -34,8 +34,10 @@ set_property(TARGET HBTK PROPERTY FOLDER "libraries")
 set_target_properties(HBTK PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
  
+ 
 # Adds logic to INSTALL.vcproj to copy math.dll to the destination directory
-#install (TARGETS HBTK
-#         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/_install
-#         LIBRARY DESTINATION ${PROJECT_SOURCE_DIR}/_install)
-
+install (TARGETS HBTK
+         ARCHIVE DESTINATION ${PROJECT_SOURCE_DIR}/_install
+         LIBRARY DESTINATION ${PROJECT_SOURCE_DIR}/_install)
+         
+export(PACKAGE HBTK)
