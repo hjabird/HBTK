@@ -39,12 +39,53 @@ namespace HBTK {
 		// for each call to WRITE. These markers are an annoyance for anyone
 		// having to read or write binary interfacing Fortran programs.
 
-		// Read Fortran record start marker
-		void record_start(std::ifstream & input_stream);
-		void record_end(std::ifstream & input_stream);
+		// Read Fortran record start marker and leave curser at data start.
+		// Returns number of bytes in length of current record.
+		int record_open(std::ifstream & input_stream);
+
+		// If you're reading a file backwards, you'll start 
+		// reading a record at its end. Use record_open_reverse
+		// to enter a record from its end.
+		// Curser left at the end of the records data.
+		int record_open_reverse(std::ifstream & input_stream);
+
+		// When you've reached the expected end of the record,
+		// call record_end(input_stream) and the record end will be
+		// checked.
+		// Curser left at the end of the closing record header.
+		// Returns length of record in bytes.
+		void record_close(std::ifstream & input_stream);
+
+		// If you're reading a file backwards, you'll want
+		// to close a record from its start. 
+		// This function closes the record and leaves the curser
+		// before its start.
+		void record_close_reverse(std::ifstream & input_stream);
+
+		// When you've reached the expected end of the record,
+		// call record_end(input_stream) and the record end will be
+		// checked.
+		// Curser left at the end of the closing record header.
+		// Returns length of record in bytes.
+		void record_close(std::ifstream & input_stream);
+
+		// Jump back to the beginning of the current record.
+		// Returns length of record in bytes.
+		// Curser left at the beginning of the record's data.
+		int seek_record_start(std::ifstream & input_stream);
+
+		// Jumps to the end of the current record.
+		// Checks that expected record end length is still
+		// there.
+		// Curser left at the end of the records data.
+		// Returns length of record in bytes.
+		int seek_record_end(std::ifstream & input_stream);
 
 	private:
+
+		// Number of bytes of data in the record.
 		int m_record_length;
+		// The start position of the record data.
 		int m_last_record_start;
 	};
 }

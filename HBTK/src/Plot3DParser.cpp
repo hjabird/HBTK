@@ -201,22 +201,22 @@ void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std:
 		number_of_blocks = 1;
 	}
 	else {
-		fortran_input.record_start(input_stream);
+		fortran_input.record_open(input_stream);
 		unpack_binary_to_struct(input_stream, int_buffer);
 		number_of_blocks = int_buffer.value;
-		fortran_input.record_end(input_stream);
+		fortran_input.record_close(input_stream);
 		if (number_of_blocks < 1) throw - 1;
 	}
 	for (auto &extent : extents) { extent.resize(number_of_blocks); }
 
-	fortran_input.record_start(input_stream);
+	fortran_input.record_open(input_stream);
 	for (int n = 0; n < number_of_blocks; n++) {
 		for (int m = 0; m < dimensions; m++) {
 			unpack_binary_to_struct(input_stream, int_buffer);
 			extents[m][n] = int_buffer.value;
 		}
 	}
-	fortran_input.record_end(input_stream);
+	fortran_input.record_close(input_stream);
 
 	try {
 		for (int n = 0; n < number_of_blocks; n++) {
@@ -235,7 +235,7 @@ void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std:
 			};
 
 
-			fortran_input.record_start(input_stream);
+			fortran_input.record_open(input_stream);
 			apply_function_to_input_array(i_ext, j_ext, k_ext,
 				[&](int i, int j, int k, std::ifstream & input) { read_bin(i, j, k, input, 0); },
 				input_stream);
@@ -264,7 +264,7 @@ void HBTK::Plot3D::Plot3DParser::parse_binary(std::ifstream & input_stream, std:
 					if (!function(mesh2d)) break;
 				}
 			}
-			fortran_input.record_end(input_stream);
+			fortran_input.record_close(input_stream);
 		} // End For over mesh blocks
 	} // End try
 	catch(...) { throw 1; }
