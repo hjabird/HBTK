@@ -62,13 +62,6 @@ namespace HBTK {
 		// before its start.
 		void record_close_reverse(std::ifstream & input_stream);
 
-		// When you've reached the expected end of the record,
-		// call record_end(input_stream) and the record end will be
-		// checked.
-		// Curser left at the end of the closing record header.
-		// Returns length of record in bytes.
-		void record_close(std::ifstream & input_stream);
-
 		// Jump back to the beginning of the current record.
 		// Returns length of record in bytes.
 		// Curser left at the beginning of the record's data.

@@ -1,6 +1,6 @@
 #pragma once
 /*////////////////////////////////////////////////////////////////////////////
-StructuredMeshValueBlockND.h
+StructuredValueBlockND.h
 
 A class to represent a value field in a structured mesh.
 
@@ -31,6 +31,8 @@ SOFTWARE.
 #include <iterator>
 #include <vector>
 
+#include "StructuredBlockIndexerND.h"
+
 
 namespace HBTK {
 	template<int TNumDimensions, typename TType>
@@ -51,8 +53,6 @@ namespace HBTK {
 
 		// Swap local coordinates around
 		void swap(int first_dim, int second_dim);
-
-
 
 	private:
 		std::array<int, TNumDimensions> m_extents;
@@ -157,17 +157,8 @@ namespace HBTK {
 		std::array<int, TNumDimensions> index)
 	{
 		assert_valid_extents(extent);
-
-		int linear_index(0);
-		int product(0);
-
-		for (int i = 0; i < TNumDimensions; i++) {
-			product = index[i];
-			for (int j = 0; j < i; j++) { product *= extent[j]; }
-			linear_index += product;
-		}
-
-		return linear_index;
+		HBTK::StructuredBlockIndexerND<TNumDimensions> indexer(extent);
+		return indexer.coordinate_index(index);
 	}
 
 	template<int TNumDimensions, typename TType>
@@ -175,21 +166,9 @@ namespace HBTK {
 		std::array<int, TNumDimensions> extent, int linear_index)
 	{
 		assert_valid_extents(extent);
-		assert(linear_index > 0);
-		int size(1);
-		for (int ext : extent) { size *= ext; }
-		assert(linear_index < size);
-
-		std::array<int, TNumDimensions> coordinate;
-		int mutable_idx = linear_index;
-		for (int i = 0; i < TNumDimensions; i++) {
-			coordinate[i] = mutable_idx % extent[i];
-			mutable_idx -= coordinate[i];
-			mutable_idx /= extent[i];
-		}
-
-		assert(linear_index == generate_linear_index(extent, coordinate));
-		return coordinate;
+		
+		HBTK::StructuredBlockIndexerND<TNumDimensions> indexer(extent);
+		return indexer.linear_index(linear_index);
 	}
 
 	template<int TNumDimensions, typename TType>
