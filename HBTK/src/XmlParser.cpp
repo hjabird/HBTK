@@ -45,7 +45,7 @@ HBTK::Xml::XmlParser::~XmlParser()
 std::istream & HBTK::Xml::XmlParser::xml_input_stream()
 {
 	assert(m_input_stream != NULL);
-	*m_input_stream;
+	return *m_input_stream;
 }
 
 void HBTK::Xml::XmlParser::main_parser(std::ifstream & input_stream, std::ostream & error_stream)
