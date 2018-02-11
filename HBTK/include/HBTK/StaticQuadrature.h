@@ -76,8 +76,6 @@ namespace HBTK {
 	template<typename TyFunc>
 	inline double StaticQuadrature::integrate(TyFunc & my_function)
 	{
-		static_assert(std::is_function<my_function>::value, "Input must be a function");
-		static_assert(std::is_floating_point<decltype(my_function(0.0))>::value, "Must return float.")
 		return HBTK::static_integrate(my_function, m_points, m_weights, num_points());
 	}
 } // End namespace HBTK

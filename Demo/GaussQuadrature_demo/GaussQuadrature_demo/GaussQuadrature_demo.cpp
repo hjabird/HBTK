@@ -16,8 +16,11 @@ int main()
 		std::cout << "Copyright HJA Bird 2018\n\n";
     }
 
+	HBTK::StaticQuadrature quad = HBTK::gauss_hermite(4);
 	std::vector<double> points, weights;
-	std::tie(points, weights) = HBTK::gauss_chebyshev1(5);
+	std::tie(points, weights) = quad.get_quadrature();
+	auto simple = [](double x) { return exp(-(x*x)); };
+	double result = quad.integrate(simple);
 
 	for (int i = 0; i < (int)points.size(); i++) {
 		std::cout << points[i] << "\t" << weights[i] << "\n";

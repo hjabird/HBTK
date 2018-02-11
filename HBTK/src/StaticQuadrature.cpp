@@ -1,4 +1,4 @@
-#include "..\include\HBTK\StaticQuadrature.h"
+#include "StaticQuadrature.h"
 /*////////////////////////////////////////////////////////////////////////////
 StaticQuadrature.h
 
@@ -116,7 +116,7 @@ void HBTK::StaticQuadrature::telles_cubic_remap(double singularity_position)
 	assert(HBTK::check_finite(m_lower_bound));
 	assert(HBTK::check_finite(m_upper_bound));
 	assert((singularity_position == m_lower_bound) || (singularity_position == m_upper_bound));
-	double m_original_upper, m_original_lower, remaped_sing_pos;
+	double m_original_upper, m_original_lower;
 	m_original_upper = m_upper_bound;
 	m_original_lower = m_lower_bound;
 	double dummy_weight;

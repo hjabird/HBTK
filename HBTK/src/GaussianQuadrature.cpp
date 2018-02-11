@@ -89,7 +89,8 @@ HBTK::StaticQuadrature HBTK::gauss_jacobi(int num_terms, double alpha, double be
 	auto a_i = [=](int k) {return B(k) * C(k) / A(k); }; // On k = 1, we get a problem with zeros..
 	auto b_i = [=](int k) {return B(k) * D(k) / A(k); };
 	auto c_i = [=](int k) {return E(k) / A(k); };
-	return recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, jacobi_integral(alpha, beta));
+	auto quad = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, jacobi_integral(alpha, beta));
+	return StaticQuadrature(std::get<0>(quad), std::get<1>(quad), -1, 1);
 }
 
 HBTK::StaticQuadrature HBTK::gauss_generalised_laguerre(int num_terms, double alpha)
