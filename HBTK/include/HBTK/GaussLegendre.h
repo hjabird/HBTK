@@ -29,13 +29,14 @@ SOFTWARE.
 #include <array>
 #include <vector>
 #include "Constants.h"
+#include "StaticQuadrature.h"
 #include "Tolerances.h"
 
 namespace HBTK {
 
 	// DECLARATIONS
 
-	std::pair<std::vector<double>, std::vector<double>> gauss_legendre(int n_points);
+	StaticQuadrature gauss_legendre(int n_points);
 
 	template <typename Ty, typename TyStor>
 	constexpr void gauss_legendre(int n_points, TyStor & points, 

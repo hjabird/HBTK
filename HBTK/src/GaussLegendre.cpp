@@ -27,11 +27,11 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 #include <tuple>
 
-std::pair<std::vector<double>, std::vector<double>> HBTK::gauss_legendre(int n_points)
+HBTK::StaticQuadrature HBTK::gauss_legendre(int n_points)
 {
-	std::pair<std::vector<double>, std::vector<double>> quadrature;
-	quadrature.first.resize(n_points);
-	quadrature.second.resize(n_points);
-	gauss_legendre<double>(n_points, quadrature.first, quadrature.second);
-	return quadrature;
+	std::vector<double> points, weights;
+	points.resize(n_points);
+	weights.resize(n_points);
+	gauss_legendre<double>(n_points, points, weights);
+	return StaticQuadrature(points, weights, -1, 1);
 }
