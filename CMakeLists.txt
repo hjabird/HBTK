@@ -21,10 +21,10 @@ add_subdirectory(Demo)
 add_subdirectory (HBTK)
  
 # Turn on CMake testing capabilities
-#enable_testing()
+# enable_testing()
  
 # Add test cases
 #add_test(AppTest1 ${PROJECT_BINARY_DIR}/bin/app 100)
 #add_test(AppTest2 ${PROJECT_BINARY_DIR}/bin/app 200)
-#add_test(AppTest3 ${PROJECT_BINARY_DIR}/bin/app 300)cmake_minimum_required (VERSION 2.6)
+#add_test(AppTest3 ${PROJECT_BINARY_DIR}/bin/app 300)
 

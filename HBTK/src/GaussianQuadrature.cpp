@@ -26,54 +26,80 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
-#include <cassert>
 #include <algorithm>
+#include <cassert>
+#include <iostream>
 #include "Generators.h"
 
 std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_laguerre(int num_terms)
 {
-	assert(false); // This code is not ready for use yet.
-	return generalised_gauss_laguerre(num_terms, 0.0);
+	return gauss_generalised_laguerre(num_terms, 0.0);
+}
+
+std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_hermite(int num_terms)
+{
+	assert(num_terms >= 0);
+	auto a_i = [=](int k)->double {(void)k;  return 2; };
+	auto b_i = [=](int k)->double {(void)k; return 0; };
+	auto c_i = [=](int k)->double {return 2 * (k - 1); };
+
+	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, sqrt(HBTK::Constants::pi()));
+	return return_value;
+}
+
+std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_chebyshev1(int num_terms)
+{
+	assert(num_terms >= 0);
+	auto a_i = [=](int k)->double {(void)k; return 2; };
+	auto b_i = [=](int k)->double {(void)k; return 0; };
+	auto c_i = [=](int k)->double {(void)k; return 1; };
+
+	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, HBTK::Constants::pi());
+	return return_value;
+}
+
+std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_chebyshev2(int num_terms)
+{
+	assert(num_terms >= 0);
+	auto a_i = [=](int k)->double {return (2 * k + 2) / (k + 1); };
+	auto b_i = [=](int k)->double {(void)k; return 0; };
+	auto c_i = [=](int k)->double {(void)k; return 1; };
+
+	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, HBTK::Constants::pi()/2);
+	return return_value;
+}
+
+std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_gegenbauer(int num_terms, double alpha)
+{
+	return gauss_jacobi(num_terms, alpha, alpha);
 }
 
 std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_jacobi(int num_terms, double alpha, double beta)
 {
-	assert(false); // Untested. Not ready for use.
 	assert(num_terms > 0);
 	const int n = num_terms;
+	// Recurrence relation is taken from Wikipedia and valid for k >= 2.
 	auto A = [=](int k) {return 2 * k*(k + alpha + beta)*(2 * k + alpha + beta - 2); };
 	auto B = [=](int k) {return 2 * k + alpha + beta - 1; };
 	auto C = [=](int k) {return (2 * k + alpha + beta)*(2 * k + alpha + beta - 2); };
 	auto D = [=](int k) {(void)k;  return alpha * alpha - beta * beta; };
 	auto E = [=](int k) {return 2 * (k + alpha - 1)*(k + beta - 1)*(2 * k + alpha + beta); };
 
-	auto a_i = [=](int k) {return B(k) * C(k) / A(k); };
+	auto a_i = [=](int k) {return B(k) * C(k) / A(k); }; // On k = 1, we get a problem with zeros..
 	auto b_i = [=](int k) {return B(k) * D(k) / A(k); };
 	auto c_i = [=](int k) {return E(k) / A(k); };
 	return recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, jacobi_integral(alpha, beta));
 }
 
-std::tuple<std::vector<double>, std::vector<double>> HBTK::generalised_gauss_laguerre(int num_terms, double alpha)
+std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_generalised_laguerre(int num_terms, double alpha)
 {
-	assert(false); // Yeilds incorrect result.
 	assert(num_terms >= 0);
 	assert(alpha > -1);
-	auto a_i = [](int k)->double {return -1.0 / k; };
+	auto a_i = [=](int k)->double {return -1.0 / k; };
 	auto b_i = [=](int k)->double {return 2 + (alpha - 1.0)/k; };
 	auto c_i = [=](int k)->double {return 1 + (alpha - 1.0)/k; };
 
 	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, std::tgamma(alpha + 1));
-	return return_value;
-}
-
-std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_legendre_from_jacobi(int num_terms)
-{
-	assert(num_terms >= 0);
-	auto a_i = [](int k)->double {return (2 * k - 1.0) / k; };
-	auto b_i = [](int k)->double {(void)k; return 0.0; };
-	auto c_i = [](int k)->double {return (k - 1.0) / k; };
-
-	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, 2.0);
 	return return_value;
 }
 
@@ -83,9 +109,6 @@ HBTK::recurrence_relation_to_quadrature(std::function<double(int)> a_i,
 	std::function<double(int)> c_i,
 	int number_of_terms, double domain_weight_integral)
 {
-	assert(false); //Weight calculation is wrong - needs integral of 
-	// weight function instead of just "2" (correct for Gauss Legendre).
-	// Based on Golub & Welsch 1969.
 	assert(number_of_terms > 0);
 	std::vector<double> diagonal, off_diagonal;
 
@@ -98,6 +121,8 @@ HBTK::recurrence_relation_to_quadrature(std::function<double(int)> a_i,
 	for (int idx = 1; idx <= number_of_terms - 1; idx++) {
 		off_diagonal[idx - 1] = sqrt(c_i(idx + 1) / (a_i(idx) * (a_i(idx + 1))));
 	}
+	assert(HBTK::check_finite(diagonal));
+	assert(HBTK::check_finite(off_diagonal));
 	auto result = jacobi_tridiagonal_to_quadrature(off_diagonal, diagonal);
 	std::transform(std::get<1>(result).begin(), std::get<1>(result).end(), std::get<1>(result).begin(),
 		[=](double w_i)->double { return domain_weight_integral * w_i * w_i; });
@@ -194,12 +219,13 @@ HBTK::jacobi_tridiagonal_to_quadrature(std::vector<double> off_diagonal, std::ve
 double HBTK::jacobi_integral(double alpha, double beta)
 {
 	auto fact = [](int n)->int {
-		int f = n;
-		for (int i = n - 1; i > 0; i--) { f *= i; }
+		assert(n >= 0);
+		int f = 1;
+		for (int i = 2; i <= n; i++) { f *= i; }
 		return f;
 	};
 
-	double result =0;
+	double result = 0;
 	if (std::round(alpha) == alpha) {
 		if (beta < 0) { assert(-beta > alpha); }
 		result = fact((int)alpha) * pow(2, alpha + beta + 1) / (alpha + beta + 1);
@@ -224,7 +250,5 @@ double HBTK::jacobi_integral(double alpha, double beta)
 		else { assert(false); }
 	}
 	else { assert(false); } // Perhaps numerically integrate?
-
-
 	return result;
 }
