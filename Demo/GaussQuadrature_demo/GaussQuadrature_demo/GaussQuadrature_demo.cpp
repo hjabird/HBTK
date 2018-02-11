@@ -17,7 +17,7 @@ int main()
     }
 
 	std::vector<double> points, weights;
-	std::tie(points, weights) = HBTK::gauss_chebyshev1(4);
+	std::tie(points, weights) = HBTK::gauss_chebyshev1(5);
 
 	for (int i = 0; i < (int)points.size(); i++) {
 		std::cout << points[i] << "\t" << weights[i] << "\n";

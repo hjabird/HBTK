@@ -30,6 +30,7 @@ SOFTWARE.
 #include <functional>
 // It'd be confusing if including Gauss quadrature did not include Gauss_Legendre.
 #include "GaussLegendre.h"
+#include "StaticQuadrature.h"
 
 namespace HBTK {
 	/*	From GaussLegendre.h:
@@ -37,26 +38,19 @@ namespace HBTK {
 		gauss_legendre(int num_terms);
 	*/
 
-	std::tuple<std::vector<double>, std::vector<double>>
-		gauss_laguerre(int num_terms);
+	StaticQuadrature gauss_laguerre(int num_terms);
 
-	std::tuple<std::vector<double>, std::vector<double>>
-		gauss_hermite(int num_terms);
+	StaticQuadrature gauss_hermite(int num_terms);
 
-	std::tuple<std::vector<double>, std::vector<double>>
-		gauss_chebyshev1(int num_terms);
+	StaticQuadrature gauss_chebyshev1(int num_terms);
 
-	std::tuple<std::vector<double>, std::vector<double>>
-		gauss_chebyshev2(int num_terms);
+	StaticQuadrature gauss_chebyshev2(int num_terms);
 
-	std::tuple<std::vector<double>, std::vector<double>>
-		gauss_gegenbauer(int num_terms, double alpha);
+	StaticQuadrature gauss_gegenbauer(int num_terms, double alpha);
 
-	std::tuple<std::vector<double>, std::vector<double>>
-		gauss_generalised_laguerre(int num_terms, double alpha);
+	StaticQuadrature gauss_generalised_laguerre(int num_terms, double alpha);
 
-	std::tuple<std::vector<double>, std::vector<double>>
-		gauss_jacobi(int num_terms, double alpha, double beta);
+	StaticQuadrature gauss_jacobi(int num_terms, double alpha, double beta);
 
 
 	// Internal functions. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

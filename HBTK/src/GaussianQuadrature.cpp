@@ -28,15 +28,15 @@ SOFTWARE.
 
 #include <algorithm>
 #include <cassert>
-#include <iostream>
+
 #include "Generators.h"
 
-std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_laguerre(int num_terms)
+HBTK::StaticQuadrature HBTK::gauss_laguerre(int num_terms)
 {
 	return gauss_generalised_laguerre(num_terms, 0.0);
 }
 
-std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_hermite(int num_terms)
+HBTK::StaticQuadrature HBTK::gauss_hermite(int num_terms)
 {
 	assert(num_terms >= 0);
 	auto a_i = [=](int k)->double {(void)k;  return 2; };
@@ -44,10 +44,11 @@ std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_hermite(int num
 	auto c_i = [=](int k)->double {return 2 * (k - 1); };
 
 	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, sqrt(HBTK::Constants::pi()));
-	return return_value;
+	return StaticQuadrature(std::get<0>(return_value), std::get<1>(return_value),
+		-std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity());
 }
 
-std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_chebyshev1(int num_terms)
+HBTK::StaticQuadrature HBTK::gauss_chebyshev1(int num_terms)
 {
 	assert(num_terms >= 0);
 	auto a_i = [=](int k)->double {(void)k; return 2; };
@@ -55,10 +56,10 @@ std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_chebyshev1(int 
 	auto c_i = [=](int k)->double {(void)k; return 1; };
 
 	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, HBTK::Constants::pi());
-	return return_value;
+	return StaticQuadrature(std::get<0>(return_value), std::get<1>(return_value), -1, 1);
 }
 
-std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_chebyshev2(int num_terms)
+HBTK::StaticQuadrature HBTK::gauss_chebyshev2(int num_terms)
 {
 	assert(num_terms >= 0);
 	auto a_i = [=](int k)->double {return (2 * k + 2) / (k + 1); };
@@ -66,15 +67,15 @@ std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_chebyshev2(int 
 	auto c_i = [=](int k)->double {(void)k; return 1; };
 
 	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, HBTK::Constants::pi()/2);
-	return return_value;
+	return StaticQuadrature(std::get<0>(return_value), std::get<1>(return_value), -1, 1);
 }
 
-std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_gegenbauer(int num_terms, double alpha)
+HBTK::StaticQuadrature HBTK::gauss_gegenbauer(int num_terms, double alpha)
 {
 	return gauss_jacobi(num_terms, alpha, alpha);
 }
 
-std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_jacobi(int num_terms, double alpha, double beta)
+HBTK::StaticQuadrature HBTK::gauss_jacobi(int num_terms, double alpha, double beta)
 {
 	assert(num_terms > 0);
 	const int n = num_terms;
@@ -91,7 +92,7 @@ std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_jacobi(int num_
 	return recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, jacobi_integral(alpha, beta));
 }
 
-std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_generalised_laguerre(int num_terms, double alpha)
+HBTK::StaticQuadrature HBTK::gauss_generalised_laguerre(int num_terms, double alpha)
 {
 	assert(num_terms >= 0);
 	assert(alpha > -1);
@@ -100,7 +101,8 @@ std::tuple<std::vector<double>, std::vector<double>> HBTK::gauss_generalised_lag
 	auto c_i = [=](int k)->double {return 1 + (alpha - 1.0)/k; };
 
 	auto return_value = recurrence_relation_to_quadrature(a_i, b_i, c_i, num_terms, std::tgamma(alpha + 1));
-	return return_value;
+	return StaticQuadrature(std::get<0>(return_value), std::get<1>(return_value), 
+		0, std::numeric_limits<double>::infinity());
 }
 
 std::tuple<std::vector<double>, std::vector<double>> 
@@ -142,7 +144,6 @@ HBTK::jacobi_tridiagonal_to_quadrature(std::vector<double> off_diagonal, std::ve
 	// Outputs points and almost_weights
 	// So called almost_weights because they need to be multiplied by the integral 
 	// of the wieght funtion over the orthogonality domain.
-
 
 	assert(off_diagonal.size() == diagonal.size() - 1);
 	off_diagonal.push_back(0);
