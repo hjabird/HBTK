@@ -111,7 +111,7 @@ namespace HBTK {
 	decltype(auto) apply_diff_weights_and_vertices(TFunc function, TIn position, TArr vertices, TArr weights)
 	{
 		TIn h = pow(HBTK::tolerance<TIn>(), 1./(2*Torder));
-		static_assert(std::is_floating_point<decltype(h)>::value);
+		static_assert(std::is_floating_point<decltype(h)>::value, "Needs floating point.");
 		std::result_of<TFunc(TIn)>::type result = 0;
 		for (int idx = 0; idx < (int) vertices.size(); idx++) {
 			result += function(vertices[idx] * h + position) * weights[idx];
