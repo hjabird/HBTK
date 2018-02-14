@@ -40,7 +40,7 @@ namespace HBTK {
 
 		// Integrate a function:
 		template<typename TyFunc>
-		double integrate(TyFunc & my_function);
+		decltype(auto) integrate(TyFunc & my_function);
 
 		// Get the points and weights from the quadrature.
 		std::pair<std::vector<double>, std::vector<double>> get_quadrature() const;
@@ -74,7 +74,7 @@ namespace HBTK {
 
 	};
 	template<typename TyFunc>
-	inline double StaticQuadrature::integrate(TyFunc & my_function)
+	inline decltype(auto) StaticQuadrature::integrate(TyFunc & my_function)
 	{
 		return HBTK::static_integrate(my_function, m_points, m_weights, num_points());
 	}

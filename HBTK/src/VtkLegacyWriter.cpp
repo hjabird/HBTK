@@ -29,6 +29,7 @@ SOFTWARE.
 #include "StructuredBlockIndexerND.h"
 
 HBTK::Vtk::VtkWriter::VtkWriter()
+	: file_description("A_VTK_FILE: Set HBTK::Vtk::VtkWriter.file_description for custom description.")
 {
 }
 
@@ -36,20 +37,15 @@ HBTK::Vtk::VtkWriter::~VtkWriter()
 {
 }
 
-void HBTK::Vtk::VtkWriter::open_file(std::unique_ptr<std::ostream> ostream)
+void HBTK::Vtk::VtkWriter::open_file(std::ostream * ostream)
 {
-	*ostream << "#vtk Datafile version 2.0\n";
-	*ostream << file_description.c_str << "\n";
+	*ostream << "# vtk DataFile Version 2.0\n";
+	*ostream << file_description.c_str() << "\n";
 	bool write_binary = false;
 	*ostream << (write_binary ? "BINARY\n" : "ASCII\n");
 	m_writing_binary = write_binary;
-	m_ostream = std::move(ostream);
+	m_ostream = ostream;
 	return;
-}
-
-std::unique_ptr<std::ostream> HBTK::Vtk::VtkWriter::close_file()
-{
-	return std::move(m_ostream);
 }
 
 void HBTK::Vtk::VtkWriter::write_mesh(StructuredMeshBlock3D & mesh)
@@ -61,8 +57,9 @@ void HBTK::Vtk::VtkWriter::write_mesh(StructuredMeshBlock3D & mesh)
 	*m_ostream << "POINTS " << extent[0] * extent[1] * extent[2] << " float\n";
 
 	StructuredBlockIndexerND<3> index(extent);
-	for (auto idx: index) {
-		std::array<double, 3> coord = mesh.coord(idx);
+	int size = index.size();
+	for (int i = 0; i < size; i++) {
+		std::array<double, 3> coord = mesh.coord(index.linear_index(i));
 		*m_ostream << coord[0] << " " << coord[1] << " " << coord[2] << "\n";
 	}
 	return;
@@ -70,12 +67,13 @@ void HBTK::Vtk::VtkWriter::write_mesh(StructuredMeshBlock3D & mesh)
 
 void HBTK::Vtk::VtkWriter::append_structured_scalar_data(StructuredValueBlockND<3, double>& meshdata, std::string name)
 {
-	*m_ostream << "SCALARS " << name.c_str << " float\n";
+	*m_ostream << "SCALARS " << name.c_str() << " float\n";
 	*m_ostream << "LOOKUP_TABLE default\n";
 	
-	StructuredBlockIndexerND<3> index(meshdata.extent());
-	for (auto idx : index) {
-		*m_ostream << meshdata.value(idx) << "\n";
+	StructuredBlockIndexerND<3> index(meshdata.extent());	
+	int size = index.size();
+	for (int i = 0; i < size; i++) {
+		*m_ostream << meshdata.value(index.linear_index(i)) << "\n";
 	}
 	return;
 }

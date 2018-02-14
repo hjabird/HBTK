@@ -49,7 +49,7 @@ namespace HBTK {
 		std::array<int, TNumDimensions> extents();
 
 		constexpr StructuredBlockIndexerND<TNumDimensions> begin();
-		constexpr StructuredBlockIndexerND<TNumDimensions> end();
+		StructuredBlockIndexerND<TNumDimensions> end();
 		StructuredBlockIndexerND<TNumDimensions>& operator++();
 		StructuredBlockIndexerND<TNumDimensions>& operator--();
 
@@ -112,7 +112,7 @@ namespace HBTK {
 	template<int TNumDimensions>
 	inline std::array<int, TNumDimensions> StructuredBlockIndexerND<TNumDimensions>::linear_index(int idx)
 	{
-		assert(idx > 0);
+		assert(idx >= 0);
 		assert(idx < size());
 		
 		std::array<int, TNumDimensions> coordinate;
@@ -131,7 +131,7 @@ namespace HBTK {
 	{
 		for (int i = 0; i < (int)coordinate.size(); i++) {
 			assert(coordinate[i] >= 0);
-			assert(i < m_extents[i]);
+			assert(coordinate[i] < m_extents[i]);
 		}
 		int index = 0;
 		int stride = 1;
@@ -167,13 +167,15 @@ namespace HBTK {
 	{
 		std::array<int, TNumDimensions> a;
 		for (int &i : a) { i = 0; }
-		return a;
+		return StructuredBlockIndexerND<TNumDimensions>(a);
 	}
 
 	template<int TNumDimensions>
-	inline constexpr StructuredBlockIndexerND<TNumDimensions> StructuredBlockIndexerND<TNumDimensions>::end()
+	inline StructuredBlockIndexerND<TNumDimensions> StructuredBlockIndexerND<TNumDimensions>::end()
 	{
-		return m_extents;
+		StructuredBlockIndexerND<TNumDimensions> returnable(m_extents, m_indexing_order);
+		returnable.m_index = m_index;
+		return returnable;
 	}
 
 	template<int TNumDimensions>
@@ -184,7 +186,7 @@ namespace HBTK {
 			if (m_index[i] < m_extents[i]) break;
 			m_index[i] = 0;
 		}
-		return *this;
+		return *(this);
 	}
 
 	template<int TNumDimensions>
@@ -202,7 +204,7 @@ namespace HBTK {
 	inline constexpr bool StructuredBlockIndexerND<TNumDimensions>::operator==(const StructuredBlockIndexerND<TNumDimensions>& other)
 	{
 		assert(this->m_extents == other.m_extents);
-		return m_index == *other;
+		return m_index == other.m_index;
 	}
 
 	template<int TNumDimensions>
@@ -214,7 +216,7 @@ namespace HBTK {
 	template<int TNumDimensions>
 	inline constexpr bool StructuredBlockIndexerND<TNumDimensions>::operator>(const StructuredBlockIndexerND<TNumDimensions>&)
 	{
-		assert(extents() == other.extentx());
+		assert(extents() == other.extents());
 		int pos_this, pos_other;
 		pos_this = coordinate_index(m_index);
 		pos_other = other.coordinate_index(*other);
@@ -222,12 +224,12 @@ namespace HBTK {
 	}
 
 	template<int TNumDimensions>
-	inline constexpr bool StructuredBlockIndexerND<TNumDimensions>::operator<(const StructuredBlockIndexerND<TNumDimensions>&)
+	inline constexpr bool StructuredBlockIndexerND<TNumDimensions>::operator<(const StructuredBlockIndexerND<TNumDimensions>& other)
 	{
 		assert(extents() == other.extents());
 		int pos_this, pos_other;
 		pos_this = coordinate_index(m_index);
-		pos_other = other.coordinate_index(*other);
+		pos_other = other.coordinate_index(other.operator*());
 		return pos_this < pos_other;
 	}
 

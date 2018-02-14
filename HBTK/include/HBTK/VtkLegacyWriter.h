@@ -41,8 +41,7 @@ namespace HBTK {
 			// bool write_binary;
 			std::string file_description;
 
-			void open_file(std::unique_ptr<std::ostream> ostream);
-			std::unique_ptr<std::ostream> close_file();
+			void open_file(std::ostream * ostream);
 
 			// Structured mesh:
 			void write_mesh(StructuredMeshBlock3D & mesh);
@@ -52,7 +51,7 @@ namespace HBTK {
 			bool m_writing_binary;
 			bool m_mesh_written;
 
-			std::unique_ptr<std::ostream> m_ostream;
+			std::ostream * m_ostream;
 
 
 
