@@ -52,7 +52,7 @@ int HBTK::DoubleTable::number_of_rows()
 	assert(check_matching_sizes());
 	int max = 0;
 	for (int i = 0; i < (int)m_data.size(); i++) {
-		if ((int)m_data[i].size() > max) max = (int)m_data.size();
+		if ((int)m_data[i].size() > max) max = (int)m_data[i].size();
 	}
 	return max;
 }
@@ -136,7 +136,7 @@ std::vector<double>& HBTK::DoubleTable::column(std::string column_name)
 
 std::vector<double> HBTK::DoubleTable::read_row(int index)
 {
-	assert(index);
+	assert(index >= 0);
 	std::vector<double> row(number_of_columns());
 	for (int i = 0; i < number_of_columns(); i++) {
 		if (index >= (int)m_data[i].size()) {
