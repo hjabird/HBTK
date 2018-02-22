@@ -1,5 +1,4 @@
 #include "..\include\HBTK\DoubleTable.h"
-#pragma once
 /*////////////////////////////////////////////////////////////////////////////
 DoubleTable.cpp
 
@@ -61,7 +60,7 @@ int HBTK::DoubleTable::number_of_rows(std::string column_name)
 {
 	int idx = column_index(column_name);
 	if (idx == -1) {
-		std::invalid_argument("HBTK::DoubleTable::number_of_rows(column_name): "
+		throw std::invalid_argument("HBTK::DoubleTable::number_of_rows(column_name): "
 			"string argument column heading (" + column_name + ") did not match"
 			" the name of any columns in the table. " __FILE__ ":" +
 			std::to_string(__LINE__));
@@ -101,7 +100,7 @@ void HBTK::DoubleTable::add_row(std::vector<double> row_data)
 {
 	assert(check_matching_sizes());
 	if ((int)row_data.size() != number_of_columns()) {
-		std::length_error("HBTK::DoubleTable::add_row(row_data):"
+		throw std::length_error("HBTK::DoubleTable::add_row(row_data):"
 			" row_data size (" + std::to_string(row_data.size()) + ") does not "
 			"match the number of columns in the table (" + std::to_string(number_of_columns())
 			+ "). " __FILE__ ":" + std::to_string(__LINE__));
@@ -121,6 +120,11 @@ std::vector<double>& HBTK::DoubleTable::operator[](int column_index)
 std::vector<double>& HBTK::DoubleTable::operator[](std::string column_name)
 {
 	int col_idx = column_index(column_name);
+	if (col_idx < 0) {
+		throw std::range_error("HBTK::DoubleTable::operator[](std::string column_name):"
+			" column_name " + column_name + " is not a header in the table. "
+			__FILE__ ":" + std::to_string(__LINE__));
+	}
 	return operator[](col_idx);
 }
 
@@ -154,7 +158,7 @@ void HBTK::DoubleTable::set_row(std::vector<double> row, int index)
 {
 	assert(index >= 0);
 	if ((int)row.size() != number_of_columns()) {
-		std::length_error("HBTK::DoubleTable::set_row(row_data, index):"
+		throw std::length_error("HBTK::DoubleTable::set_row(row_data, index):"
 			" row_data size (" + std::to_string(row.size()) + ") does not "
 			"match the number of columns in the table (" + std::to_string(number_of_columns())
 			+ "). " __FILE__ ":" + std::to_string(__LINE__));
@@ -206,7 +210,7 @@ double HBTK::DoubleTable::fill_value(std::string column_heading)
 {
 	int idx = column_index(column_heading);
 	if (idx == -1) {
-		std::invalid_argument("HBTK::DoubleTable::fill_value(column_heading): "
+		throw std::invalid_argument("HBTK::DoubleTable::fill_value(column_heading): "
 			"string argument column heading (" + column_heading + ") did not match"
 			" the name of any columns in the table. " __FILE__ ":" + 
 			std::to_string(__LINE__));
