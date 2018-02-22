@@ -44,6 +44,8 @@ namespace HBTK {
 		// both ends.
 		CubicSpline1D(std::vector<double> point_locations,
 			std::vector<double> point_values);
+		// Copy constructor
+		const CubicSpline1D(const CubicSpline1D & other);
 
 		~CubicSpline1D();
 

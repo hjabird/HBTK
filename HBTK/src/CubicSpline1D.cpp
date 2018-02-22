@@ -105,6 +105,17 @@ HBTK::CubicSpline1D::CubicSpline1D(std::vector<double> point_locations, std::vec
 {
 }
 
+HBTK::CubicSpline1D::CubicSpline1D(const CubicSpline1D & other)
+	: m_natural_bc_x0(other.m_natural_bc_x0),
+	m_natural_bc_xn(other.m_natural_bc_xn),
+	m_point_locations(other.m_point_locations),
+	m_point_values(other.m_point_values),
+	m_derivative_x0(other.m_derivative_x0),
+	m_derivative_xn(other.m_derivative_xn),
+	m_derivatives_computed(other.m_derivatives_computed)
+{
+}
+
 HBTK::CubicSpline1D::~CubicSpline1D()
 {
 }
