@@ -78,8 +78,8 @@ void HBTK::AerofoilParser::main_parser(std::istream input, std::ostream error_st
 			if (format == Unknown) {
 				if (x > 0) {
 					format = Lednicer;
-					upper_points = x;
-					lower_points = y;
+					upper_points = (int) x;
+					lower_points = (int) y;
 					continue;
 				}
 				else {

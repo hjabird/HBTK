@@ -74,6 +74,19 @@ void HBTK::CubicSpline1D::compute_second_derivatives()
 	return;
 }
 
+void HBTK::CubicSpline1D::check_computed_blocking()
+{
+	bool checking_mutex = true;
+	while (checking_mutex) {
+		if (m_derivatives_computed) break;
+		if (m_deriv_compute_mutex.try_lock()) {
+			compute_second_derivatives();
+			m_deriv_compute_mutex.unlock();
+		}
+	}
+	return;
+}
+
 HBTK::CubicSpline1D::CubicSpline1D(std::vector<double> point_locations, 
 	std::vector<double> point_values, double derivative_x0, double derivative_xn)
 	: m_natural_bc_x0(false),
@@ -127,15 +140,7 @@ double HBTK::CubicSpline1D::operator()(double location)
 
 double HBTK::CubicSpline1D::evaluate(double location)
 {
-	bool checking_mutex = true;
-	while (checking_mutex) {
-		if (m_derivatives_computed) break;
-		if (m_deriv_compute_mutex.try_lock()) {
-			compute_second_derivatives();
-			m_deriv_compute_mutex.unlock();
-		}
-	}
-
+	check_computed_blocking();
 	int klo, khi, k;
 	double h, b, a, y;
 
@@ -154,6 +159,34 @@ double HBTK::CubicSpline1D::evaluate(double location)
 	y = a * m_point_values[klo] + b * m_point_values[khi]
 		+ ((a * a * a - a) * m_second_derivatives[klo]
 			+ (b * b * b - b) * m_second_derivatives[khi])
+		* (h * h) / 6.0;
+	return y;
+}
+
+double HBTK::CubicSpline1D::derivative(double location)
+{
+	// Differentiated from above.
+	check_computed_blocking();
+	int klo, khi, k;
+	double h, a, b, da, db, y;
+
+	// Bracketing of k in m_point_location
+	klo = 1;
+	khi = (int)m_point_locations.size();
+	while (khi - klo > 1) {
+		k = (khi + klo) >> 1;
+		if (m_point_locations[k] > location) { khi = k; }
+		else { klo = k; }
+	}
+	// And compute our position on the spline.
+	h = m_point_locations[khi] - m_point_locations[klo];
+	da = -1 / h;
+	db = 1 / h;
+	a = (m_point_locations[khi] - location) / h;
+	b = (location - m_point_locations[klo]) / h;
+	y = da * m_point_values[klo] + db * m_point_values[khi]
+		+ (da * (3 * a * a  - 1) * m_second_derivatives[klo]
+			+ db * (3 * b * b - b) * m_second_derivatives[khi])
 		* (h * h) / 6.0;
 	return y;
 }

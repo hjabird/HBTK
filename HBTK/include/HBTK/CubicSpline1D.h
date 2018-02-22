@@ -49,8 +49,12 @@ namespace HBTK {
 
 		~CubicSpline1D();
 
+		// Evaluate the spline.
 		double operator()(double location);
 		double evaluate(double location);
+
+		// first derivative of the spline:
+		double derivative(double location);
 
 		double lower_input_bound();
 		double upper_input_bound();
@@ -78,6 +82,9 @@ namespace HBTK {
 		void compute_second_derivatives();
 		// Have we computed compute_second_derivatives() yet?
 		volatile bool m_derivatives_computed;
+
+		// Check that the derivatives have been computed and compute if needed.
+		void check_computed_blocking();
 	};
 }
 

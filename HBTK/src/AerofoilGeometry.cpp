@@ -79,7 +79,7 @@ HBTK::AerofoilGeometry::AerofoilGeometry(const std::vector<double> & x_points,
 		m_x_points_upper[split_point - j - 1] = x_points[j];
 		m_z_points_upper[split_point - j - 1] = z_points[j];
 	}
-	for (; j < x_points.size(); j++) {
+	for (; j < (int)x_points.size(); j++) {
 		m_x_points_lower[j - split_point] = x_points[j];
 		m_z_points_lower[j - split_point] = z_points[j];
 	}
@@ -109,10 +109,10 @@ void HBTK::AerofoilGeometry::add_camber(std::function<double(double)> function)
 			__FILE__ ":" + std::to_string(__LINE__));
 	}
 
-	for (int i = 0; i < m_x_points_lower.size(); i++) {
+	for (int i = 0; i < (int) m_x_points_lower.size(); i++) {
 		m_z_points_lower[i] += function(m_x_points_lower[i]);
 	}
-	for (int i = 0; i < m_x_points_lower.size(); i++) {
+	for (int i = 0; i < (int) m_x_points_lower.size(); i++) {
 		m_z_points_upper[i] += function(m_x_points_upper[i]);
 	}
 
@@ -129,10 +129,10 @@ void HBTK::AerofoilGeometry::add_thickness(std::function<double(double)> functio
 			__FILE__ ":" + std::to_string(__LINE__));
 	}
 
-	for (int i = 0; i < m_x_points_lower.size(); i++) {
+	for (int i = 0; i < (int) m_x_points_lower.size(); i++) {
 		m_z_points_lower[i] -= function(m_x_points_lower[i]) / 2;
 	}
-	for (int i = 0; i < m_x_points_lower.size(); i++) {
+	for (int i = 0; i < (int) m_x_points_lower.size(); i++) {
 		m_z_points_upper[i] += function(m_x_points_upper[i]) / 2;
 	}
 
@@ -152,7 +152,7 @@ HBTK::CubicSpline1D HBTK::AerofoilGeometry::get_thickness_spline()
 	}
 	else {
 		std::vector<double> thickness(m_x_points_upper.size());
-		for (int i = 0; i < m_x_points_upper.size(); i++) {
+		for (int i = 0; i < (int) m_x_points_upper.size(); i++) {
 			thickness[i] = m_z_points_upper[i] - m_z_points_lower[i];
 		}
 		return CubicSpline1D(m_x_points_lower, thickness);
@@ -171,7 +171,7 @@ HBTK::CubicSpline1D HBTK::AerofoilGeometry::get_camber_spline()
 	}
 	else {
 		std::vector<double> thickness(m_x_points_upper.size());
-		for (int i = 0; i < m_x_points_upper.size(); i++) {
+		for (int i = 0; i < (int) m_x_points_upper.size(); i++) {
 			thickness[i] = (m_z_points_upper[i] + m_z_points_lower[i]) / 2;
 		}
 		return CubicSpline1D(m_x_points_lower, thickness);
