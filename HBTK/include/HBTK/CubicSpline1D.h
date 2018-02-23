@@ -31,6 +31,8 @@ SOFTWARE.
 namespace HBTK {
 	class CubicSpline1D {
 	public:
+		// Default construct constructs an empty spline.
+		CubicSpline1D();
 		// Construct a spline with derivatives at both bounds defined.
 		CubicSpline1D(std::vector<double> point_locations,
 			std::vector<double> point_values, 

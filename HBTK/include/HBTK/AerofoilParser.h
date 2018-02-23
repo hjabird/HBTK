@@ -41,8 +41,9 @@ namespace HBTK {
 		// The name of the foil as described by the file. 
 		std::string foil_name;
 	protected:
+		friend class BasicParser<AerofoilParser>;
 		// Called by basic parser.
-		void main_parser(std::istream input, std::ostream error_stream);
+		void main_parser(std::istream & input, std::ostream & error_stream);
 		
 		// Where we're dumping our data.
 		AerofoilGeometry & m_foil;

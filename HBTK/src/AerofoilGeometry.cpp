@@ -67,12 +67,12 @@ HBTK::AerofoilGeometry::AerofoilGeometry(const std::vector<double> & x_points,
 		}
 		last_x_point = x_points[i];
 	}
-	assert(i < (int)x_points.size());
+	assert(split_point < (int)x_points.size());
 
 	m_x_points_upper.resize(split_point);
 	m_x_points_lower.resize(x_points.size() - split_point);
 	m_z_points_upper.resize(split_point);
-	m_x_points_lower.resize(x_points.size() - split_point);
+	m_z_points_lower.resize(x_points.size() - split_point);
 
 	int j;
 	for (j = 0; j < split_point; j++) {

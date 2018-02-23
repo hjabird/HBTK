@@ -32,7 +32,7 @@ HBTK::AerofoilParser::AerofoilParser(AerofoilGeometry & target)
 {
 }
 
-void HBTK::AerofoilParser::main_parser(std::istream input, std::ostream error_stream)
+void HBTK::AerofoilParser::main_parser(std::istream & input, std::ostream & error_stream)
 {
 	std::string this_line;
 	int line_counter = 0;				// Line counter.
@@ -91,14 +91,14 @@ void HBTK::AerofoilParser::main_parser(std::istream input, std::ostream error_st
 			coordinate_counter++;
 		}
 
-		if (format = Lednicer) {
-			if ((x_coords.size() + y_coords.size()) != (upper_points + lower_points)) {
+		if (format == Lednicer) {
+			if ((x_coords.size()) != (upper_points + lower_points)) {
 				throw std::invalid_argument("HBTK::AerofoilParser::main_parser(...) "
 					"Incorrect number of points found in Lednicer format foil. "
 					"Expected " + std::to_string(upper_points) +
 					" + " + std::to_string(lower_points) + " but recieved "
-					+ std::to_string(x_coords.size() + y_coords.size()) 
-					+ "instead.\n"
+					+ std::to_string(x_coords.size()) 
+					+ " instead.\n"
 					__FILE__ + std::to_string(__LINE__));
 			}
 			std::reverse(x_coords.begin(), x_coords.begin() + upper_points);

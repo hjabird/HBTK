@@ -30,6 +30,7 @@ SOFTWARE.
 void HBTK::CubicSpline1D::compute_second_derivatives()
 {
 	// Based on Numerical Recipes in C "spline" routine.
+	assert(m_point_locations.size() > 1);
 	assert(m_point_locations.size() == m_point_values.size());
 	for (int i = 0; i < (int) m_point_locations.size() - 1; i++) {
 		assert(m_point_locations[i] < m_point_locations[i + 1]);
@@ -87,7 +88,18 @@ void HBTK::CubicSpline1D::check_computed_blocking()
 	return;
 }
 
-HBTK::CubicSpline1D::CubicSpline1D(std::vector<double> point_locations, 
+HBTK::CubicSpline1D::CubicSpline1D()
+	: m_natural_bc_x0(false),
+	m_natural_bc_xn(false),
+	m_point_locations({}),
+	m_point_values({}),
+	m_derivative_x0(NAN),
+	m_derivative_xn(NAN),
+	m_derivatives_computed(false)
+{
+}
+
+HBTK::CubicSpline1D::CubicSpline1D(std::vector<double> point_locations,
 	std::vector<double> point_values, double derivative_x0, double derivative_xn)
 	: m_natural_bc_x0(false),
 	m_natural_bc_xn(false),
@@ -145,10 +157,10 @@ double HBTK::CubicSpline1D::evaluate(double location)
 	double h, b, a, y;
 
 	// Bracketing of k in m_point_location
-	klo = 1;
-	khi = (int) m_point_locations.size();
-	while (khi - klo > 1) {
-		k = (khi + klo) >> 1;
+	klo = 0;
+	khi = (int) m_point_locations.size() -1;
+	while (khi - klo > 1) {		// khi and klo must indicate adjacent indices.
+		k = (khi + klo) / 2;	// Compute midpoint
 		if (m_point_locations[k] > location) { khi = k; }
 		else { klo = k; }
 	}
@@ -171,10 +183,10 @@ double HBTK::CubicSpline1D::derivative(double location)
 	double h, a, b, da, db, y;
 
 	// Bracketing of k in m_point_location
-	klo = 1;
-	khi = (int)m_point_locations.size();
+	klo = 0;
+	khi = (int)m_point_locations.size() - 1;
 	while (khi - klo > 1) {
-		k = (khi + klo) >> 1;
+		k = (khi + klo) / 2;	// Compute midpoint
 		if (m_point_locations[k] > location) { khi = k; }
 		else { klo = k; }
 	}
