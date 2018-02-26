@@ -47,6 +47,16 @@ namespace HBTK {
 		// Returns a vector of direction and length of the line:
 		CartesianVector3D vector();
 
+		// Distance between this line and a point.
+		double distance(CartesianPoint3D & other);
+		double distance(CartesianLine3D & other);
+
+		// Intersection - returns double corresponding to position between
+		// start and end of line as 0-1.
+		double intesection(CartesianPoint3D & other);
+		double intesection(CartesianLine3D & other);
+		
+
 	private:
 		CartesianPoint3D m_start;
 		CartesianPoint3D m_end;

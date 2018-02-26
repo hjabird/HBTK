@@ -25,6 +25,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
+#include <cmath>
+
 #include "CartesianPoint.h"
 #include "CartesianVector.h"
 
@@ -81,4 +83,50 @@ HBTK::CartesianPoint3D & HBTK::CartesianLine3D::end()
 HBTK::CartesianVector3D HBTK::CartesianLine3D::vector()
 {
 	return CartesianVector3D(m_end - m_start);
+}
+
+double HBTK::CartesianLine3D::distance(CartesianPoint3D & other)
+{
+	double denominator = vector().length();
+	double numerator = (other - m_start).cross(vector()).length();
+	return numerator / denominator;
+}
+
+double HBTK::CartesianLine3D::distance(CartesianLine3D & other)
+{
+	CartesianVector3D normal = vector().cross(other.vector());
+	return std::abs(normal.dot(other.start() - m_start));
+}
+
+double HBTK::CartesianLine3D::intesection(CartesianPoint3D & other)
+{
+	CartesianVector3D vect = other - m_start;
+	double coeff_1 = vect.x() / vector().x();
+	double coeff_2 = vect.y() / vector().y();
+	double coeff_3 = vect.z() / vector().z();
+	double coeff;
+	if ((std::abs(coeff_1 - coeff_2) > 1e-8) || (std::abs(coeff_2 - coeff_3) > 1e-8)) {
+		coeff = NAN;
+	}
+	else {
+		coeff = coeff_1;
+	}
+	return coeff_1;
+}
+
+double HBTK::CartesianLine3D::intesection(CartesianLine3D & other)
+{
+	CartesianVector3D vect = other.start() - m_start;
+	CartesianVector3D m_v = vector();
+	CartesianVector3D o_v = other.vector();
+	// Solve as a 2 x 2 linear problem in x, y, then check with z:
+	double det = m_v.x() * o_v.y() - m_v.y() * o_v.x();
+	double tmp_m_coeff = o_v.y() * vect.x() - o_v.x() * vect.y();
+	double tmp_o_coeff = -m_v.y() * vect.x() + m_v.x() * vect.y();
+	double m_coeff = det * tmp_m_coeff;
+	double o_coeff = det * tmp_o_coeff;
+	if (abs(other(o_coeff) - evaluate(m_coeff)) < 1e-8) {
+		m_coeff = NAN;
+	}
+	return m_coeff;
 }
