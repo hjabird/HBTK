@@ -48,6 +48,8 @@ HBTK::AerofoilGeometry HBTK::AerofoilGenerators::joukowsky(double thickness, dou
 	}
 	// And transform it to the aerofoil plane:
 	// UNFINISHED.
+	assert(false);
+	return AerofoilGeometry();
 }
 
 HBTK::AerofoilGeometry HBTK::AerofoilGenerators::naca_four_digit(double thickness, double camber, double camber_position)
