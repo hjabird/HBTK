@@ -1,8 +1,8 @@
 #pragma once
 /*////////////////////////////////////////////////////////////////////////////
-CartesianPoint.h
+CartesianLine.h
 
-Points and vectors in Cartesian space.
+A flat plane in Cartesian space.
 
 Copyright 2018 HJA Bird
 
@@ -25,55 +25,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
-#include <array>
+#include "CartesianPoint.h"
+#include "CartesianVector.h"
 
 namespace HBTK {
-	class CartesianVector3D;
+	class CartesianLine3D;
 
-	class CartesianPoint3D {
+	class CartesianPlane {
 	public:
-		CartesianPoint3D();
-		CartesianPoint3D(std::array<double, 3> location);
-		~CartesianPoint3D();
+		CartesianPlane();
+		// Create origin as given. Primary axis is given by primary_dir - origin normalised.
+		// Other axis defined with secondary dir positive, normalised and orthogonal to firs dir...
+		CartesianPlane(CartesianPoint3D origin, CartesianPoint3D primary_dir, CartesianPoint3D secondary_dir);
+		// Define a plane with origin and normal.
+		CartesianPlane(CartesianPoint3D origin, CartesianVector3D normal);
+		CartesianPlane(CartesianLine3D origin_primary_dir, CartesianPoint3D secondary_dir);
+		~CartesianPlane();
 
-		double & x();
-		double & y();
-		double & z();
+		CartesianPoint3D operator()(CartesianPoint2D & plane_point);
+		CartesianPoint3D evaluate(CartesianPoint2D & plane_point);
 
-		HBTK::CartesianVector3D operator-(CartesianPoint3D & other);
-		CartesianPoint3D operator+(HBTK::CartesianVector3D & other);
-		CartesianPoint3D operator-(HBTK::CartesianVector3D & other);
-
-		static CartesianPoint3D origin();
-
-		bool operator==(const CartesianPoint3D & other);
-		bool operator!=(const CartesianPoint3D & other);
-	protected:
-		friend class CartesianVector3D;
-
-		std::array<double, 3> m_point;
-	};
-
-
-	class CartesianPoint2D {
-	public:
-		CartesianPoint2D();
-		CartesianPoint2D(std::array<double, 2> location);
-		~CartesianPoint2D();
-
-		// Rotate about the origin anticlockwise angle in radians.
-		void rotate(double angle);
-		// Rotate about another point anticlockwise some angle in rads.
-		void rotate(double angle, CartesianPoint2D other);
-
-		double & x();
-		double & y();
-
-		static CartesianPoint2D origin();
-	protected:
-		std::array<double, 2> m_point;
+	private:
+		CartesianPoint3D m_origin;
+		CartesianVector3D m_x_dir;
+		CartesianVector3D m_y_dir;
 	};
 }
-
-
-

@@ -63,6 +63,9 @@ namespace HBTK {
 		double & z();
 
 		operator std::array<double, 3>();
+
+		bool operator==(const CartesianVector3D & other);
+		bool operator!=(const CartesianVector3D & other);
 	private:
 		std::array<double, 3> m_vector;
 	};

@@ -84,6 +84,21 @@ HBTK::CartesianPoint3D HBTK::CartesianPoint3D::origin()
 	return CartesianPoint3D({ 0, 0, 0 });
 }
 
+bool HBTK::CartesianPoint3D::operator==(const CartesianPoint3D & other)
+{
+	if (m_point == other.m_point) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool HBTK::CartesianPoint3D::operator!=(const CartesianPoint3D & other)
+{
+	return !operator==(other);
+}
+
 
 HBTK::CartesianPoint2D::CartesianPoint2D()
 	: m_point({ 0, 0})

@@ -148,6 +148,21 @@ double & HBTK::CartesianVector3D::z()
 	return m_vector[2];
 }
 
+bool HBTK::CartesianVector3D::operator==(const CartesianVector3D & other)
+{
+	if (m_vector == other.m_vector) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool HBTK::CartesianVector3D::operator!=(const CartesianVector3D & other)
+{
+	return !operator==(other);
+}
+
 HBTK::CartesianVector3D::operator std::array<double, 3>()
 {
 	return m_vector;
