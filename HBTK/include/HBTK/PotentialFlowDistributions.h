@@ -29,6 +29,7 @@ SOFTWARE.
 #include <tuple>
 
 #include "Checks.h"
+#include "CartesianLine.h"
 
 namespace HBTK
 {
@@ -93,7 +94,10 @@ namespace HBTK
 		template<typename Ty>
 		constexpr std::pair<Ty, Ty> vel(Ty x_mes, Ty y_mes, Ty x_vor0, Ty y_vor0, Ty x_vor1, Ty y_vor1, 
 			Ty gamma0, Ty gamma1);
+	}
 
+	namespace BiotSavart {
+		CartesianVector3D unity_vel(CartesianPoint3D & mes_point, CartesianLine3D & filament);
 	}
 
 	// DEFINITIONS
