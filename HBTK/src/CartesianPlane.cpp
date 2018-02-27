@@ -98,3 +98,8 @@ HBTK::CartesianPoint3D HBTK::CartesianPlane::evaluate(CartesianPoint2D & plane_p
 	point = point + m_y_dir *plane_point.y();
 	return point;
 }
+
+HBTK::CartesianPoint3D HBTK::CartesianPlane::origin()
+{
+	return m_origin;
+}
