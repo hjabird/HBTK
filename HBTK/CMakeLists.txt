@@ -7,6 +7,9 @@
 # cannot know when to ask CMake to regenerate".
 #file (GLOB MATH_SOURCES
 #      "*.h")
+message("CMAKE_INSTALL_PREFIX " ${CMAKE_INSTALL_PREFIX})
+message("CMAKE_PREFIX_PATH " ${CMAKE_PREFIX_PATH})
+message("CMAKE_INCLUDE_PATH " ${CMAKE_PREFIX_PATH})
  
 # Collect sources into the variable SIMPLE_FUNCTION_SOURCES
 file (GLOB HBTK_INCLUDE "include/HBTK/*.h")
@@ -15,7 +18,7 @@ file (GLOB HBTK_SOURCE  "src/*.cpp")
 # Create named folders for the sources within the .vcproj
 # Empty name lists them directly under the .vcproj
 source_group("" FILES ${HBTK})
-source_group("include" FILES ${HTBK_INCLUDE})
+source_group("include" FILES ${HBTK_INCLUDE})
 source_group("source" FILES ${HBTK_SOURCE})
  
 # Properties->C/C++->General->Additional Include Directories
@@ -36,8 +39,11 @@ set_target_properties(HBTK PROPERTIES
  
  
 # Adds logic to INSTALL.vcproj to copy math.dll to the destination directory
+
 install (TARGETS HBTK
-         ARCHIVE DESTINATION ${PROJECT_SOURCE_DIR}/_install
-         LIBRARY DESTINATION ${PROJECT_SOURCE_DIR}/_install)
+	EXPORT HBTK_export
+	DESTINATION lib)
+install (FILES ${HBTK_INCLUDE}
+	DESTINATION include/HBTK/)
          
-export(PACKAGE HBTK)
+
