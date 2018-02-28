@@ -1,25 +1,47 @@
 # HBTK
 A C++ library containing what I consider to be 'useful stuff'. Very much liable to change.
 
+Usable features:
 * Integral remaps - Telles, Sato
 * Integrations methods - Gauss-legendre, generic static, adaptive Simpsons / Trapezoidal. Not restricted to floats / doubles.
 * GMSH parser (ASCII & Binary v2.2 - physical groups, nodes and elements only)
 * GMSH writer (ASCII 2.2, physical groups, nodes and elements only)
-* GMSH elements (element node coordinate (unchecked!), shape descriptions, element names)
 * Plot3D reader, Plot3D writer.
+* Structured mesh "blocks"
+* Fortran sequential IO emulation
+
+Features that seem to work better on some PCs that others:
 * MATLAB-like GNUPlot interface for 2D plotting.
+
+Unverified features:
+* GMSH elements (element node coordinate (unchecked!), shape descriptions, element names)
+* Integration methods Gauss hermite, Gauss Laguerre (Generalised)
+* Aerofoil geometry
+* Cubic splines
+* Cartesian geometry 
+
+Incomplete:
+* Xml support
+* VTK legacy support
+* DOCUMENTATION
+* UNIT TESTS
 
 ## Getting Started
 
 To build HBTK and the demo programs you'll need CMake and a modern c++ compiler (C++14 is used, so GCC 4.9, MSVC 19). 
 
-To build the first step is to download/clone the library. Once you have it, cd to the directory.
-Set up your enviroment by using "cmake CMakeLists.txt".
-
-If you are on Windows, you'll end up with a series of vsxproj files. To modify the library, or build any of the examples,
-open a vsxproj file in Visual Studio. Getting the Unit Tests to work with cmake is still in the TODO phase.
-
-If you're on Linux, you'll be able to just go for "make" and everything work.
+Steps:
+* Clone the library using git: git clone https://github.com/hjabird/HBTK
+* make a build directory. Eg: mkdir HBTK/build
+* cd into your build directory: Eg: cd HBTK/build
+* Run cmake:
+** At its most basic use cmake <path to HBTK> Eg: cmake ..
+** You may want to change the build options Eg perhaps:
+*** cmake -G "Visual Studio 15 2017 Win64" for Win64 rather than Win32
+*** cmake -D CMAKE_INSTALL_PREFIX=<path to install> for where you want the library to end up.
+* Then use your whatever generator you used tools to build and install. Eg, on Linux:
+  make and then make install.
+** You're good!
 
 To generate any documentation you'll need Doxygen. I've not checked whether documentation is workiing at the moment.
 Sorry...
