@@ -26,6 +26,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
+#include <cmath>
 
 void HBTK::CubicSpline1D::compute_second_derivatives()
 {

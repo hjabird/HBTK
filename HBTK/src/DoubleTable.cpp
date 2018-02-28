@@ -1,4 +1,4 @@
-#include "..\include\HBTK\DoubleTable.h"
+#include "DoubleTable.h"
 /*////////////////////////////////////////////////////////////////////////////
 DoubleTable.cpp
 
@@ -28,7 +28,7 @@ SOFTWARE.
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <exception>
+#include <stdexcept>
 
 HBTK::DoubleTable::DoubleTable()
 	: m_default_fill_value(NAN)
@@ -84,7 +84,8 @@ int HBTK::DoubleTable::add_column()
 
 int HBTK::DoubleTable::add_column(std::string column_name)
 {
-	add_column(column_name, std::vector<double>());
+	std::vector<double> a_column;
+	add_column(column_name, a_column);
 	return number_of_columns();
 }
 
