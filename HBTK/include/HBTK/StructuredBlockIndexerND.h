@@ -25,6 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <array>
 #include <cassert>
 
@@ -192,7 +193,7 @@ namespace HBTK {
 	template<int TNumDimensions>
 	inline StructuredBlockIndexerND<TNumDimensions>& StructuredBlockIndexerND<TNumDimensions>::operator--()
 	{
-		for (int &i : TIndexingOrder) {
+		for (int &i : m_indexing_order) {
 			m_index[i]--;
 			if (m_index[i] > 0) break;
 			m_index[i] = 0;
@@ -214,12 +215,12 @@ namespace HBTK {
 	}
 
 	template<int TNumDimensions>
-	inline constexpr bool StructuredBlockIndexerND<TNumDimensions>::operator>(const StructuredBlockIndexerND<TNumDimensions>&)
+	inline constexpr bool StructuredBlockIndexerND<TNumDimensions>::operator>(const StructuredBlockIndexerND<TNumDimensions>& other)
 	{
 		assert(extents() == other.extents());
 		int pos_this, pos_other;
 		pos_this = coordinate_index(m_index);
-		pos_other = other.coordinate_index(*other);
+		pos_other = other.coordinate_index(other());
 		return pos_this > pos_other;
 	}
 
@@ -229,18 +230,18 @@ namespace HBTK {
 		assert(extents() == other.extents());
 		int pos_this, pos_other;
 		pos_this = coordinate_index(m_index);
-		pos_other = other.coordinate_index(other.operator*());
+		pos_other = other.coordinate_index(other());
 		return pos_this < pos_other;
 	}
 
 	template<int TNumDimensions>
-	inline constexpr bool StructuredBlockIndexerND<TNumDimensions>::operator>=(const StructuredBlockIndexerND<TNumDimensions>&)
+	inline constexpr bool StructuredBlockIndexerND<TNumDimensions>::operator>=(const StructuredBlockIndexerND<TNumDimensions>& other)
 	{
 		return !(this->operator<(other));
 	}
 
 	template<int TNumDimensions>
-	inline constexpr bool StructuredBlockIndexerND<TNumDimensions>::operator<=(const StructuredBlockIndexerND<TNumDimensions>&)
+	inline constexpr bool StructuredBlockIndexerND<TNumDimensions>::operator<=(const StructuredBlockIndexerND<TNumDimensions>& other)
 	{
 		return !(this->operator>(other));
 	}
