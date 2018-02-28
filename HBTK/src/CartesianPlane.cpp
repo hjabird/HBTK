@@ -70,7 +70,7 @@ HBTK::CartesianPlane::CartesianPlane(CartesianPoint3D origin, CartesianVector3D 
 }
 
 HBTK::CartesianPlane::CartesianPlane(CartesianLine3D origin_primary_dir, CartesianPoint3D secondary_dir)
-	: m_origin(origin_primary_dir.start()),
+	: m_origin(origin_primary_dir.start),
 	m_x_dir(),
 	m_y_dir()
 {

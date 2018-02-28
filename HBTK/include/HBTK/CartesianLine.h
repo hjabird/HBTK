@@ -33,33 +33,28 @@ namespace HBTK {
 	class CartesianLine3D {
 	public:
 		CartesianLine3D();
-		CartesianLine3D(CartesianPoint3D start, CartesianPoint3D end);
-		CartesianLine3D(CartesianPoint3D start, CartesianVector3D direction);
-		CartesianLine3D(CartesianVector3D direction, CartesianPoint3D end);
+		CartesianLine3D(const CartesianPoint3D & start, const CartesianPoint3D & end);
+		CartesianLine3D(const CartesianPoint3D & start, const CartesianVector3D & direction);
+		CartesianLine3D(const CartesianVector3D & direction, const CartesianPoint3D & end);
 		~CartesianLine3D();
 
 		// Get a point on the line. Position in 0, 1 -> start to end.
-		CartesianPoint3D operator()(double position);
-		CartesianPoint3D evaluate(double position);
+		CartesianPoint3D operator()(double position) const;
+		CartesianPoint3D evaluate(double position) const;
 
-		CartesianPoint3D & start();
-		CartesianPoint3D & end();
+		CartesianPoint3D start;
+		CartesianPoint3D end;
 		// Returns a vector of direction and length of the line:
-		CartesianVector3D vector();
+		CartesianVector3D vector() const;
 
 		// Distance between this line and a point.
-		double distance(CartesianPoint3D & other);
-		double distance(CartesianLine3D & other);
+		double distance(const CartesianPoint3D & other);
+		double distance(const CartesianLine3D & other);
 
 		// Intersection - returns double corresponding to position between
 		// start and end of line as 0-1.
-		double intesection(CartesianPoint3D & other);
-		double intesection(CartesianLine3D & other);
-		
-
-	private:
-		CartesianPoint3D m_start;
-		CartesianPoint3D m_end;
+		double intersection(const CartesianPoint3D & other) const;
+		double intersection(const CartesianLine3D & other) const;
 	};
 }
 
