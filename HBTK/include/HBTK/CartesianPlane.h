@@ -36,17 +36,17 @@ namespace HBTK {
 		CartesianPlane();
 		// Create origin as given. Primary axis is given by primary_dir - origin normalised.
 		// Other axis defined with secondary dir positive, normalised and orthogonal to firs dir...
-		CartesianPlane(CartesianPoint3D origin, CartesianPoint3D primary_dir, CartesianPoint3D secondary_dir);
+		CartesianPlane(const CartesianPoint3D & origin, const CartesianPoint3D & primary_dir, const CartesianPoint3D & secondary_dir);
 		// Define a plane with origin and normal.
-		CartesianPlane(CartesianPoint3D origin, CartesianVector3D normal);
-		CartesianPlane(CartesianLine3D origin_primary_dir, CartesianPoint3D secondary_dir);
+		CartesianPlane(const CartesianPoint3D & origin, const CartesianVector3D & normal);
+		CartesianPlane(const CartesianLine3D & origin_primary_dir, const CartesianPoint3D & secondary_dir);
 		~CartesianPlane();
 
-		CartesianPoint3D operator()(const CartesianPoint2D & plane_point);
-		CartesianPoint3D evaluate(const CartesianPoint2D & plane_point);
+		CartesianPoint3D operator()(const CartesianPoint2D & plane_point) const;
+		CartesianPoint3D evaluate(const CartesianPoint2D & plane_point) const;
 
 		// Returns the planes origin.
-		CartesianPoint3D origin();
+		CartesianPoint3D origin() const;
 
 	private:
 		CartesianPoint3D m_origin;

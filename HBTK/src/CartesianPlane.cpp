@@ -37,7 +37,8 @@ HBTK::CartesianPlane::CartesianPlane()
 {
 }
 
-HBTK::CartesianPlane::CartesianPlane(CartesianPoint3D origin, CartesianPoint3D primary_dir, CartesianPoint3D secondary_dir)
+HBTK::CartesianPlane::CartesianPlane(const CartesianPoint3D & origin, 
+	const CartesianPoint3D & primary_dir, const CartesianPoint3D & secondary_dir)
 	: m_origin(origin),
 	m_x_dir(),
 	m_y_dir()
@@ -56,7 +57,8 @@ HBTK::CartesianPlane::CartesianPlane(CartesianPoint3D origin, CartesianPoint3D p
 	return;
 }
 
-HBTK::CartesianPlane::CartesianPlane(CartesianPoint3D origin, CartesianVector3D normal)
+HBTK::CartesianPlane::CartesianPlane(const CartesianPoint3D & origin, 
+	const CartesianVector3D & normal)
 	: m_origin(origin),
 	m_x_dir(),
 	m_y_dir()
@@ -69,7 +71,8 @@ HBTK::CartesianPlane::CartesianPlane(CartesianPoint3D origin, CartesianVector3D 
 	m_y_dir.normalise();
 }
 
-HBTK::CartesianPlane::CartesianPlane(CartesianLine3D origin_primary_dir, CartesianPoint3D secondary_dir)
+HBTK::CartesianPlane::CartesianPlane(const CartesianLine3D & origin_primary_dir, 
+	const CartesianPoint3D & secondary_dir)
 	: m_origin(origin_primary_dir.start),
 	m_x_dir(),
 	m_y_dir()
@@ -86,12 +89,12 @@ HBTK::CartesianPlane::~CartesianPlane()
 {
 }
 
-HBTK::CartesianPoint3D HBTK::CartesianPlane::operator()(const CartesianPoint2D & plane_point)
+HBTK::CartesianPoint3D HBTK::CartesianPlane::operator()(const CartesianPoint2D & plane_point) const
 {
 	return evaluate(plane_point);
 }
 
-HBTK::CartesianPoint3D HBTK::CartesianPlane::evaluate(const CartesianPoint2D & plane_point)
+HBTK::CartesianPoint3D HBTK::CartesianPlane::evaluate(const CartesianPoint2D & plane_point) const
 {
 	CartesianPoint3D point(m_origin);
 	point = point + m_x_dir * plane_point.x;
@@ -99,7 +102,7 @@ HBTK::CartesianPoint3D HBTK::CartesianPlane::evaluate(const CartesianPoint2D & p
 	return point;
 }
 
-HBTK::CartesianPoint3D HBTK::CartesianPlane::origin()
+HBTK::CartesianPoint3D HBTK::CartesianPlane::origin() const
 {
 	return m_origin;
 }
