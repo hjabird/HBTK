@@ -86,16 +86,16 @@ HBTK::CartesianPlane::~CartesianPlane()
 {
 }
 
-HBTK::CartesianPoint3D HBTK::CartesianPlane::operator()(CartesianPoint2D & plane_point)
+HBTK::CartesianPoint3D HBTK::CartesianPlane::operator()(const CartesianPoint2D & plane_point)
 {
 	return evaluate(plane_point);
 }
 
-HBTK::CartesianPoint3D HBTK::CartesianPlane::evaluate(CartesianPoint2D & plane_point)
+HBTK::CartesianPoint3D HBTK::CartesianPlane::evaluate(const CartesianPoint2D & plane_point)
 {
 	CartesianPoint3D point(m_origin);
-	point = point + m_x_dir * plane_point.x();
-	point = point + m_y_dir *plane_point.y();
+	point = point + m_x_dir * plane_point.x;
+	point = point + m_y_dir * plane_point.y;
 	return point;
 }
 

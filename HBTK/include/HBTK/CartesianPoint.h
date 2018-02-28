@@ -36,22 +36,18 @@ namespace HBTK {
 		CartesianPoint3D(std::array<double, 3> location);
 		~CartesianPoint3D();
 
-		double & x();
-		double & y();
-		double & z();
+		double x;
+		double y;
+		double z;
 
-		HBTK::CartesianVector3D operator-(CartesianPoint3D & other);
-		CartesianPoint3D operator+(HBTK::CartesianVector3D & other);
-		CartesianPoint3D operator-(HBTK::CartesianVector3D & other);
+		HBTK::CartesianVector3D operator-(const HBTK::CartesianPoint3D & other);
+		CartesianPoint3D operator+(const HBTK::CartesianVector3D & other);
+		CartesianPoint3D operator-(const HBTK::CartesianVector3D & other);
 
 		static CartesianPoint3D origin();
 
 		bool operator==(const CartesianPoint3D & other);
 		bool operator!=(const CartesianPoint3D & other);
-	protected:
-		friend class CartesianVector3D;
-
-		std::array<double, 3> m_point;
 	};
 
 
@@ -66,12 +62,10 @@ namespace HBTK {
 		// Rotate about another point anticlockwise some angle in rads.
 		void rotate(double angle, CartesianPoint2D other);
 
-		double & x();
-		double & y();
+		double x;
+		double y;
 
 		static CartesianPoint2D origin();
-	protected:
-		std::array<double, 2> m_point;
 	};
 }
 

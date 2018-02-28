@@ -34,13 +34,13 @@ namespace HBTK {
 	class CartesianVector3D {
 	public:
 		CartesianVector3D();
-		CartesianVector3D(std::array<double, 3> vector);
+		CartesianVector3D(const std::array<double, 3> vector);
 		~CartesianVector3D();
 
-		CartesianVector3D operator+(CartesianVector3D & other);
-		CartesianVector3D operator-(CartesianVector3D & other);
-		CartesianPoint3D operator+(CartesianPoint3D & other);
-		CartesianPoint3D operator-(CartesianPoint3D & other);
+		CartesianVector3D operator+(const CartesianVector3D & other);
+		CartesianVector3D operator-(const CartesianVector3D & other);
+		CartesianPoint3D operator+(const CartesianPoint3D & other);
+		CartesianPoint3D operator-(const CartesianPoint3D & other);
 		CartesianVector3D operator*(const double & multiplyer);
 		CartesianVector3D operator/(const double & divisor);
 
@@ -58,16 +58,14 @@ namespace HBTK {
 		double angle(CartesianVector3D & other);
 
 
-		double & x();
-		double & y();
-		double & z();
+		double x;
+		double y;
+		double z;
 
 		operator std::array<double, 3>();
 
 		bool operator==(const CartesianVector3D & other);
 		bool operator!=(const CartesianVector3D & other);
-	private:
-		std::array<double, 3> m_vector;
 	};
 
 	double abs(CartesianVector3D vector);
@@ -99,12 +97,10 @@ namespace HBTK {
 		double angle(CartesianVector2D & other);
 
 
-		double & x();
-		double & y();
+		double x;
+		double y;
 
 		operator std::array<double, 2>();
-	private:
-		std::array<double, 2> m_vector;
 	};
 
 	double abs(CartesianVector2D vector);

@@ -42,8 +42,8 @@ namespace HBTK {
 		CartesianPlane(CartesianLine3D origin_primary_dir, CartesianPoint3D secondary_dir);
 		~CartesianPlane();
 
-		CartesianPoint3D operator()(CartesianPoint2D & plane_point);
-		CartesianPoint3D evaluate(CartesianPoint2D & plane_point);
+		CartesianPoint3D operator()(const CartesianPoint2D & plane_point);
+		CartesianPoint3D evaluate(const CartesianPoint2D & plane_point);
 
 		// Returns the planes origin.
 		CartesianPoint3D origin();

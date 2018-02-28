@@ -101,9 +101,9 @@ double HBTK::CartesianLine3D::distance(CartesianLine3D & other)
 double HBTK::CartesianLine3D::intesection(CartesianPoint3D & other)
 {
 	CartesianVector3D vect = other - m_start;
-	double coeff_1 = vect.x() / vector().x();
-	double coeff_2 = vect.y() / vector().y();
-	double coeff_3 = vect.z() / vector().z();
+	double coeff_1 = vect.x / vector().x;
+	double coeff_2 = vect.y / vector().y;
+	double coeff_3 = vect.z / vector().z;
 	double coeff;
 	if ((std::abs(coeff_1 - coeff_2) > 1e-8) || (std::abs(coeff_2 - coeff_3) > 1e-8)) {
 		coeff = NAN;
@@ -120,9 +120,9 @@ double HBTK::CartesianLine3D::intesection(CartesianLine3D & other)
 	CartesianVector3D m_v = vector();
 	CartesianVector3D o_v = other.vector();
 	// Solve as a 2 x 2 linear problem in x, y, then check with z:
-	double det = m_v.x() * o_v.y() - m_v.y() * o_v.x();
-	double tmp_m_coeff = o_v.y() * vect.x() - o_v.x() * vect.y();
-	double tmp_o_coeff = -m_v.y() * vect.x() + m_v.x() * vect.y();
+	double det = m_v.x * o_v.y - m_v.y * o_v.x;
+	double tmp_m_coeff = o_v.y * vect.x - o_v.x * vect.y;
+	double tmp_o_coeff = -m_v.y * vect.x + m_v.x * vect.y;
 	double m_coeff = det * tmp_m_coeff;
 	double o_coeff = det * tmp_o_coeff;
 	if (abs(other(o_coeff) - evaluate(m_coeff)) < 1e-8) {
