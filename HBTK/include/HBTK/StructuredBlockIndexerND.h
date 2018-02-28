@@ -45,7 +45,7 @@ namespace HBTK {
 		int size();
 
 		// Dereference iterator.
-		std::array<int, TNumDimensions> operator*();
+		std::array<int, TNumDimensions> operator()();
 		std::array<int, TNumDimensions> extents();
 
 		constexpr StructuredBlockIndexerND<TNumDimensions> begin();
@@ -151,7 +151,7 @@ namespace HBTK {
 	}
 
 	template<int TNumDimensions>
-	inline std::array<int, TNumDimensions> StructuredBlockIndexerND<TNumDimensions>::operator*()
+	inline std::array<int, TNumDimensions> StructuredBlockIndexerND<TNumDimensions>::operator()()
 	{
 		return m_index;
 	}
