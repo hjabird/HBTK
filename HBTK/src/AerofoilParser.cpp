@@ -1,5 +1,4 @@
-#include "..\include\HBTK\AerofoilParser.h"
-#pragma once
+#include "AerofoilParser.h"
 /*////////////////////////////////////////////////////////////////////////////
 AerofoilParser.cpp
 
@@ -25,6 +24,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
+
+#include <algorithm>
 
 HBTK::AerofoilParser::AerofoilParser(AerofoilGeometry & target)
 	: foil_name("UNKNOWN"),

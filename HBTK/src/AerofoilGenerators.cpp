@@ -1,4 +1,4 @@
-#include "..\include\HBTK\AerofoilGenerators.h"
+#include "AerofoilGenerators.h"
 /*////////////////////////////////////////////////////////////////////////////
 AerofoilGenerators.cpp
 
