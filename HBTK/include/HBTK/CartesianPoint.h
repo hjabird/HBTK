@@ -33,28 +33,28 @@ namespace HBTK {
 	class CartesianPoint3D {
 	public:
 		CartesianPoint3D();
-		CartesianPoint3D(std::array<double, 3> location);
+		CartesianPoint3D(const std::array<double, 3> & location);
 		~CartesianPoint3D();
 
 		double x;
 		double y;
 		double z;
 
-		HBTK::CartesianVector3D operator-(const HBTK::CartesianPoint3D & other);
-		CartesianPoint3D operator+(const HBTK::CartesianVector3D & other);
-		CartesianPoint3D operator-(const HBTK::CartesianVector3D & other);
+		HBTK::CartesianVector3D operator-(const HBTK::CartesianPoint3D & other) const;
+		CartesianPoint3D operator+(const HBTK::CartesianVector3D & other) const;
+		CartesianPoint3D operator-(const HBTK::CartesianVector3D & other) const;
 
 		static CartesianPoint3D origin();
 
-		bool operator==(const CartesianPoint3D & other);
-		bool operator!=(const CartesianPoint3D & other);
+		bool operator==(const CartesianPoint3D & other) const;
+		bool operator!=(const CartesianPoint3D & other) const;
 	};
 
 
 	class CartesianPoint2D {
 	public:
 		CartesianPoint2D();
-		CartesianPoint2D(std::array<double, 2> location);
+		CartesianPoint2D(const std::array<double, 2> & location);
 		~CartesianPoint2D();
 
 		// Rotate about the origin anticlockwise angle in radians.

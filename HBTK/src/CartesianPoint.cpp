@@ -34,7 +34,7 @@ HBTK::CartesianPoint3D::CartesianPoint3D()
 {
 }
 
-HBTK::CartesianPoint3D::CartesianPoint3D(std::array<double, 3> location)
+HBTK::CartesianPoint3D::CartesianPoint3D(const std::array<double, 3> & location)
 	: x(location[0]),
 	y(location[1]),
 	z(location[2])
@@ -45,7 +45,7 @@ HBTK::CartesianPoint3D::~CartesianPoint3D()
 {
 }
 
-HBTK::CartesianPoint3D HBTK::CartesianPoint3D::operator+(const CartesianVector3D & other)
+HBTK::CartesianPoint3D HBTK::CartesianPoint3D::operator+(const CartesianVector3D & other) const
 {
 	return CartesianPoint3D(std::array<double, 3>(
 		{x + other.x,
@@ -53,14 +53,14 @@ HBTK::CartesianPoint3D HBTK::CartesianPoint3D::operator+(const CartesianVector3D
 		 z + other.z }));
 }
 
-HBTK::CartesianPoint3D HBTK::CartesianPoint3D::operator-(const CartesianVector3D & other)
+HBTK::CartesianPoint3D HBTK::CartesianPoint3D::operator-(const CartesianVector3D & other) const
 {
 	return CartesianPoint3D({ x - other.x,
 		y - other.y,
 		z - other.z });
 }
 
-HBTK::CartesianVector3D HBTK::CartesianPoint3D::operator-(const CartesianPoint3D & other)
+HBTK::CartesianVector3D HBTK::CartesianPoint3D::operator-(const CartesianPoint3D & other) const
 {
 	return CartesianVector3D({ x - other.x,
 		y - other.y,
@@ -72,7 +72,7 @@ HBTK::CartesianPoint3D HBTK::CartesianPoint3D::origin()
 	return CartesianPoint3D({ 0, 0, 0 });
 }
 
-bool HBTK::CartesianPoint3D::operator==(const CartesianPoint3D & other)
+bool HBTK::CartesianPoint3D::operator==(const CartesianPoint3D & other) const
 {
 	if ((x == other.x) && (y == other.y) && (z == other.z)) {
 		return true;
@@ -82,7 +82,7 @@ bool HBTK::CartesianPoint3D::operator==(const CartesianPoint3D & other)
 	}
 }
 
-bool HBTK::CartesianPoint3D::operator!=(const CartesianPoint3D & other)
+bool HBTK::CartesianPoint3D::operator!=(const CartesianPoint3D & other) const
 {
 	return !operator==(other);
 }
@@ -94,7 +94,7 @@ HBTK::CartesianPoint2D::CartesianPoint2D()
 {
 }
 
-HBTK::CartesianPoint2D::CartesianPoint2D(std::array<double, 2> location)
+HBTK::CartesianPoint2D::CartesianPoint2D(const std::array<double, 2> & location)
 	: x(location[0]),
 	y(location[1])
 {
