@@ -1,23 +1,20 @@
+cmake_minimum_required(VERSION 3.1)
 
-# Properties->C/C++->General->Additional Include Directories
-include_directories ("${PROJECT_SOURCE_DIR}/HBTK/include")
- 
-# Set Properties->General->Configuration Type to Application(.exe)
-# Creates app.exe with the listed sources (main.cxx)
-# Adds sources to the Solution Explorer
+# Target
 add_executable (GMSH_Info GmshParser_demo/GmshParser_demo.cpp)
- 
-# Properties->Linker->Input->Additional Dependencies
+
+# Library dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+target_include_directories (GMSH_Info PRIVATE "${PROJECT_SOURCE_DIR}/HBTK/include") 
 target_link_libraries (GMSH_Info HBTK)
  
-# Creates a folder "executables" and adds target 
-# project (app.vcproj) under it
+# Visual studio ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# VS folders.
 set_property(TARGET GMSH_Info PROPERTY FOLDER "executables")
- 
-# Properties->General->Output Directory
+
+# Destinations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 set_target_properties(GMSH_Info PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
- 
-# Adds logic to INSTALL.vcproj to copy app.exe to destination directory
+
+# INSTALL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 install (TARGETS GMSH_Info
-         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/_install)
+         RUNTIME DESTINATION bin)

@@ -1,23 +1,20 @@
+cmake_minimum_required(VERSION 3.1)
 
-# Properties->C/C++->General->Additional Include Directories
-include_directories ("${PROJECT_SOURCE_DIR}/HBTK/include")
+# Target
+add_executable (GaussLegendreTests GaussLegendreTests_demo/GaussLegendreTests_demo.cpp)
+
+# Library dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+target_include_directories (GaussLegendreTests PRIVATE "${PROJECT_SOURCE_DIR}/HBTK/include") 
+target_link_libraries (GaussLegendreTests HBTK)
  
-# Set Properties->General->Configuration Type to Application(.exe)
-# Creates app.exe with the listed sources (main.cxx)
-# Adds sources to the Solution Explorer
-add_executable (GaussLegendreBenchmark GaussLegendreTests_demo/GaussLegendreTests_demo.cpp)
- 
-# Properties->Linker->Input->Additional Dependencies
-target_link_libraries (GaussLegendreBenchmark HBTK)
- 
-# Creates a folder "executables" and adds target 
-# project (app.vcproj) under it
-set_property(TARGET GaussLegendreBenchmark PROPERTY FOLDER "executables")
- 
-# Properties->General->Output Directory
-set_target_properties(GaussLegendreBenchmark PROPERTIES
+# Visual studio ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# VS folders.
+set_property(TARGET GaussLegendreTests PROPERTY FOLDER "executables")
+
+# Destinations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+set_target_properties(GaussLegendreTests PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
- 
-# Adds logic to INSTALL.vcproj to copy app.exe to destination directory
-install (TARGETS GaussLegendreBenchmark
-         RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/_install)
+
+# INSTALL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+install (TARGETS GaussLegendreTests
+         RUNTIME DESTINATION bin)
