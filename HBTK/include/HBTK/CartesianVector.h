@@ -37,72 +37,71 @@ namespace HBTK {
 		CartesianVector3D(const std::array<double, 3> vector);
 		~CartesianVector3D();
 
-		CartesianVector3D operator+(const CartesianVector3D & other);
-		CartesianVector3D operator-(const CartesianVector3D & other);
-		CartesianPoint3D operator+(const CartesianPoint3D & other);
-		CartesianPoint3D operator-(const CartesianPoint3D & other);
-		CartesianVector3D operator*(const double & multiplyer);
-		CartesianVector3D operator/(const double & divisor);
+		CartesianVector3D operator+(const CartesianVector3D & other) const;
+		CartesianVector3D operator-(const CartesianVector3D & other) const;
+		CartesianPoint3D operator+(const CartesianPoint3D & other) const;
+		CartesianPoint3D operator-(const CartesianPoint3D & other) const;
+		CartesianVector3D operator*(const double & multiplyer) const;
+		CartesianVector3D operator/(const double & divisor) const;
 
 		// Returns the length of the vector. Same as: abs(this)
-		double length();
+		double length() const;
 		// Set vector length to 1.
 		void normalise();
 		// Dot product between to vectors.
-		double dot(CartesianVector3D & other);
+		double dot(const CartesianVector3D & other) const;
 		// Cross product of two vectors
-		CartesianVector3D cross(CartesianVector3D & other);
+		CartesianVector3D cross(const CartesianVector3D & other) const;
 		// The cos of the angle between two vectors.
-		double cos_angle(CartesianVector3D & other);
+		double cos_angle(const CartesianVector3D & other) const;
 		// The angle between two vectors in radians.
-		double angle(CartesianVector3D & other);
+		double angle(const CartesianVector3D & other) const;
 
 
 		double x;
 		double y;
 		double z;
 
-		operator std::array<double, 3>();
+		operator std::array<double, 3>() const;
 
-		bool operator==(const CartesianVector3D & other);
-		bool operator!=(const CartesianVector3D & other);
+		bool operator==(const CartesianVector3D & other) const;
+		bool operator!=(const CartesianVector3D & other) const;
 	};
 
-	double abs(CartesianVector3D vector);
+	double abs(const CartesianVector3D & vector);
 
 	class CartesianVector2D {
 	public:
 		CartesianVector2D();
-		CartesianVector2D(std::array<double, 2> vector);
+		CartesianVector2D(const std::array<double, 2> & vector);
 		~CartesianVector2D();
 
-		CartesianVector2D operator+(CartesianVector2D & other);
-		CartesianVector2D operator-(CartesianVector2D & other);
-		CartesianPoint2D operator+(CartesianPoint2D & other);
-		CartesianPoint2D operator-(CartesianPoint2D & other);
-		CartesianVector2D operator*(const double & multiplyer);
-		CartesianVector2D operator/(const double & divisor);
+		CartesianVector2D operator+(const CartesianVector2D & other) const;
+		CartesianVector2D operator-(const CartesianVector2D & other) const;
+		CartesianPoint2D operator+(const CartesianPoint2D & other) const;
+		CartesianPoint2D operator-(const CartesianPoint2D & other) const;
+		CartesianVector2D operator*(const double & multiplyer) const;
+		CartesianVector2D operator/(const double & divisor)const ;
 
 		// Returns the length of the vector. Same as: abs(this)
-		double length();
+		double length() const;
 		// Set vector length to 1.
 		void normalise();
 		// Dot product between to vectors.
-		double dot(CartesianVector2D & other);
-		// Cross product of two vectors
-		CartesianVector2D cross();
+		double dot(const CartesianVector2D & other) const;
+		// Cross product of.. well, its just a single vector.
+		CartesianVector2D cross() const;
 		// The cos of the angle between two vectors.
-		double cos_angle(CartesianVector2D & other);
+		double cos_angle(const CartesianVector2D & other) const;
 		// The angle between two vectors in radians.
-		double angle(CartesianVector2D & other);
-
+		double angle(const CartesianVector2D & other) const;
 
 		double x;
 		double y;
 
-		operator std::array<double, 2>();
+		operator std::array<double, 2>() const;
 	};
 
-	double abs(CartesianVector2D vector);
+	double abs(const CartesianVector2D & vector);
 
 } // End namespace HBTK

@@ -45,7 +45,7 @@ HBTK::CartesianVector3D::~CartesianVector3D()
 {
 }
 
-HBTK::CartesianVector3D HBTK::CartesianVector3D::operator+(const CartesianVector3D & other )
+HBTK::CartesianVector3D HBTK::CartesianVector3D::operator+(const CartesianVector3D & other ) const
 {
 	return CartesianVector3D({
 		x + other.x,
@@ -53,7 +53,7 @@ HBTK::CartesianVector3D HBTK::CartesianVector3D::operator+(const CartesianVector
 		z + other.z });
 }
 
-HBTK::CartesianVector3D HBTK::CartesianVector3D::operator-(const CartesianVector3D & other)
+HBTK::CartesianVector3D HBTK::CartesianVector3D::operator-(const CartesianVector3D & other) const
 {
 	return CartesianVector3D({
 		x - other.x,
@@ -61,7 +61,7 @@ HBTK::CartesianVector3D HBTK::CartesianVector3D::operator-(const CartesianVector
 		z - other.z });
 }
 
-HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator+(const CartesianPoint3D & other)
+HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator+(const CartesianPoint3D & other) const
 {
 	return CartesianPoint3D({
 		x + other.x,
@@ -69,7 +69,7 @@ HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator+(const CartesianPoint3D
 		z + other.z });
 }
 
-HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator-(const CartesianPoint3D & other)
+HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator-(const CartesianPoint3D & other) const
 {
 	return CartesianPoint3D({
 		x - other.x,
@@ -77,7 +77,7 @@ HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator-(const CartesianPoint3D
 		z - other.z });
 }
 
-HBTK::CartesianVector3D HBTK::CartesianVector3D::operator*(const double & multiplyer)
+HBTK::CartesianVector3D HBTK::CartesianVector3D::operator*(const double & multiplyer) const
 {
 	return CartesianVector3D({
 		x * multiplyer,
@@ -85,7 +85,7 @@ HBTK::CartesianVector3D HBTK::CartesianVector3D::operator*(const double & multip
 		x * multiplyer});
 }
 
-HBTK::CartesianVector3D HBTK::CartesianVector3D::operator/(const double & divisor)
+HBTK::CartesianVector3D HBTK::CartesianVector3D::operator/(const double & divisor) const
 {
 	return CartesianVector3D({
 		x / divisor,
@@ -93,7 +93,7 @@ HBTK::CartesianVector3D HBTK::CartesianVector3D::operator/(const double & diviso
 		z / divisor });
 }
 
-double HBTK::CartesianVector3D::length()
+double HBTK::CartesianVector3D::length() const
 {
 	return sqrt(x * x + y * y + z * z);
 }
@@ -107,12 +107,12 @@ void HBTK::CartesianVector3D::normalise()
 	return;
 }
 
-double HBTK::CartesianVector3D::dot(CartesianVector3D & other)
+double HBTK::CartesianVector3D::dot(const CartesianVector3D & other) const
 {
 	return x * other.x + y * other.y + z * other.z;
 }
 
-HBTK::CartesianVector3D HBTK::CartesianVector3D::cross(CartesianVector3D & other)
+HBTK::CartesianVector3D HBTK::CartesianVector3D::cross(const CartesianVector3D & other) const
 {
 	CartesianVector3D result;
 	result.x = y * other.z - z * other.y;
@@ -121,7 +121,7 @@ HBTK::CartesianVector3D HBTK::CartesianVector3D::cross(CartesianVector3D & other
 	return result;
 }
 
-double HBTK::CartesianVector3D::cos_angle(CartesianVector3D & other)
+double HBTK::CartesianVector3D::cos_angle(const CartesianVector3D & other) const
 {
 	double value;
 	value = dot(other);
@@ -129,7 +129,7 @@ double HBTK::CartesianVector3D::cos_angle(CartesianVector3D & other)
 	return value;
 }
 
-double HBTK::CartesianVector3D::angle(CartesianVector3D & other)
+double HBTK::CartesianVector3D::angle(const CartesianVector3D & other) const
 {
 	double value;
 	value = dot(other);
@@ -137,7 +137,7 @@ double HBTK::CartesianVector3D::angle(CartesianVector3D & other)
 	return acos(value);
 }
 
-bool HBTK::CartesianVector3D::operator==(const CartesianVector3D & other)
+bool HBTK::CartesianVector3D::operator==(const CartesianVector3D & other) const
 {
 	if ((x == other.x) && (y == other.y) && (z == other.z)) {
 		return true;
@@ -147,17 +147,17 @@ bool HBTK::CartesianVector3D::operator==(const CartesianVector3D & other)
 	}
 }
 
-bool HBTK::CartesianVector3D::operator!=(const CartesianVector3D & other)
+bool HBTK::CartesianVector3D::operator!=(const CartesianVector3D & other) const
 {
 	return !operator==(other);
 }
 
-HBTK::CartesianVector3D::operator std::array<double, 3>()
+HBTK::CartesianVector3D::operator std::array<double, 3>() const
 {
 	return { x, y, z };
 }
 
-double HBTK::abs(CartesianVector3D vector)
+double HBTK::abs(const CartesianVector3D & vector)
 {
 	return vector.length();
 }
@@ -168,7 +168,7 @@ HBTK::CartesianVector2D::CartesianVector2D()
 {
 }
 
-HBTK::CartesianVector2D::CartesianVector2D(std::array<double, 2> vector)
+HBTK::CartesianVector2D::CartesianVector2D(const std::array<double, 2> & vector)
 	: x(vector[0]),
 	y(vector[1])
 {
@@ -178,49 +178,49 @@ HBTK::CartesianVector2D::~CartesianVector2D()
 {
 }
 
-HBTK::CartesianVector2D HBTK::CartesianVector2D::operator+(CartesianVector2D & other)
+HBTK::CartesianVector2D HBTK::CartesianVector2D::operator+(const CartesianVector2D & other) const
 {
 	return CartesianVector2D({
 		x + other.x,
 		y + other.y});
 }
 
-HBTK::CartesianVector2D HBTK::CartesianVector2D::operator-(CartesianVector2D & other)
+HBTK::CartesianVector2D HBTK::CartesianVector2D::operator-(const CartesianVector2D & other) const
 {
 	return CartesianVector2D({
 		x - other.x,
 		y - other.y});
 }
 
-HBTK::CartesianPoint2D HBTK::CartesianVector2D::operator+(CartesianPoint2D & other)
+HBTK::CartesianPoint2D HBTK::CartesianVector2D::operator+(const CartesianPoint2D & other) const
 {
 	return CartesianPoint2D({
 		x + other.x,
 		y + other.y });
 }
 
-HBTK::CartesianPoint2D HBTK::CartesianVector2D::operator-(CartesianPoint2D & other)
+HBTK::CartesianPoint2D HBTK::CartesianVector2D::operator-(const CartesianPoint2D & other) const
 {
 	return CartesianPoint2D({
 		x - other.x,
 		y - other.y });
 }
 
-HBTK::CartesianVector2D HBTK::CartesianVector2D::operator*(const double & multiplyer)
+HBTK::CartesianVector2D HBTK::CartesianVector2D::operator*(const double & multiplyer) const
 {
 	return CartesianVector2D({
 		x * multiplyer,
 		y * multiplyer });
 }
 
-HBTK::CartesianVector2D HBTK::CartesianVector2D::operator/(const double & divisor)
+HBTK::CartesianVector2D HBTK::CartesianVector2D::operator/(const double & divisor) const
 {
 	return CartesianVector2D({
 		x / divisor,
 		y / divisor });
 }
 
-double HBTK::CartesianVector2D::length()
+double HBTK::CartesianVector2D::length() const
 {
 	return sqrt(x * x + y * y);
 }
@@ -233,12 +233,12 @@ void HBTK::CartesianVector2D::normalise()
 	return;
 }
 
-double HBTK::CartesianVector2D::dot(CartesianVector2D & other)
+double HBTK::CartesianVector2D::dot(const CartesianVector2D & other) const
 {
 	return x * other.x + y * other.y;
 }
 
-HBTK::CartesianVector2D HBTK::CartesianVector2D::cross()
+HBTK::CartesianVector2D HBTK::CartesianVector2D::cross() const
 {
 	CartesianVector2D vect;
 	vect.x = y;
@@ -246,7 +246,7 @@ HBTK::CartesianVector2D HBTK::CartesianVector2D::cross()
 	return vect;
 }
 
-double HBTK::CartesianVector2D::cos_angle(CartesianVector2D & other)
+double HBTK::CartesianVector2D::cos_angle(const CartesianVector2D & other) const
 {
 	double value;
 	value = dot(other);
@@ -254,7 +254,7 @@ double HBTK::CartesianVector2D::cos_angle(CartesianVector2D & other)
 	return value;
 }
 
-double HBTK::CartesianVector2D::angle(CartesianVector2D & other)
+double HBTK::CartesianVector2D::angle(const CartesianVector2D & other) const
 {
 	double value;
 	value = dot(other);
@@ -263,12 +263,12 @@ double HBTK::CartesianVector2D::angle(CartesianVector2D & other)
 }
 
 
-HBTK::CartesianVector2D::operator std::array<double, 2>()
+HBTK::CartesianVector2D::operator std::array<double, 2>() const
 {
 	return { x, y };
 }
 
-double HBTK::abs(CartesianVector2D vector)
+double HBTK::abs(const CartesianVector2D & vector)
 {
 	return vector.length();
 }
