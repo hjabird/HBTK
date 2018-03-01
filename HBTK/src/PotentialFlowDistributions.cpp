@@ -32,8 +32,8 @@ HBTK::CartesianVector3D HBTK::BiotSavart::unity_vel(CartesianPoint3D & mes_point
 {
 	// See Katz & Plotkin ~pg 36, ~pg 255 (sec. 10.4.5)
 	CartesianVector3D r0(filament.vector());
-	CartesianVector3D r1(mes_point - filament.start());
-	CartesianVector3D r2(mes_point - filament.end());
+	CartesianVector3D r1(mes_point - filament.start);
+	CartesianVector3D r2(mes_point - filament.end);
 
 	double r1l = r1.length();
 	double r2l = r2.length();
