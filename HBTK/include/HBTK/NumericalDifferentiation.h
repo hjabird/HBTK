@@ -112,7 +112,7 @@ namespace HBTK {
 	{
 		TIn h = pow(HBTK::tolerance<TIn>(), 1./(2*Torder));
 		static_assert(std::is_floating_point<decltype(h)>::value, "Needs floating point.");
-		std::result_of<TFunc(TIn)>::type result = 0;
+		typename std::result_of<TFunc(TIn)>::type result = 0;
 		for (int idx = 0; idx < (int) vertices.size(); idx++) {
 			result += function(vertices[idx] * h + position) * weights[idx];
 		}

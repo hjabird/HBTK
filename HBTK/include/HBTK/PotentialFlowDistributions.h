@@ -28,8 +28,9 @@ SOFTWARE.
 #include <cmath>
 #include <tuple>
 
-#include "Checks.h"
 #include "CartesianLine.h"
+#include "Checks.h"
+#include "Constants.h"
 
 namespace HBTK
 {
@@ -190,7 +191,7 @@ namespace HBTK
 			term_1 = -1. / (2 * HBTK::Constants::pi<Ty>());
 			term_21 = (xtm - xt0) * atan2(ytm, xtm - xt0);
 			term_22 = (xtm - xt1) * atan2(ytm, xtm - xt1);
-			term_23 = ytm * log((pow(xtm - xt0, 2) + ytm * ytm) / (pow(xtm - xtm1, 2) + ytm * ytm)) / 2.0;
+			term_23 = ytm * log((pow(xtm - xt0, 2) + ytm * ytm) / (pow(xtm - xt1, 2) + ytm * ytm)) / 2.0;
 			term_2 = term_21 - term_22 + term_23;
 			Ty val = term_1 * term_2;
 			assert(HBTK::check_finite(val));
@@ -217,14 +218,14 @@ namespace HBTK
 			Ty term_u1, term_u2, term_u21, term_u22;
 			term_u1 = 1. / (2 * HBTK::Constants::pi<Ty>());
 			term_u21 = atan2(ytm, xtm - xt1);
-			term_u22 = atan2(ytm, xtm - xt2);
+			term_u22 = atan2(ytm, xtm - xt0);
 			term_u2 = term_u21 - term_u22;
 			Ty ut = term_u1 * term_u2;
 			assert(HBTK::check_finite(ut));
 			// Local v velocity (Katz2001 10.40)
 			Ty term_v1, term_v2;
 			term_v1 = 1. / (4 * HBTK::Constants::pi<Ty>());
-			verm_v2 = log((pow(xtm - xt1, 2) + ytm * ytm) / (pow(xtm - xtm0, 2) + ytm * ytm));
+			term_v2 = log((pow(xtm - xt1, 2) + ytm * ytm) / (pow(xtm - xt0, 2) + ytm * ytm));
 			Ty vt = term_v1 * term_v2;
 			assert(HBTK::check_finite(vt));
 
@@ -266,7 +267,7 @@ namespace HBTK
 			term_24 = (pow(xtm - xt0, 2) - xt1 * xt1 - ytm * ytm) * atan2(ytm, xtm - xt1) / 2.;
 			term_2 = term_21 + term_22 + term_23 - term_24;
 			velocity_potential += term_1 * term_2;
-			assert(HBTK::check_finite(vel_pot));
+			assert(HBTK::check_finite(velocity_potential));
 			return vel_pot;
 		}
 
@@ -292,7 +293,7 @@ namespace HBTK
 			Ty term_common_1, term_common_2, term_common_21, term_common_22;
 			term_common_1 = log((pow(xtm - xt0, 2) + ytm * ytm) / (pow(xtm - xt1, 2) + ytm * ytm));
 			term_common_21 = atan2(ytm, xtm - xt1);
-			term_common_22 = atan2(ytm, xtm - xt2);
+			term_common_22 = atan2(ytm, xtm - xt0);
 			term_common_2 = term_common_21 - term_common_22;
 			// Katz2001 Eq 10.72
 			Ty term_u1, term_u2, term_u21, term_u22, ut;

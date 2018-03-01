@@ -42,7 +42,7 @@ namespace HBTK {
 	constexpr void gauss_legendre(int n_points, TyStor & points, 
 												TyStor & weights);
 
-	template <int n_points, typename Ty>
+	template <long unsigned int n_points, typename Ty>
 	constexpr void gauss_legendre(std::array<Ty, n_points> & points, 
 								  std::array<Ty, n_points> & weights);
 
@@ -132,7 +132,7 @@ namespace HBTK {
 	/// p now contians quadrature points, and w weights. This code 
 	/// should be optimised away such that the solution is precalcuated
 	/// at compile time.
-	template <int n_points, typename Ty>
+	template <long unsigned int n_points, typename Ty>
 	constexpr void gauss_legendre(std::array<Ty, n_points> & points, 
 								  std::array<Ty, n_points> & weights) 
 	{
