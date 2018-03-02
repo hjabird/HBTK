@@ -28,7 +28,7 @@ SOFTWARE.
 #include "CartesianVector.h"
 #include "Constants.h"
 
-HBTK::CartesianVector3D HBTK::BiotSavart::unity_vel(CartesianPoint3D & mes_point, CartesianLine3D & filament)
+HBTK::CartesianVector3D HBTK::BiotSavart::unity_vel(CartesianPoint3D & mes_point, CartesianFiniteLine3D & filament)
 {
 	// See Katz & Plotkin ~pg 36, ~pg 255 (sec. 10.4.5)
 	CartesianVector3D r0(filament.vector());

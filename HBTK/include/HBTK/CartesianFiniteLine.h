@@ -1,8 +1,8 @@
 #pragma once
 /*////////////////////////////////////////////////////////////////////////////
-CartesianLine.h
+CartesianFiniteLine.h
 
-A flat plane in Cartesian space.
+A straight finite line in Cartesian space.
 
 Copyright 2018 HJA Bird
 
@@ -26,31 +26,38 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include "CartesianPoint.h"
-#include "CartesianVector.h"
 
 namespace HBTK {
-	class CartesianFiniteLine3D;
+	class CartesianVector3D;
+	class CartesianLine3D;
 
-	class CartesianPlane {
+	class CartesianFiniteLine3D {
 	public:
-		CartesianPlane();
-		// Create origin as given. Primary axis is given by primary_dir - origin normalised.
-		// Other axis defined with secondary dir positive, normalised and orthogonal to firs dir...
-		CartesianPlane(const CartesianPoint3D & origin, const CartesianPoint3D & primary_dir, const CartesianPoint3D & secondary_dir);
-		// Define a plane with origin and normal.
-		CartesianPlane(const CartesianPoint3D & origin, const CartesianVector3D & normal);
-		CartesianPlane(const CartesianFiniteLine3D & origin_primary_dir, const CartesianPoint3D & secondary_dir);
-		~CartesianPlane();
+		CartesianFiniteLine3D();
+		CartesianFiniteLine3D(const CartesianPoint3D & start, const CartesianPoint3D & end);
+		CartesianFiniteLine3D(const CartesianPoint3D & start, const CartesianVector3D & direction);
+		CartesianFiniteLine3D(const CartesianVector3D & direction, const CartesianPoint3D & end);
+		~CartesianFiniteLine3D();
 
-		CartesianPoint3D operator()(const CartesianPoint2D & plane_point) const;
-		CartesianPoint3D evaluate(const CartesianPoint2D & plane_point) const;
+		operator CartesianLine3D() const;
 
-		// Returns the planes origin.
-		CartesianPoint3D origin() const;
+		// Get a point on the line. Position in 0, 1 -> start to end.
+		CartesianPoint3D operator()(double position) const;
+		CartesianPoint3D evaluate(double position) const;
 
-	private:
-		CartesianPoint3D m_origin;
-		CartesianVector3D m_x_dir;
-		CartesianVector3D m_y_dir;
+		CartesianPoint3D start;
+		CartesianPoint3D end;
+		// Returns a vector of direction and length of the line:
+		CartesianVector3D vector() const;
+
+		// Distance between this line and a point.
+		double distance(const CartesianPoint3D & other);
+		double distance(const CartesianFiniteLine3D & other);
+
+		// Intersection - returns double corresponding to position between
+		// start and end of line as 0-1.
+		double intersection(const CartesianPoint3D & other) const;
+		double intersection(const CartesianFiniteLine3D & other) const;
 	};
 }
+

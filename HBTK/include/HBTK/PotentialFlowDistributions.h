@@ -28,7 +28,7 @@ SOFTWARE.
 #include <cmath>
 #include <tuple>
 
-#include "CartesianLine.h"
+#include "CartesianFiniteLine.h"
 #include "Checks.h"
 #include "Constants.h"
 
@@ -98,7 +98,7 @@ namespace HBTK
 	}
 
 	namespace BiotSavart {
-		CartesianVector3D unity_vel(CartesianPoint3D & mes_point, CartesianLine3D & filament);
+		CartesianVector3D unity_vel(CartesianPoint3D & mes_point, CartesianFiniteLine3D & filament);
 	}
 
 	// DEFINITIONS

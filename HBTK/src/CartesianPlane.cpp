@@ -28,7 +28,7 @@ SOFTWARE.
 #include <exception>
 #include <string>
 
-#include "CartesianLine.h"
+#include "CartesianFiniteLine.h"
 
 HBTK::CartesianPlane::CartesianPlane()
 	: m_origin({0, 0, 0}),
@@ -71,7 +71,7 @@ HBTK::CartesianPlane::CartesianPlane(const CartesianPoint3D & origin,
 	m_y_dir.normalise();
 }
 
-HBTK::CartesianPlane::CartesianPlane(const CartesianLine3D & origin_primary_dir, 
+HBTK::CartesianPlane::CartesianPlane(const CartesianFiniteLine3D & origin_primary_dir, 
 	const CartesianPoint3D & secondary_dir)
 	: m_origin(origin_primary_dir.start),
 	m_x_dir(),

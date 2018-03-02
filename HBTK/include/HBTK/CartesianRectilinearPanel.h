@@ -1,8 +1,9 @@
 #pragma once
 /*////////////////////////////////////////////////////////////////////////////
-CartesianLine.h
+CartesianRectilinearPanel.cpp
 
-A flat plane in Cartesian space.
+A rectilinear panel in cartesian space. Like a non-planar quadrilateral.
+Edges are straight.
 
 Copyright 2018 HJA Bird
 
@@ -25,32 +26,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
+#include <array>
+
 #include "CartesianPoint.h"
-#include "CartesianVector.h"
+#include "CartesianFiniteLine.h"
 
 namespace HBTK {
-	class CartesianFiniteLine3D;
-
-	class CartesianPlane {
+	class CartesianRectilinearPanel {
 	public:
-		CartesianPlane();
-		// Create origin as given. Primary axis is given by primary_dir - origin normalised.
-		// Other axis defined with secondary dir positive, normalised and orthogonal to firs dir...
-		CartesianPlane(const CartesianPoint3D & origin, const CartesianPoint3D & primary_dir, const CartesianPoint3D & secondary_dir);
-		// Define a plane with origin and normal.
-		CartesianPlane(const CartesianPoint3D & origin, const CartesianVector3D & normal);
-		CartesianPlane(const CartesianFiniteLine3D & origin_primary_dir, const CartesianPoint3D & secondary_dir);
-		~CartesianPlane();
+		CartesianRectilinearPanel();
+		CartesianRectilinearPanel(const CartesianPoint3D & corner_1, const CartesianPoint3D & corner_2,
+			const CartesianPoint3D & corner_3, const CartesianPoint3D & corner_4);
+		~CartesianRectilinearPanel();
 
-		CartesianPoint3D operator()(const CartesianPoint2D & plane_point) const;
-		CartesianPoint3D evaluate(const CartesianPoint2D & plane_point) const;
+		// Corners go anticlockwise round the panel from "bottom right". 0-4
+		std::array<CartesianPoint3D, 4> corners;
+		// Edges start on the bottom and go round.
+		CartesianFiniteLine3D edge(int edge_number) const;
+		void edge(int edge_number, const CartesianFiniteLine3D & new_value);
 
-		// Returns the planes origin.
-		CartesianPoint3D origin() const;
-
-	private:
-		CartesianPoint3D m_origin;
-		CartesianVector3D m_x_dir;
-		CartesianVector3D m_y_dir;
+		// The panel's local coordinates are [-1, 1], [-1, 1]
+		CartesianPoint3D operator()(const CartesianPoint2D & coordinate) const;\
+		CartesianPoint3D operator()(double local_x, double local_y) const;
+		CartesianPoint3D evaluate(const CartesianPoint2D & coordinate) const;
+		CartesianPoint3D evaluate(double local_x, double local_y) const;
+	
 	};
+
 }

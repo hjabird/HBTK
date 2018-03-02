@@ -1,8 +1,8 @@
 #pragma once
 /*////////////////////////////////////////////////////////////////////////////
-CartesianLine.h
+CartesianFiniteLine.h
 
-A straight line in Cartesian space.
+A straight finite line in Cartesian space.
 
 Copyright 2018 HJA Bird
 
@@ -26,6 +26,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include "CartesianPoint.h"
+#include "CartesianVector.h"
 
 namespace HBTK {
 	class CartesianVector3D;
@@ -33,21 +34,18 @@ namespace HBTK {
 	class CartesianLine3D {
 	public:
 		CartesianLine3D();
-		CartesianLine3D(const CartesianPoint3D & start, const CartesianPoint3D & end);
-		CartesianLine3D(const CartesianPoint3D & start, const CartesianVector3D & direction);
-		CartesianLine3D(const CartesianVector3D & direction, const CartesianPoint3D & end);
+		CartesianLine3D(const CartesianPoint3D & origin, const CartesianPoint3D & point_on_line);
+		CartesianLine3D(const CartesianPoint3D & origin, const CartesianVector3D & direction);
 		~CartesianLine3D();
 
-		// Get a point on the line. Position in 0, 1 -> start to end.
+		// Get a point on the line. position * direction from origin.
 		CartesianPoint3D operator()(double position) const;
 		CartesianPoint3D evaluate(double position) const;
 
-		CartesianPoint3D start;
-		CartesianPoint3D end;
-		// Returns a vector of direction and length of the line:
-		CartesianVector3D vector() const;
-
-		// Distance between this line and a point.
+		CartesianPoint3D origin;
+		CartesianVector3D direction;
+		
+		// Distance between this line and a point. NOT REALLY QUITE RIGHT! (IE: same as infinite line..)
 		double distance(const CartesianPoint3D & other);
 		double distance(const CartesianLine3D & other);
 
