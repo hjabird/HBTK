@@ -105,3 +105,13 @@ double HBTK::CartesianLine3D::intersection(const CartesianLine3D & other) const
 	}
 	return m_coeff;
 }
+
+bool HBTK::CartesianLine3D::operator==(const CartesianLine3D & other) const
+{
+	return (other.origin == origin) && (other.direction == direction);
+}
+
+bool HBTK::CartesianLine3D::operator!=(const CartesianLine3D & other) const
+{
+	return !operator==(other);
+}

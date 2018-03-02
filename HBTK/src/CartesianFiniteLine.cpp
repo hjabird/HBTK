@@ -127,3 +127,13 @@ double HBTK::CartesianFiniteLine3D::intersection(const CartesianFiniteLine3D & o
 	}
 	return m_coeff;
 }
+
+bool HBTK::CartesianFiniteLine3D::operator==(const CartesianFiniteLine3D & other) const
+{
+	return (other.start == start) && (other.end == end);
+}
+
+bool HBTK::CartesianFiniteLine3D::operator!=(const CartesianFiniteLine3D & other) const
+{
+	return !operator==(other);
+}

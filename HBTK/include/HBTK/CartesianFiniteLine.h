@@ -39,7 +39,7 @@ namespace HBTK {
 		CartesianFiniteLine3D(const CartesianVector3D & direction, const CartesianPoint3D & end);
 		~CartesianFiniteLine3D();
 
-		operator CartesianLine3D() const;
+		explicit operator CartesianLine3D() const;
 
 		// Get a point on the line. Position in 0, 1 -> start to end.
 		CartesianPoint3D operator()(double position) const;
@@ -58,6 +58,9 @@ namespace HBTK {
 		// start and end of line as 0-1.
 		double intersection(const CartesianPoint3D & other) const;
 		double intersection(const CartesianFiniteLine3D & other) const;
+
+		bool operator==(const CartesianFiniteLine3D & other) const;
+		bool operator!=(const CartesianFiniteLine3D & other) const;
 	};
 }
 

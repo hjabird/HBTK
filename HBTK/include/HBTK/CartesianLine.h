@@ -45,7 +45,7 @@ namespace HBTK {
 		CartesianPoint3D origin;
 		CartesianVector3D direction;
 		
-		// Distance between this line and a point. NOT REALLY QUITE RIGHT! (IE: same as infinite line..)
+		// Distance between this line and a point.
 		double distance(const CartesianPoint3D & other);
 		double distance(const CartesianLine3D & other);
 
@@ -53,6 +53,9 @@ namespace HBTK {
 		// start and end of line as 0-1.
 		double intersection(const CartesianPoint3D & other) const;
 		double intersection(const CartesianLine3D & other) const;
+
+		bool operator==(const CartesianLine3D & other) const;
+		bool operator!=(const CartesianLine3D & other) const;
 	};
 }
 
