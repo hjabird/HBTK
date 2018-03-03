@@ -67,7 +67,7 @@ void HBTK::CartesianRectilinearPanel::edge(int edge_number, const CartesianFinit
 
 HBTK::CartesianPoint3D HBTK::CartesianRectilinearPanel::evaluate(double local_x, double local_y) const
 {
-	class Elements::BilinearShapeFunctions quad4;
+	class Elements::BilinearQuad4ShapeFunctions quad4;
 	double x = local_x;
 	double y = local_y;
 
