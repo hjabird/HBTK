@@ -42,8 +42,10 @@ namespace HBTK {
 		CartesianPoint3D operator()(double position) const;
 		CartesianPoint3D evaluate(double position) const;
 
-		CartesianPoint3D origin;
-		CartesianVector3D direction;
+		CartesianPoint3D & origin();
+		const CartesianPoint3D & origin() const;
+		CartesianVector3D & direction();
+		const CartesianVector3D & direction() const;
 		
 		// Distance between this line and a point.
 		double distance(const CartesianPoint3D & other);
@@ -56,6 +58,10 @@ namespace HBTK {
 
 		bool operator==(const CartesianLine3D & other) const;
 		bool operator!=(const CartesianLine3D & other) const;
+
+	protected:
+		CartesianPoint3D m_origin;
+		CartesianVector3D m_direction;
 	};
 }
 

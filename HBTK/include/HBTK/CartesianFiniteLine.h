@@ -45,8 +45,10 @@ namespace HBTK {
 		CartesianPoint3D operator()(double position) const;
 		CartesianPoint3D evaluate(double position) const;
 
-		CartesianPoint3D start;
-		CartesianPoint3D end;
+		CartesianPoint3D & start();
+		const CartesianPoint3D & start() const;
+		CartesianPoint3D & end();
+		const CartesianPoint3D & end() const;
 		// Returns a vector of direction and length of the line:
 		CartesianVector3D vector() const;
 
@@ -61,6 +63,11 @@ namespace HBTK {
 
 		bool operator==(const CartesianFiniteLine3D & other) const;
 		bool operator!=(const CartesianFiniteLine3D & other) const;
+
+	protected:
+		CartesianPoint3D m_start;
+		CartesianPoint3D m_end;
 	};
+
 }
 

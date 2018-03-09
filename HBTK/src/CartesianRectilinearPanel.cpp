@@ -51,8 +51,8 @@ HBTK::CartesianFiniteLine3D HBTK::CartesianRectilinearPanel::edge(int edge_numbe
 	assert(edge_number >= 0);
 	assert(edge_number < 4);
 	CartesianFiniteLine3D edge;
-	edge.start = corners[edge_number];
-	edge.end = corners[(edge_number + 1) % 4];
+	edge.start() = corners[edge_number];
+	edge.end() = corners[(edge_number + 1) % 4];
 	return CartesianFiniteLine3D();
 }
 
@@ -60,8 +60,8 @@ void HBTK::CartesianRectilinearPanel::edge(int edge_number, const CartesianFinit
 {
 	assert(edge_number >= 0);
 	assert(edge_number < 4);
-	corners[edge_number] = new_value.start;
-	corners[(edge_number + 1) % 4] = new_value.end;
+	corners[edge_number] = new_value.start();
+	corners[(edge_number + 1) % 4] = new_value.end();
 	return;
 }
 

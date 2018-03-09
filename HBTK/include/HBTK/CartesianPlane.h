@@ -46,7 +46,8 @@ namespace HBTK {
 		CartesianPoint3D evaluate(const CartesianPoint2D & plane_point) const;
 
 		// Returns the planes origin.
-		CartesianPoint3D origin() const;
+		CartesianPoint3D & origin();
+		const CartesianPoint3D & origin() const;
 
 	private:
 		CartesianPoint3D m_origin;

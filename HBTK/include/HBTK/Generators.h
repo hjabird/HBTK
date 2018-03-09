@@ -60,7 +60,12 @@ namespace HBTK {
 
 namespace HBTK // Definitions
 {
-
+	/// \param start value of first point
+	/// \param end value of last point
+	/// \param number_of_points  the number of points to generate.
+	/// \param target_indexable where to put the points - assumed preallocated, floating point.
+	/// 
+	/// \brief generate a linearly space container of points
 	template<typename Ty>
 	void linspace(double start, double end, int number_of_points, Ty & target_indexable)
 	{
@@ -115,6 +120,12 @@ namespace HBTK // Definitions
 		return;
 	}
 
+	/// \param target_indexable where to write points to
+	/// \param uniform_value what to put in each of the values.
+	/// 
+	/// \brief fills an indexable object with a given value
+	///
+	/// Object must have interator that can be assigend to.
 	template<typename TyStore, typename TyVal>
 	void uniform(TyStore & target_indexable, TyVal uniform_value)
 	{

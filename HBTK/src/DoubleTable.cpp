@@ -39,6 +39,7 @@ HBTK::DoubleTable::~DoubleTable()
 {
 }
 
+/// \brief Returns the number of columns in the double table.
 int HBTK::DoubleTable::number_of_columns()
 {
 	assert(check_matching_sizes());
@@ -46,6 +47,10 @@ int HBTK::DoubleTable::number_of_columns()
 	return num_columns;
 }
 
+/// \brief Returns the number of rows in the double table.
+///
+/// When not all the columns have equal number of rows, the maximum 
+/// number of rows is returned.
 int HBTK::DoubleTable::number_of_rows()
 {
 	assert(check_matching_sizes());
@@ -56,6 +61,9 @@ int HBTK::DoubleTable::number_of_rows()
 	return max;
 }
 
+/// \param column_name A string for the header of the column to query.
+///
+/// \brief Returns the number of rows for given column
 int HBTK::DoubleTable::number_of_rows(std::string column_name)
 {
 	int idx = column_index(column_name);
@@ -68,6 +76,9 @@ int HBTK::DoubleTable::number_of_rows(std::string column_name)
 	return (int)m_data[idx].size();
 }
 
+/// \param column_idx index for column to query
+///
+/// \brief Returns the number of rows for given column
 int HBTK::DoubleTable::number_of_rows(int column_idx)
 {
 	assert(check_matching_sizes());
@@ -75,6 +86,9 @@ int HBTK::DoubleTable::number_of_rows(int column_idx)
 	return (int)m_data[column_idx].size();
 }
 
+/// \brief Add an automatically named column to the table.
+///
+/// Will be named the after the current number of columns.
 int HBTK::DoubleTable::add_column()
 {
 	std::string name = std::to_string(number_of_columns());
@@ -82,6 +96,9 @@ int HBTK::DoubleTable::add_column()
 	return number_of_columns();
 }
 
+/// \param column_name name for new column
+///
+/// \brief Add a column to the table.
 int HBTK::DoubleTable::add_column(std::string column_name)
 {
 	std::vector<double> a_column;
@@ -89,6 +106,10 @@ int HBTK::DoubleTable::add_column(std::string column_name)
 	return number_of_columns();
 }
 
+/// \param column_name name for new column
+/// \param data Initialise the column with given data.
+///
+/// \brief Add a column to the table with data.
 int HBTK::DoubleTable::add_column(std::string column_name, std::vector<double> & data)
 {
 	m_data.emplace_back(data);
@@ -97,6 +118,15 @@ int HBTK::DoubleTable::add_column(std::string column_name, std::vector<double> &
 	return number_of_columns();
 }
 
+/// \param row_data vector with length equal to the number of columns.
+///
+/// \brief add a row of data to the table
+///
+/// Appends the given row data to the bottom of the table. If columns are
+/// unequal they are automically filled with their fill value to match in
+/// length. 
+/// If the row_data size is not equal to the number of columns then
+/// a std::length_error is thrown.
 void HBTK::DoubleTable::add_row(std::vector<double> row_data)
 {
 	assert(check_matching_sizes());
@@ -113,11 +143,17 @@ void HBTK::DoubleTable::add_row(std::vector<double> row_data)
 	return;
 }
 
+/// \param column_index get a column from the table.
+/// 
+/// \brief Get a column for the table by index.
 std::vector<double>& HBTK::DoubleTable::operator[](int column_index)
 {
 	return m_data[column_index];
 }
 
+/// \param column_name name of column to get
+/// 
+/// \brief Get a column for the table by name (inefficient).
 std::vector<double>& HBTK::DoubleTable::operator[](std::string column_name)
 {
 	int col_idx = column_index(column_name);
@@ -129,16 +165,25 @@ std::vector<double>& HBTK::DoubleTable::operator[](std::string column_name)
 	return operator[](col_idx);
 }
 
+/// \param column_index get a column from the table.
+/// 
+/// \brief Get a column for the table by index.
 std::vector<double>& HBTK::DoubleTable::column(int column_index)
 {
 	return operator[](column_index);
 }
 
+/// \param column_name name of column to get
+/// 
+/// \brief Get a column for the table by name (inefficient).
 std::vector<double>& HBTK::DoubleTable::column(std::string column_name)
 {
 	return operator[](column_name);
 }
 
+/// \param row_index get a column from the table.
+/// 
+/// \brief Get a row for the table by index. Indexed for 0.
 std::vector<double> HBTK::DoubleTable::read_row(int index)
 {
 	assert(index >= 0);
@@ -155,6 +200,13 @@ std::vector<double> HBTK::DoubleTable::read_row(int index)
 	return row;
 }
 
+/// \param row The data to place in the row given by index
+/// \param index the index of the row to replace
+/// 
+/// \brief Rewrite a preexisting row.
+///
+/// row must be of size equal to number of columns. Otherwise a 
+/// length error will be thrown.
 void HBTK::DoubleTable::set_row(std::vector<double> row, int index)
 {
 	assert(index >= 0);
@@ -186,6 +238,11 @@ bool HBTK::DoubleTable::check_matching_sizes()
 	return true;
 }
 
+/// \brief If columns are not equal in length they will be made so.
+///
+/// Columns will be filled with their appropriate fill value such
+/// that they are equal in length to what was originally the 
+/// longest column.
 void HBTK::DoubleTable::fill_to_match_columns()
 {
 	int rows_needed = number_of_rows();
@@ -202,11 +259,29 @@ void HBTK::DoubleTable::fill_to_match_columns()
 	return;
 }
 
+/// \param column_idx the index of the column to which we're assigning
+/// a fill value.
+/// \param desired_value The value to fill said column with
+///
+/// \brief Set the automatic fill value for column by index
+///
+/// When the columns must be filled to match length, the fill value for
+/// a column is used. Set this fill value using this function by column index.
 void HBTK::DoubleTable::fill_value(int column_idx, double desired_value)
 {
 	m_fill_values[column_idx] = desired_value;
 }
 
+/// \param column_heading the name of the column to which we're assigning
+/// a fill value.
+/// \param desired_value The value to fill said column with
+///
+/// \brief Set the automatic fill value for column by name (inefficeint)
+///
+/// When the columns must be filled to match length, the fill value for
+/// a column is used. Set this fill value using this function by column
+/// name. If the name does nto belong to anything in the table,
+/// std::invalid_argument is thrown.
 double HBTK::DoubleTable::fill_value(std::string column_heading)
 {
 	int idx = column_index(column_heading);
