@@ -36,6 +36,7 @@ SOFTWARE.
 #define GetCurrentDir _getcwd	// For current_working_directory()
 #else
 #include <unistd.h>
+#include <dirent.h>
 #define GetCurrentDir getcwd	// For current_working_directory()
 #endif
 
@@ -107,7 +108,15 @@ std::vector<std::string> HBTK::Paths::files_in_directory(std::string path, std::
 		::FindClose(hFind);
 	}
 #else
-	// Linux code here. To do.
+	DIR *dir_pointer;
+	struct dirent *epdf;
+	dir_pointer = opendir(path.c_str());
+	if (dir_pointer != NULL) {
+		while (epdf = readdir(dpdf)) {
+			files.push_pack(epdf->d_name);
+		}
+	}
+	closedir(dpdf);
 #endif
 	return files;
 }
