@@ -66,17 +66,17 @@ HBTK::CartesianVector3D HBTK::CartesianVector3D::operator-(const CartesianVector
 HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator+(const CartesianPoint3D & other) const
 {
 	return CartesianPoint3D({
-		x + other.x,
-		y + other.y,
-		z + other.z });
+		x + other.x(),
+		y + other.y(),
+		z + other.z() });
 }
 
 HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator-(const CartesianPoint3D & other) const
 {
 	return CartesianPoint3D({
-		x - other.x,
-		y - other.y,
-		z - other.z });
+		x - other.x(),
+		y - other.y(),
+		z - other.z() });
 }
 
 HBTK::CartesianVector3D HBTK::CartesianVector3D::operator*(const double & multiplyer) const
@@ -197,15 +197,15 @@ HBTK::CartesianVector2D HBTK::CartesianVector2D::operator-(const CartesianVector
 HBTK::CartesianPoint2D HBTK::CartesianVector2D::operator+(const CartesianPoint2D & other) const
 {
 	return CartesianPoint2D({
-		x + other.x,
-		y + other.y });
+		x + other.x(),
+		y + other.y() });
 }
 
 HBTK::CartesianPoint2D HBTK::CartesianVector2D::operator-(const CartesianPoint2D & other) const
 {
 	return CartesianPoint2D({
-		x - other.x,
-		y - other.y });
+		x - other.x(),
+		y - other.y() });
 }
 
 HBTK::CartesianVector2D HBTK::CartesianVector2D::operator*(const double & multiplyer) const

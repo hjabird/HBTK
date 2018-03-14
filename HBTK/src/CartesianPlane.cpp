@@ -97,8 +97,8 @@ HBTK::CartesianPoint3D HBTK::CartesianPlane::operator()(const CartesianPoint2D &
 HBTK::CartesianPoint3D HBTK::CartesianPlane::evaluate(const CartesianPoint2D & plane_point) const
 {
 	CartesianPoint3D point(m_origin);
-	point = point + m_x_dir * plane_point.x;
-	point = point + m_y_dir * plane_point.y;
+	point = point + m_x_dir * plane_point.x();
+	point = point + m_y_dir * plane_point.y();
 	return point;
 }
 

@@ -76,6 +76,26 @@ HBTK::CartesianPoint3D HBTK::CartesianFiniteLine3D::evaluate(double position) co
 	return operator()(position);
 }
 
+HBTK::CartesianPoint3D & HBTK::CartesianFiniteLine3D::start()
+{
+	return m_start;
+}
+
+const HBTK::CartesianPoint3D & HBTK::CartesianFiniteLine3D::start() const
+{
+	return m_start;
+}
+
+HBTK::CartesianPoint3D & HBTK::CartesianFiniteLine3D::end()
+{
+	return m_end;
+}
+
+const HBTK::CartesianPoint3D & HBTK::CartesianFiniteLine3D::end() const
+{
+	return m_end;
+}
+
 
 HBTK::CartesianVector3D HBTK::CartesianFiniteLine3D::vector() const
 {

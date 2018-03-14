@@ -30,16 +30,11 @@ SOFTWARE.
 #include "CartesianVector.h"
 
 HBTK::CartesianPoint3D::CartesianPoint3D() 
-	: x(0),
-	y(0),
-	z(0)
 {
 }
 
 HBTK::CartesianPoint3D::CartesianPoint3D(const std::array<double, 3> & location)
-	: x(location[0]),
-	y(location[1]),
-	z(location[2])
+	: m_coord(location)
 {
 }
 
@@ -47,26 +42,58 @@ HBTK::CartesianPoint3D::~CartesianPoint3D()
 {
 }
 
+double & HBTK::CartesianPoint3D::x()
+{
+	return m_coord[0];
+}
+
+const double & HBTK::CartesianPoint3D::x() const
+{
+	return m_coord[0];
+}
+
+double & HBTK::CartesianPoint3D::y()
+{
+	return m_coord[1];
+}
+
+const double & HBTK::CartesianPoint3D::y() const
+{
+	return m_coord[1];
+}
+
+double & HBTK::CartesianPoint3D::z()
+{
+	return m_coord[2];
+}
+
+const double & HBTK::CartesianPoint3D::z() const
+{
+	return m_coord[2];
+}
+
 HBTK::CartesianPoint3D HBTK::CartesianPoint3D::operator+(const CartesianVector3D & other) const
 {
 	return CartesianPoint3D(std::array<double, 3>(
-		{x + other.x,
-		 y + other.y,
-		 z + other.z }));
+		{x() + other.x,
+		 y() + other.y,
+		 z() + other.z }));
 }
 
 HBTK::CartesianPoint3D HBTK::CartesianPoint3D::operator-(const CartesianVector3D & other) const
 {
-	return CartesianPoint3D({ x - other.x,
-		y - other.y,
-		z - other.z });
+	return CartesianPoint3D({ 
+		x() - other.x,
+		y() - other.y,
+		z() - other.z });
 }
 
 HBTK::CartesianVector3D HBTK::CartesianPoint3D::operator-(const CartesianPoint3D & other) const
 {
-	return CartesianVector3D({ x - other.x,
-		y - other.y,
-		z - other.z });
+	return CartesianVector3D({ 
+		x() - other.x(),
+		y() - other.y(),
+		z() - other.z() });
 }
 
 HBTK::CartesianPoint3D HBTK::CartesianPoint3D::origin()
@@ -76,7 +103,7 @@ HBTK::CartesianPoint3D HBTK::CartesianPoint3D::origin()
 
 bool HBTK::CartesianPoint3D::operator==(const CartesianPoint3D & other) const
 {
-	if ((x == other.x) && (y == other.y) && (z == other.z)) {
+	if ((x() == other.x()) && (y() == other.y()) && (z() == other.z())) {
 		return true;
 	}
 	else {
@@ -91,14 +118,11 @@ bool HBTK::CartesianPoint3D::operator!=(const CartesianPoint3D & other) const
 
 
 HBTK::CartesianPoint2D::CartesianPoint2D()
-	: x(0),
-	y(0)
 {
 }
 
 HBTK::CartesianPoint2D::CartesianPoint2D(const std::array<double, 2> & location)
-	: x(location[0]),
-	y(location[1])
+	: m_coord(location)
 {
 }
 
@@ -114,19 +138,39 @@ HBTK::CartesianPoint2D HBTK::CartesianPoint2D::origin()
 
 void HBTK::CartesianPoint2D::rotate(double angle) {
 	double tx, ty;
-	tx = x * cos(angle) + y * sin(angle);
-	ty = x * -sin(angle) + y * cos(angle);
-	x = tx;
-	y = ty;
+	tx = x() * cos(angle) + y() * sin(angle);
+	ty = x() * -sin(angle) + y() * cos(angle);
+	x() = tx;
+	y() = ty;
 	return;
 }
 
 
 void HBTK::CartesianPoint2D::rotate(double angle, CartesianPoint2D other) {
 	double tx, ty;
-	tx = cos(angle) * (x - other.x) + sin(angle) * (y - other.y);
-	ty = -sin(angle) * (x - other.x) + cos(angle) * (y - other.y);
-	x = tx;
-	y = ty;
+	tx = cos(angle) * (x() - other.x()) + sin(angle) * (y() - other.y());
+	ty = -sin(angle) * (x() - other.x()) + cos(angle) * (y() - other.y());
+	x() = tx;
+	y() = ty;
 	return;
+}
+
+double & HBTK::CartesianPoint2D::x()
+{
+	return m_coord[0];
+}
+
+const double & HBTK::CartesianPoint2D::x() const
+{
+	return m_coord[0];
+}
+
+double & HBTK::CartesianPoint2D::y()
+{
+	return m_coord[1];
+}
+
+const double & HBTK::CartesianPoint2D::y() const
+{
+	return m_coord[1];
 }

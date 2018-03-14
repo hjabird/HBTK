@@ -73,19 +73,19 @@ HBTK::CartesianPoint3D HBTK::CartesianRectilinearPanel::evaluate(double local_x,
 
 	std::array<double, 4> c = quad4.shape_function(x, y);
 
-	double x_out = corners[0].x * c[0] + corners[1].x * c[1] +
-		corners[2].x * c[2] + corners[3].x * c[3];
-	double y_out = corners[0].y * c[0] + corners[1].y * c[1] +
-		corners[2].y * c[2] + corners[3].y * c[3];
-	double z_out = corners[0].z * c[0] + corners[1].z * c[1] +
-		corners[2].z * c[2] + corners[3].z * c[3];
+	double x_out = corners[0].x() * c[0] + corners[1].x() * c[1] +
+		corners[2].x() * c[2] + corners[3].x() * c[3];
+	double y_out = corners[0].y() * c[0] + corners[1].y() * c[1] +
+		corners[2].y() * c[2] + corners[3].y() * c[3];
+	double z_out = corners[0].z() * c[0] + corners[1].z() * c[1] +
+		corners[2].z() * c[2] + corners[3].z() * c[3];
 
 	return CartesianPoint3D({ x_out, y_out, z_out });
 }
 
 HBTK::CartesianPoint3D HBTK::CartesianRectilinearPanel::operator()(const CartesianPoint2D & coordinate) const
 {
-	return evaluate(coordinate.x, coordinate.y);
+	return evaluate(coordinate.x(), coordinate.y());
 }
 
 HBTK::CartesianPoint3D HBTK::CartesianRectilinearPanel::operator()(double local_x, double local_y) const
@@ -95,5 +95,5 @@ HBTK::CartesianPoint3D HBTK::CartesianRectilinearPanel::operator()(double local_
 
 HBTK::CartesianPoint3D HBTK::CartesianRectilinearPanel::evaluate(const CartesianPoint2D & coordinate) const
 {
-	return evaluate(coordinate.x, coordinate.y);
+	return evaluate(coordinate.x(), coordinate.y());
 }
