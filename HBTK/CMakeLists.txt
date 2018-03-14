@@ -20,7 +20,7 @@ add_library(HBTK  ${HBTK_INCLUDE}
 set_property(TARGET HBTK PROPERTY FOLDER "libraries")
 set_target_properties(HBTK PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin
-		      PUBLIC_HEADER "${HBTK_INCLUDE}")
+                      PUBLIC_HEADER "${HBTK_INCLUDE}")
  
  
 
