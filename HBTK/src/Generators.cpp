@@ -28,11 +28,26 @@ SOFTWARE.
 
 #include <cassert>
 
+/// \param start the first value of the output
+/// \param end the last value of the output
+///
+/// \brief Generate an equally space vector of points from start to end.
+///
+/// Generates 100 points in [start, end] and returns in vector. Start
+/// and end must be finite.
 std::vector<double> HBTK::linspace(double start, double end)
 {
 	return linspace(start, end, 100);
 }
 
+/// \param start the first value of the output
+/// \param end the last value of the output
+/// \param number_of_points the number of points to generate
+///
+/// \brief Generate an equally space vector of points.
+///
+/// Generates number_of_points points in [start, end]. Start and end must be
+/// finite and there must be a positive number of points.
 std::vector<double> HBTK::linspace(double start, double end, int number_of_points)
 {
 	assert(number_of_points >= 0);

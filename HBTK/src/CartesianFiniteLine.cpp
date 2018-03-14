@@ -32,26 +32,26 @@ SOFTWARE.
 #include "CartesianVector.h"
 
 HBTK::CartesianFiniteLine3D::CartesianFiniteLine3D()
-	: start({0.0, 0.0, 0.0}),
-	end({1.0, 0.0, 0.0})
+	: m_start({0.0, 0.0, 0.0}),
+	m_end({1.0, 0.0, 0.0})
 {
 }
 
 HBTK::CartesianFiniteLine3D::CartesianFiniteLine3D(const CartesianPoint3D & start, const CartesianPoint3D & end)
-	: start(start),
-	end(end)
+	: m_start(start),
+	m_end(end)
 {
 }
 
 HBTK::CartesianFiniteLine3D::CartesianFiniteLine3D(const CartesianPoint3D & start, const CartesianVector3D & direction)
-	: start(start),
-	end(start + direction)
+	: m_start(start),
+	m_end(start + direction)
 {
 }
 
 HBTK::CartesianFiniteLine3D::CartesianFiniteLine3D(const CartesianVector3D & direction, const CartesianPoint3D & end)
-	: start(end - direction),
-	end(end)
+	: m_start(end - direction),
+	m_end(end)
 {
 }
 
@@ -61,13 +61,13 @@ HBTK::CartesianFiniteLine3D::~CartesianFiniteLine3D()
 
 HBTK::CartesianFiniteLine3D::operator HBTK::CartesianLine3D() const
 {
-	return CartesianLine3D(start, end - start);
+	return CartesianLine3D(m_start, m_end - m_start);
 }
 
 HBTK::CartesianPoint3D HBTK::CartesianFiniteLine3D::operator()(double position) const
 {
-	CartesianVector3D vector = end - start;
-	CartesianPoint3D output = start + vector * position;
+	CartesianVector3D vector = m_end - m_start;
+	CartesianPoint3D output = m_start + vector * position;
 	return output;
 }
 
@@ -76,28 +76,48 @@ HBTK::CartesianPoint3D HBTK::CartesianFiniteLine3D::evaluate(double position) co
 	return operator()(position);
 }
 
+HBTK::CartesianPoint3D & HBTK::CartesianFiniteLine3D::start()
+{
+	return m_start;
+}
+
+const HBTK::CartesianPoint3D & HBTK::CartesianFiniteLine3D::start() const
+{
+	return m_start;
+}
+
+HBTK::CartesianPoint3D & HBTK::CartesianFiniteLine3D::end()
+{
+	return m_end;
+}
+
+const HBTK::CartesianPoint3D & HBTK::CartesianFiniteLine3D::end() const
+{
+	return m_end;
+}
+
 
 HBTK::CartesianVector3D HBTK::CartesianFiniteLine3D::vector() const
 {
-	return CartesianVector3D(end - start);
+	return CartesianVector3D(m_end - m_start);
 }
 
 double HBTK::CartesianFiniteLine3D::distance(const CartesianPoint3D & other)
 {
 	double denominator = vector().length();
-	double numerator = (other - start).cross(vector()).length();
+	double numerator = (other - m_start).cross(vector()).length();
 	return numerator / denominator;
 }
 
 double HBTK::CartesianFiniteLine3D::distance(const CartesianFiniteLine3D & other)
 {
 	CartesianVector3D normal = vector().cross(other.vector());
-	return std::abs(normal.dot(other.start - start));
+	return std::abs(normal.dot(other.start() - m_start));
 }
 
 double HBTK::CartesianFiniteLine3D::intersection(const CartesianPoint3D & other) const
 {
-	CartesianVector3D vect = other - start;
+	CartesianVector3D vect = other - m_start;
 	double coeff_1 = vect.x / vector().x;
 	double coeff_2 = vect.y / vector().y;
 	double coeff_3 = vect.z / vector().z;
@@ -113,7 +133,7 @@ double HBTK::CartesianFiniteLine3D::intersection(const CartesianPoint3D & other)
 
 double HBTK::CartesianFiniteLine3D::intersection(const CartesianFiniteLine3D & other) const
 {
-	CartesianVector3D vect = other.start - start;
+	CartesianVector3D vect = other.start() - m_start;
 	CartesianVector3D m_v = vector();
 	CartesianVector3D o_v = other.vector();
 	// Solve as a 2 x 2 linear problem in x, y, then check with z:
@@ -130,7 +150,7 @@ double HBTK::CartesianFiniteLine3D::intersection(const CartesianFiniteLine3D & o
 
 bool HBTK::CartesianFiniteLine3D::operator==(const CartesianFiniteLine3D & other) const
 {
-	return (other.start == start) && (other.end == end);
+	return (other.start() == m_start) && (other.end() == m_end);
 }
 
 bool HBTK::CartesianFiniteLine3D::operator!=(const CartesianFiniteLine3D & other) const

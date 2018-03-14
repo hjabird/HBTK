@@ -1,8 +1,9 @@
 #pragma once
 /*////////////////////////////////////////////////////////////////////////////
-CartesianLine.h
+Paths.h
 
-A flat plane in Cartesian space.
+Very simple utilities for working with paths (for where we don't get 
+C++17's filesystem header)
 
 Copyright 2018 HJA Bird
 
@@ -25,33 +26,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
-#include "CartesianPoint.h"
-#include "CartesianVector.h"
+#include <string>
+#include <vector>
 
 namespace HBTK {
-	class CartesianFiniteLine3D;
+	namespace Paths {
+		// Return the current working directory of the program.
+		std::string current_working_directory();
 
-	class CartesianPlane {
-	public:
-		CartesianPlane();
-		// Create origin as given. Primary axis is given by primary_dir - origin normalised.
-		// Other axis defined with secondary dir positive, normalised and orthogonal to firs dir...
-		CartesianPlane(const CartesianPoint3D & origin, const CartesianPoint3D & primary_dir, const CartesianPoint3D & secondary_dir);
-		// Define a plane with origin and normal.
-		CartesianPlane(const CartesianPoint3D & origin, const CartesianVector3D & normal);
-		CartesianPlane(const CartesianFiniteLine3D & origin_primary_dir, const CartesianPoint3D & secondary_dir);
-		~CartesianPlane();
+		// Return the location of the compiled executable.
+		std::string executable_path();
 
-		CartesianPoint3D operator()(const CartesianPoint2D & plane_point) const;
-		CartesianPoint3D evaluate(const CartesianPoint2D & plane_point) const;
+		// Get a list of files in the current directory
+		std::vector<std::string> files_in_current_working_directory();
+		std::vector<std::string> files_in_current_working_directory(std::string extension);
 
-		// Returns the planes origin.
-		CartesianPoint3D & origin();
-		const CartesianPoint3D & origin() const;
-
-	private:
-		CartesianPoint3D m_origin;
-		CartesianVector3D m_x_dir;
-		CartesianVector3D m_y_dir;
-	};
+		// Get a list of files in a path
+		std::vector<std::string> files_in_directory(std::string path);
+		std::vector<std::string> files_in_directory(std::string path, std::string file_extension);
+	}
 }
