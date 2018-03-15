@@ -75,17 +75,17 @@ const double & HBTK::CartesianPoint3D::z() const
 HBTK::CartesianPoint3D HBTK::CartesianPoint3D::operator+(const CartesianVector3D & other) const
 {
 	return CartesianPoint3D(std::array<double, 3>(
-		{x() + other.x,
-		 y() + other.y,
-		 z() + other.z }));
+		{x() + other.x(),
+		 y() + other.y(),
+		 z() + other.z() }));
 }
 
 HBTK::CartesianPoint3D HBTK::CartesianPoint3D::operator-(const CartesianVector3D & other) const
 {
 	return CartesianPoint3D({ 
-		x() - other.x,
-		y() - other.y,
-		z() - other.z });
+		x() - other.x(),
+		y() - other.y(),
+		z() - other.z() });
 }
 
 HBTK::CartesianVector3D HBTK::CartesianPoint3D::operator-(const CartesianPoint3D & other) const

@@ -30,16 +30,11 @@ SOFTWARE.
 #include "CartesianPoint.h"
 
 HBTK::CartesianVector3D::CartesianVector3D()
-	:  x(0),
-	y(0),
-	z(0)
 {
 }
 
 HBTK::CartesianVector3D::CartesianVector3D(const std::array<double, 3> vector)
-	: x(vector[0]),
-	y(vector[1]),
-	z(vector[2])
+	: m_coord((std::array<double,3>) vector)
 {
 }
 
@@ -50,76 +45,76 @@ HBTK::CartesianVector3D::~CartesianVector3D()
 HBTK::CartesianVector3D HBTK::CartesianVector3D::operator+(const CartesianVector3D & other ) const
 {
 	return CartesianVector3D({
-		x + other.x,
-		y + other.y,
-		z + other.z });
+		x() + other.x(),
+		y() + other.y(),
+		z() + other.z() });
 }
 
 HBTK::CartesianVector3D HBTK::CartesianVector3D::operator-(const CartesianVector3D & other) const
 {
 	return CartesianVector3D({
-		x - other.x,
-		y - other.y,
-		z - other.z });
+		x() - other.x(),
+		y() - other.y(),
+		z() - other.z() });
 }
 
 HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator+(const CartesianPoint3D & other) const
 {
 	return CartesianPoint3D({
-		x + other.x(),
-		y + other.y(),
-		z + other.z() });
+		x() + other.x(),
+		y() + other.y(),
+		z() + other.z() });
 }
 
 HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator-(const CartesianPoint3D & other) const
 {
 	return CartesianPoint3D({
-		x - other.x(),
-		y - other.y(),
-		z - other.z() });
+		x() - other.x(),
+		y() - other.y(),
+		z() - other.z() });
 }
 
 HBTK::CartesianVector3D HBTK::CartesianVector3D::operator*(const double & multiplyer) const
 {
 	return CartesianVector3D({
-		x * multiplyer,
-		y * multiplyer,
-		x * multiplyer});
+		x() * multiplyer,
+		y() * multiplyer,
+		x() * multiplyer});
 }
 
 HBTK::CartesianVector3D HBTK::CartesianVector3D::operator/(const double & divisor) const
 {
 	return CartesianVector3D({
-		x / divisor,
-		y / divisor,
-		z / divisor });
+		x() / divisor,
+		y() / divisor,
+		z() / divisor });
 }
 
 double HBTK::CartesianVector3D::length() const
 {
-	return sqrt(x * x + y * y + z * z);
+	return sqrt(x() * x() + y() * y() + z() * z());
 }
 
 void HBTK::CartesianVector3D::normalise()
 {
 	double len = length();
-	x /= length();
-	y /= length();
-	z /= length();
+	x() /= length();
+	y() /= length();
+	z() /= length();
 	return;
 }
 
 double HBTK::CartesianVector3D::dot(const CartesianVector3D & other) const
 {
-	return x * other.x + y * other.y + z * other.z;
+	return x() * other.x() + y() * other.y() + z() * other.z();
 }
 
 HBTK::CartesianVector3D HBTK::CartesianVector3D::cross(const CartesianVector3D & other) const
 {
 	CartesianVector3D result;
-	result.x = y * other.z - z * other.y;
-	result.y = z * other.x - x * other.z;
-	result.z = x * other.y - y * other.x;
+	result.x() = y() * other.z() - z() * other.y();
+	result.y() = z() * other.x() - x() * other.z();
+	result.z() = x() * other.y() - y() * other.x();
 	return result;
 }
 
@@ -139,9 +134,39 @@ double HBTK::CartesianVector3D::angle(const CartesianVector3D & other) const
 	return acos(value);
 }
 
+double & HBTK::CartesianVector3D::x()
+{
+	return m_coord[0];
+}
+
+const double & HBTK::CartesianVector3D::x() const
+{
+	return m_coord[0];
+}
+
+double & HBTK::CartesianVector3D::y()
+{
+	return m_coord[1];
+}
+
+const double & HBTK::CartesianVector3D::y() const
+{
+	return m_coord[1];
+}
+
+double & HBTK::CartesianVector3D::z()
+{
+	return m_coord[2];
+}
+
+const double & HBTK::CartesianVector3D::z() const
+{
+	return m_coord[2];
+}
+
 bool HBTK::CartesianVector3D::operator==(const CartesianVector3D & other) const
 {
-	if ((x == other.x) && (y == other.y) && (z == other.z)) {
+	if ((x() == other.x()) && (y() == other.y()) && (z() == other.z())) {
 		return true;
 	}
 	else {
@@ -156,7 +181,7 @@ bool HBTK::CartesianVector3D::operator!=(const CartesianVector3D & other) const
 
 HBTK::CartesianVector3D::operator std::array<double, 3>() const
 {
-	return { x, y, z };
+	return m_coord;
 }
 
 double HBTK::abs(const CartesianVector3D & vector)

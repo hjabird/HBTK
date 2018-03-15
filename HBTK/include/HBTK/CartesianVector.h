@@ -58,14 +58,19 @@ namespace HBTK {
 		double angle(const CartesianVector3D & other) const;
 
 
-		double x;
-		double y;
-		double z;
+		double & x();
+		const double & x() const;
+		double & y();
+		const double & y() const;
+		double & z();
+		const double & z() const;
 
 		operator std::array<double, 3>() const;
 
 		bool operator==(const CartesianVector3D & other) const;
 		bool operator!=(const CartesianVector3D & other) const;
+	private:
+		std::array<double, 3> m_coord;
 	};
 
 	double abs(const CartesianVector3D & vector);
