@@ -50,6 +50,7 @@ namespace HBTK {
 		// Get a reference to the value for a coordinate in the 
 		// mesh block.
 		TType& value(std::array<int, TNumDimensions> coordinate);
+		const TType& value(std::array<int, TNumDimensions> coordinate) const;
 
 		// Swap local coordinates around
 		void swap(int first_dim, int second_dim);
@@ -111,6 +112,15 @@ namespace HBTK {
 
 	template<int TNumDimensions, typename TType>
 	inline TType & StructuredValueBlockND<TNumDimensions, TType>::value(std::array<int, TNumDimensions> coordinate)
+	{
+		assert_valid_extents();
+		assert_valid_indices(coordinate);
+		int linear_index = generate_linear_index(m_extents, coordinate);
+		return m_value[linear_index];
+	}
+
+	template<int TNumDimensions, typename TType>
+	inline const TType & StructuredValueBlockND<TNumDimensions, TType>::value(std::array<int, TNumDimensions> coordinate) const
 	{
 		assert_valid_extents();
 		assert_valid_indices(coordinate);
