@@ -264,6 +264,21 @@ double HBTK::CartesianVector2D::angle(const CartesianVector2D & other) const
 	return acos(value);
 }
 
+bool HBTK::CartesianVector2D::operator==(const CartesianVector2D & other) const
+{
+	if ((x == other.x) && (y == other.y)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool HBTK::CartesianVector2D::operator!=(const CartesianVector2D & other) const
+{
+	return !operator==(other);
+}
+
 
 HBTK::CartesianVector2D::operator std::array<double, 2>() const
 {

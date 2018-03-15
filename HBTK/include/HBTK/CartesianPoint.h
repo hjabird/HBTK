@@ -29,6 +29,7 @@ SOFTWARE.
 
 namespace HBTK {
 	class CartesianVector3D;
+	class CartesianVector2D;
 
 	class CartesianPoint3D {
 	public:
@@ -43,7 +44,7 @@ namespace HBTK {
 		double & z();
 		const double & z() const;
 
-		HBTK::CartesianVector3D operator-(const HBTK::CartesianPoint3D & other) const;
+		CartesianVector3D operator-(const HBTK::CartesianPoint3D & other) const;
 		CartesianPoint3D operator+(const HBTK::CartesianVector3D & other) const;
 		CartesianPoint3D operator-(const HBTK::CartesianVector3D & other) const;
 
@@ -73,7 +74,14 @@ namespace HBTK {
 		double & y();
 		const double & y() const;
 
+		CartesianVector2D operator-(const HBTK::CartesianPoint2D & other) const;
+		CartesianPoint2D operator+(const HBTK::CartesianVector2D & other) const;
+		CartesianPoint2D operator-(const HBTK::CartesianVector2D & other) const;
+
 		static CartesianPoint2D origin();
+
+		bool operator==(const CartesianPoint2D & other) const;
+		bool operator!=(const CartesianPoint2D & other) const;
 
 	private:
 		std::array<double, 2> m_coord;

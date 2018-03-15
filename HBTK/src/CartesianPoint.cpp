@@ -136,6 +136,21 @@ HBTK::CartesianPoint2D HBTK::CartesianPoint2D::origin()
 	return CartesianPoint2D({ 0, 0 });
 }
 
+bool HBTK::CartesianPoint2D::operator==(const CartesianPoint2D & other) const
+{
+	if ((x() == other.x()) && (y() == other.y())) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool HBTK::CartesianPoint2D::operator!=(const CartesianPoint2D & other) const
+{
+	return !operator==(other);
+}
+
 void HBTK::CartesianPoint2D::rotate(double angle) {
 	double tx, ty;
 	tx = x() * cos(angle) + y() * sin(angle);
@@ -173,4 +188,25 @@ double & HBTK::CartesianPoint2D::y()
 const double & HBTK::CartesianPoint2D::y() const
 {
 	return m_coord[1];
+}
+
+HBTK::CartesianPoint2D HBTK::CartesianPoint2D::operator+(const CartesianVector2D & other) const
+{
+	return CartesianPoint2D(std::array<double, 2>(
+		{ x() + other.x,
+		y() + other.y }));
+}
+
+HBTK::CartesianPoint2D HBTK::CartesianPoint2D::operator-(const CartesianVector2D & other) const
+{
+	return CartesianPoint2D({
+		x() - other.x,
+		y() - other.y });
+}
+
+HBTK::CartesianVector2D HBTK::CartesianPoint2D::operator-(const CartesianPoint2D & other) const
+{
+	return CartesianVector2D({
+		x() - other.x(),
+		y() - other.y() });
 }

@@ -100,6 +100,9 @@ namespace HBTK {
 		double y;
 
 		operator std::array<double, 2>() const;
+
+		bool operator==(const CartesianVector2D & other) const;
+		bool operator!=(const CartesianVector2D & other) const;
 	};
 
 	double abs(const CartesianVector2D & vector);

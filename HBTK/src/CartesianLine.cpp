@@ -135,3 +135,67 @@ bool HBTK::CartesianLine3D::operator!=(const CartesianLine3D & other) const
 {
 	return !operator==(other);
 }
+
+HBTK::CartesianLine2D::CartesianLine2D()
+	: m_origin({ 0.0, 0.0}),
+	m_direction({ 1.0 })
+{
+}
+
+HBTK::CartesianLine2D::CartesianLine2D(const CartesianPoint2D & start, const CartesianPoint2D & end)
+	: m_origin(start),
+	m_direction(end - start)
+{
+}
+
+HBTK::CartesianLine2D::CartesianLine2D(const CartesianPoint2D & start, const CartesianVector2D & direction)
+	: m_origin(start),
+	m_direction(direction)
+{
+}
+
+HBTK::CartesianLine2D::~CartesianLine2D()
+{
+}
+
+HBTK::CartesianPoint2D HBTK::CartesianLine2D::operator()(double position) const
+{
+	CartesianPoint2D output = m_origin + m_direction * position;
+	return output;
+}
+
+HBTK::CartesianPoint2D HBTK::CartesianLine2D::evaluate(double position) const
+{
+	return operator()(position);
+}
+
+HBTK::CartesianPoint2D & HBTK::CartesianLine2D::origin()
+{
+	return m_origin;
+}
+
+const HBTK::CartesianPoint2D & HBTK::CartesianLine2D::origin() const
+{
+	return m_origin;
+}
+
+HBTK::CartesianVector2D & HBTK::CartesianLine2D::direction()
+{
+	return m_direction;
+}
+
+const HBTK::CartesianVector2D & HBTK::CartesianLine2D::direction() const
+{
+	return m_direction;
+}
+
+
+bool HBTK::CartesianLine2D::operator==(const CartesianLine2D & other) const
+{
+	return (other.origin() == m_origin) && (other.direction() == m_direction);
+}
+
+bool HBTK::CartesianLine2D::operator!=(const CartesianLine2D & other) const
+{
+	return !operator==(other);
+}
