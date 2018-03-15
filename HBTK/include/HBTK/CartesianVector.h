@@ -101,13 +101,18 @@ namespace HBTK {
 		// The angle between two vectors in radians.
 		double angle(const CartesianVector2D & other) const;
 
-		double x;
-		double y;
+		double & x();
+		const double & x() const;
+		double & y();
+		const double & y() const;
 
 		operator std::array<double, 2>() const;
 
 		bool operator==(const CartesianVector2D & other) const;
 		bool operator!=(const CartesianVector2D & other) const;
+
+	private:
+		std::array<double, 2> m_coord;
 	};
 
 	double abs(const CartesianVector2D & vector);

@@ -193,15 +193,15 @@ const double & HBTK::CartesianPoint2D::y() const
 HBTK::CartesianPoint2D HBTK::CartesianPoint2D::operator+(const CartesianVector2D & other) const
 {
 	return CartesianPoint2D(std::array<double, 2>(
-		{ x() + other.x,
-		y() + other.y }));
+		{ x() + other.x(),
+		y() + other.y() }));
 }
 
 HBTK::CartesianPoint2D HBTK::CartesianPoint2D::operator-(const CartesianVector2D & other) const
 {
 	return CartesianPoint2D({
-		x() - other.x,
-		y() - other.y });
+		x() - other.x(),
+		y() - other.y() });
 }
 
 HBTK::CartesianVector2D HBTK::CartesianPoint2D::operator-(const CartesianPoint2D & other) const
