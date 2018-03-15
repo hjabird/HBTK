@@ -26,8 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
+#include <array>
 #include <complex>
+#include <vector>
 
 namespace HBTK {
 
@@ -51,4 +52,21 @@ namespace HBTK {
 		return result;
 	}
 
+	template<typename Ty>
+	bool check_finite(const std::array<Ty> & x) {
+		bool result = true;
+		for (auto &a : x) {
+			if (!check_finite(a)) { result = false; break; }
+		}
+		return result;
+	}
+
+	class CartesianPoint2D;
+	bool check_finite(const CartesianPoint2D & x);
+	class CartesianPoint3D;
+	bool check_finite(const CartesianPoint3D & x);
+	class CartesianVector2D;
+	bool check_finite(const CartesianVector2D & x);
+	class CartesianVector3D;
+	bool check_finite(const CartesianVector3D & x);
 }

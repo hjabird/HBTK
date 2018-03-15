@@ -30,6 +30,9 @@ SOFTWARE.
 #include <cmath>
 #include <complex>
 
+#include "CartesianPoint.h"
+#include "CartesianVector.h"
+
 namespace HBTK {
 
 	bool check_finite(float x) {
@@ -42,6 +45,28 @@ namespace HBTK {
 
 	bool check_finite(const long double x) {
 		return std::isfinite(x);
+	}
+
+	bool check_finite(const CartesianPoint2D & x)
+	{
+		return check_finite(x.x()) && check_finite(x.y());
+	}
+
+	bool check_finite(const CartesianPoint3D & x)
+	{
+		return check_finite(x.x()) && check_finite(x.y())
+			&& check_finite(x.z());
+	}
+
+	bool check_finite(const CartesianVector2D & x)
+	{
+		return check_finite(x.x()) && check_finite(x.y());
+	}
+
+	bool check_finite(const CartesianVector3D & x)
+	{
+		return check_finite(x.x()) && check_finite(x.y())
+			&& check_finite(x.z());
 	}
 
 }
