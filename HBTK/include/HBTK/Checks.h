@@ -52,8 +52,8 @@ namespace HBTK {
 		return result;
 	}
 
-	template<typename Ty>
-	bool check_finite(const std::array<Ty> & x) {
+	template<typename Ty, int TySize>
+	bool check_finite(const std::array<Ty, TySize> & x) {
 		bool result = true;
 		for (auto &a : x) {
 			if (!check_finite(a)) { result = false; break; }
@@ -69,4 +69,8 @@ namespace HBTK {
 	bool check_finite(const CartesianVector2D & x);
 	class CartesianVector3D;
 	bool check_finite(const CartesianVector3D & x);
+	class CartesianFiniteLine2D;
+	bool check_finite(const CartesianFiniteLine2D & x);
+	class CartesianFiniteLine3D;
+	bool check_finite(const CartesianFiniteLine3D & x);
 }

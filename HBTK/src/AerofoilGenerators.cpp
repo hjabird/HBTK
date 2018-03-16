@@ -78,10 +78,10 @@ HBTK::AerofoilGeometry HBTK::AerofoilGenerators::naca_four_digit(double thicknes
 	};
 	// forward of the max camber and 
 	auto mean_ln_rear_fn = [=](double x)->double {
-		return (m / (1 - p * p)) * ((1 - 2 * p) + 2 * p * x - x * x);
+		return (m / ((1 - p)*(1 - p))) * ((1 - 2 * p) + 2 * p * x - x * x);
 	}; // behind the max ordinate, which are combined:
 	auto mean_ln_fn = [&](double x)->double {
-		return (x > p ? mean_ln_fwd_fn(x) : mean_ln_rear_fn(x));
+		return (x < p ? mean_ln_fwd_fn(x) : mean_ln_rear_fn(x));
 	};
 
 	std::vector<double> x_points = HBTK::linspace(0, HBTK::Constants::pi(), 30);

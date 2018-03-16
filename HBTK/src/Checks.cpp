@@ -30,6 +30,7 @@ SOFTWARE.
 #include <cmath>
 #include <complex>
 
+#include "CartesianFiniteLine.h"
 #include "CartesianPoint.h"
 #include "CartesianVector.h"
 
@@ -67,6 +68,16 @@ namespace HBTK {
 	{
 		return check_finite(x.x()) && check_finite(x.y())
 			&& check_finite(x.z());
+	}
+
+	bool check_finite(const CartesianFiniteLine2D & x)
+	{
+		return check_finite(x.start()) && check_finite(x.end());
+	}
+
+	bool check_finite(const CartesianFiniteLine3D & x)
+	{
+		return check_finite(x.start()) && check_finite(x.end());
 	}
 
 }
