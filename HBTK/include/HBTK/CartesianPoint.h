@@ -28,6 +28,7 @@ SOFTWARE.
 #include <array>
 
 namespace HBTK {
+	class CartesianPlane;
 	class CartesianVector3D;
 	class CartesianVector2D;
 
@@ -43,6 +44,8 @@ namespace HBTK {
 		const double & y() const;
 		double & z();
 		const double & z() const;
+		std::array<double, 3> & as_array();
+		const std::array<double, 3> & as_array() const;
 
 		CartesianVector3D operator-(const HBTK::CartesianPoint3D & other) const;
 		CartesianPoint3D operator+(const HBTK::CartesianVector3D & other) const;
@@ -52,6 +55,8 @@ namespace HBTK {
 
 		bool operator==(const CartesianPoint3D & other) const;
 		bool operator!=(const CartesianPoint3D & other) const;
+
+		double distance(const CartesianPlane & plane) const;
 
 	private:
 		std::array<double, 3> m_coord;

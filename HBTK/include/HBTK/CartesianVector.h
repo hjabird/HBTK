@@ -64,6 +64,8 @@ namespace HBTK {
 		const double & y() const;
 		double & z();
 		const double & z() const;
+		std::array<double, 3> & as_array();
+		const std::array<double, 3> & as_array() const;
 
 		operator std::array<double, 3>() const;
 

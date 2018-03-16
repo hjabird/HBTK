@@ -164,6 +164,16 @@ const double & HBTK::CartesianVector3D::z() const
 	return m_coord[2];
 }
 
+const std::array<double, 3>& HBTK::CartesianVector3D::as_array() const
+{
+	return m_coord;
+}
+
+std::array<double, 3>& HBTK::CartesianVector3D::as_array()
+{
+	return m_coord;
+}
+
 bool HBTK::CartesianVector3D::operator==(const CartesianVector3D & other) const
 {
 	if ((x() == other.x()) && (y() == other.y()) && (z() == other.z())) {

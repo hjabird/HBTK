@@ -93,3 +93,22 @@ HBTK::AerofoilGeometry HBTK::AerofoilGenerators::naca_four_digit(double thicknes
 
 	return foil;
 }
+
+HBTK::AerofoilGeometry HBTK::AerofoilGenerators::naca_four_digit(std::string name)
+{
+	double thick, camber, camber_pos;
+	if ((int)name.size() != 4) {
+		throw std::runtime_error(
+			"HBTK::AerofoilGenerators::naca_four_digit Bad aerofoil name: "
+			+ name + ". Expected four digits CPTT where C is camber(pc),"
+			" P is max camber position (10ths of chord) and TT is thickness"
+			"(pc). " __FILE__ + " : " + std::to_string(__LINE__));
+	}
+	camber = std::stod(std::to_string(name[0]));
+	camber_pos = std::stod(std::to_string(name[1]));
+	thick = std::stod(std::to_string(name[2]) + std::to_string(name[3]));
+	thick /= 100;
+	camber /= 100;
+	camber_pos /= 10;
+	return naca_four_digit(thick, camber, camber_pos);
+}

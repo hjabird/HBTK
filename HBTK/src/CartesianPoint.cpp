@@ -27,6 +27,7 @@ SOFTWARE.
 
 #include <cmath>
 
+#include "CartesianPlane.h"
 #include "CartesianVector.h"
 
 HBTK::CartesianPoint3D::CartesianPoint3D() 
@@ -72,6 +73,16 @@ const double & HBTK::CartesianPoint3D::z() const
 	return m_coord[2];
 }
 
+std::array<double, 3>& HBTK::CartesianPoint3D::as_array()
+{
+	return m_coord;
+}
+
+const std::array<double, 3>& HBTK::CartesianPoint3D::as_array() const
+{
+	return m_coord;
+}
+
 HBTK::CartesianPoint3D HBTK::CartesianPoint3D::operator+(const CartesianVector3D & other) const
 {
 	return CartesianPoint3D(std::array<double, 3>(
@@ -114,6 +125,11 @@ bool HBTK::CartesianPoint3D::operator==(const CartesianPoint3D & other) const
 bool HBTK::CartesianPoint3D::operator!=(const CartesianPoint3D & other) const
 {
 	return !operator==(other);
+}
+
+double HBTK::CartesianPoint3D::distance(const CartesianPlane & plane) const
+{
+	return plane.distance(*this);
 }
 
 

@@ -25,6 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
+#include <exception>
 #include <fstream>
 #include <iomanip>
 
@@ -43,6 +44,9 @@ HBTK::CsvWriter::~CsvWriter()
 void HBTK::CsvWriter::write(std::string path, HBTK::DoubleTable & table)
 {
 	std::ofstream output_stream(path, std::ios::binary);
+	if (!output_stream.good()) { throw std::runtime_error(
+		"HBTK::CsvWriter.write: Could not write to " + path +
+		". Bad stream. " __FILE__ ":" + std::to_string(__LINE__)); }
 	return write(output_stream, table);
 }
 
