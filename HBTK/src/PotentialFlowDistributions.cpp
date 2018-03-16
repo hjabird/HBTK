@@ -35,8 +35,8 @@ HBTK::CartesianVector3D HBTK::BiotSavart::unity_vel(CartesianPoint3D & mes_point
 	CartesianVector3D r1(mes_point - filament.start());
 	CartesianVector3D r2(mes_point - filament.end());
 
-	double r1l = r1.length();
-	double r2l = r2.length();
+	double r1l = r1.magnitude();
+	double r2l = r2.magnitude();
 	double global_denominator = 4 * HBTK::Constants::pi() * pow(abs(r1.cross(r2)), 2);
 
 	double r1c = r0.dot(r1) / r1l;

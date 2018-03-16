@@ -104,8 +104,8 @@ HBTK::CartesianVector3D HBTK::CartesianFiniteLine3D::vector() const
 
 double HBTK::CartesianFiniteLine3D::distance(const CartesianPoint3D & other)
 {
-	double denominator = vector().length();
-	double numerator = (other - m_start).cross(vector()).length();
+	double denominator = vector().magnitude();
+	double numerator = (other - m_start).cross(vector()).magnitude();
 	return numerator / denominator;
 }
 

@@ -45,7 +45,7 @@ namespace HBTK {
 		CartesianVector3D operator/(const double & divisor) const;
 
 		// Returns the length of the vector. Same as: abs(this)
-		double length() const;
+		double magnitude() const;
 		// Set vector length to 1.
 		void normalise();
 		// Dot product between to vectors.
@@ -89,7 +89,7 @@ namespace HBTK {
 		CartesianVector2D operator/(const double & divisor)const ;
 
 		// Returns the length of the vector. Same as: abs(this)
-		double length() const;
+		double magnitude() const;
 		// Set vector length to 1.
 		void normalise();
 		// Dot product between to vectors.

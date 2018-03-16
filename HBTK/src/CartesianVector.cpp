@@ -90,17 +90,17 @@ HBTK::CartesianVector3D HBTK::CartesianVector3D::operator/(const double & diviso
 		z() / divisor });
 }
 
-double HBTK::CartesianVector3D::length() const
+double HBTK::CartesianVector3D::magnitude() const
 {
 	return sqrt(x() * x() + y() * y() + z() * z());
 }
 
 void HBTK::CartesianVector3D::normalise()
 {
-	double len = length();
-	x() /= length();
-	y() /= length();
-	z() /= length();
+	double len = magnitude();
+	x() /= magnitude();
+	y() /= magnitude();
+	z() /= magnitude();
 	return;
 }
 
@@ -122,7 +122,7 @@ double HBTK::CartesianVector3D::cos_angle(const CartesianVector3D & other) const
 {
 	double value;
 	value = dot(other);
-	value /= length() * other.length();
+	value /= magnitude() * other.magnitude();
 	return value;
 }
 
@@ -130,7 +130,7 @@ double HBTK::CartesianVector3D::angle(const CartesianVector3D & other) const
 {
 	double value;
 	value = dot(other);
-	value /= length() * other.length();
+	value /= magnitude() * other.magnitude();
 	return acos(value);
 }
 
@@ -186,7 +186,7 @@ HBTK::CartesianVector3D::operator std::array<double, 3>() const
 
 double HBTK::abs(const CartesianVector3D & vector)
 {
-	return vector.length();
+	return vector.magnitude();
 }
 
 HBTK::CartesianVector2D::CartesianVector2D()
@@ -244,14 +244,14 @@ HBTK::CartesianVector2D HBTK::CartesianVector2D::operator/(const double & diviso
 		y() / divisor });
 }
 
-double HBTK::CartesianVector2D::length() const
+double HBTK::CartesianVector2D::magnitude() const
 {
 	return sqrt(x() * x() + y() * y());
 }
 
 void HBTK::CartesianVector2D::normalise()
 {
-	double len = length();
+	double len = magnitude();
 	x() /= len;
 	y() /= len;
 	return;
@@ -274,7 +274,7 @@ double HBTK::CartesianVector2D::cos_angle(const CartesianVector2D & other) const
 {
 	double value;
 	value = dot(other);
-	value /= length() * other.length();
+	value /= magnitude() * other.magnitude();
 	return value;
 }
 
@@ -282,7 +282,7 @@ double HBTK::CartesianVector2D::angle(const CartesianVector2D & other) const
 {
 	double value;
 	value = dot(other);
-	value /= length() * other.length();
+	value /= magnitude() * other.magnitude();
 	return acos(value);
 }
 
@@ -329,5 +329,5 @@ HBTK::CartesianVector2D::operator std::array<double, 2>() const
 
 double HBTK::abs(const CartesianVector2D & vector)
 {
-	return vector.length();
+	return vector.magnitude();
 }

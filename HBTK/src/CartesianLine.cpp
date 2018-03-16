@@ -82,8 +82,8 @@ const HBTK::CartesianVector3D & HBTK::CartesianLine3D::direction() const
 
 double HBTK::CartesianLine3D::distance(const CartesianPoint3D & other)
 {
-	double denominator = m_direction.length();
-	double numerator = (other - m_origin).cross(m_direction).length();
+	double denominator = m_direction.magnitude();
+	double numerator = (other - m_origin).cross(m_direction).magnitude();
 	return numerator / denominator;
 }
 
