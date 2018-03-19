@@ -54,7 +54,9 @@ void HBTK::Xml::XmlParser::main_parser(std::ifstream & input_stream, std::ostrea
 	m_reading_file = true;
 	parse_prologue();
 	while (m_input_stream->good()) {
-		seek_next_xml_event();
+		if (!seek_next_xml_event()) {
+			break;
+		}
 		act_on_xml_event();
 	}
 	m_reading_file = false;
@@ -83,9 +85,9 @@ void HBTK::Xml::XmlParser::parse_element_open()
 		if (eq_pos == (int)str_vector[i].size()) { throw - 2; };
 		std::string name, value;
 		name = str_vector[i].substr(0, eq_pos);
-		if (str_vector[i][eq_pos + 1] != '\'') { throw - 3; }
+		if (str_vector[i][eq_pos + 1] != '\"') { throw - 3; }
 		value = str_vector[i].substr(eq_pos + 1, str_vector[i].size() - eq_pos - 1);
-		while (value.back() != '\'') {
+		while (value.back() != '\"') {
 			i++;
 			if (i >= (int)str_vector.size()) throw - 4;
 			value += str_vector[i];
@@ -94,6 +96,7 @@ void HBTK::Xml::XmlParser::parse_element_open()
 		parameters.push_back({ name, value });
 	}
 	m_element_stack.push(element_name);
+	normalised_next_char(); // We know this exists from element_desc length.
 	on_element_open(element_name, parameters);
 	return;
 }
@@ -120,7 +123,7 @@ void HBTK::Xml::XmlParser::parse_parser_event()
 	return;
 }
 
-void HBTK::Xml::XmlParser::seek_next_xml_event()
+int HBTK::Xml::XmlParser::seek_next_xml_event()
 {
 	// Keep going until we find an xml tag opening.
 	assert(m_input_stream != NULL);
@@ -128,6 +131,8 @@ void HBTK::Xml::XmlParser::seek_next_xml_event()
 	do {
 		next_character = normalised_next_char();
 	} while ((next_character != '<') && m_input_stream->good());
+	if (m_input_stream->good()) return 1;
+	else return 0;
 }
 
 int HBTK::Xml::XmlParser::element_descriptor_length()
@@ -142,7 +147,7 @@ int HBTK::Xml::XmlParser::element_descriptor_length()
 		next_char = normalised_next_char();
 	} while ((m_input_stream->good()) && next_char != '>');
 	m_input_stream->seekg(position);
-	return counter;
+	return counter - 1;
 }
 
 void HBTK::Xml::XmlParser::act_on_xml_event()
@@ -161,8 +166,8 @@ void HBTK::Xml::XmlParser::act_on_xml_event()
 		parse_element_close();
 		break;
 	default:
-		parse_element_open();
 		m_input_stream->seekg(position);
+		parse_element_open();
 		break;
 	}
 	return;

@@ -31,8 +31,8 @@ SOFTWARE.
 #include <iterator>
 #include <vector>
 
+#include "StructuredValueBlockNDIterator.h"
 #include "StructuredBlockIndexerND.h"
-
 
 namespace HBTK {
 	template<int TNumDimensions, typename TType>
@@ -45,33 +45,49 @@ namespace HBTK {
 		// Set the extent(dimensions) of the structured block
 		void extent(std::array<int, TNumDimensions> extents);
 		// Get the extent(dimensions) of the structured block;
-		std::array<int, TNumDimensions> extent();
+		std::array<int, TNumDimensions> extent() const;
 
 		// Get a reference to the value for a coordinate in the 
 		// mesh block.
 		TType& value(std::array<int, TNumDimensions> coordinate);
+		TType& operator[](const std::array<int, TNumDimensions> & coordinate);
+		const TType& operator[](const std::array<int, TNumDimensions> & coordinate) const;
 
 		// Swap local coordinates around
 		void swap(int first_dim, int second_dim);
 
+		// Number of items in array.
+		int size() const;
+
+		using iterator = StructuredValueBlockNDIterator<TNumDimensions, TType>;
+		iterator begin() const;
+		iterator end() const;
+
 	private:
+		// The size of the array by dimension
 		std::array<int, TNumDimensions> m_extents;
+		// The data contained in the array. 
+		// Data always starts at [0].
 		std::vector<TType> m_value;
 
-		static int generate_linear_index(std::array<int, TNumDimensions> extent,
-			std::array<int, TNumDimensions> index);
+		static constexpr int generate_linear_index(
+			const std::array<int, TNumDimensions> & extent,
+			const std::array<int, TNumDimensions> & index);
 
-		static std::array<int, TNumDimensions> generate_coordinate_index(
-			std::array<int, TNumDimensions> extent, int linear_index
+		static constexpr std::array<int, TNumDimensions> generate_coordinate_index(
+			const std::array<int, TNumDimensions> & extent, int linear_index
 		);
 		
-		static int number_of_elements(std::array<int, TNumDimensions> extent);
+		static constexpr int number_of_elements(const std::array<int, TNumDimensions> & extent);
 
-		void assert_valid_extents();
-		void assert_valid_indices(std::array<int, TNumDimensions> indexes);
-		static void assert_valid_extents(std::array<int, TNumDimensions> extents);
-		static void assert_valid_indices(std::array<int, TNumDimensions> extent,
-			std::array<int, TNumDimensions> index);
+		void constexpr assert_valid_extents();
+		void constexpr assert_valid_indices(
+			const std::array<int, TNumDimensions> & indexes);
+		static constexpr void assert_valid_extents(
+			const std::array<int, TNumDimensions> & extents);
+		static constexpr void assert_valid_indices(
+			const std::array<int, TNumDimensions> & extent,
+			const std::array<int, TNumDimensions> & index);
 	};
 
 
@@ -104,13 +120,31 @@ namespace HBTK {
 	}
 
 	template<int TNumDimensions, typename TType>
-	inline std::array<int, TNumDimensions> StructuredValueBlockND<TNumDimensions, TType>::extent()
+	inline std::array<int, TNumDimensions> StructuredValueBlockND<TNumDimensions, TType>::extent() const
 	{
 		return m_extents;
 	}
 
 	template<int TNumDimensions, typename TType>
 	inline TType & StructuredValueBlockND<TNumDimensions, TType>::value(std::array<int, TNumDimensions> coordinate)
+	{
+		assert_valid_extents();
+		assert_valid_indices(coordinate);
+		int linear_index = generate_linear_index(m_extents, coordinate);
+		return m_value[linear_index];
+	}
+
+	template<int TNumDimensions, typename TType>
+	inline TType & StructuredValueBlockND<TNumDimensions, TType>::operator[](const std::array<int, TNumDimensions>& coordinate)
+	{
+		assert_valid_extents();
+		assert_valid_indices(coordinate);
+		int linear_index = generate_linear_index(m_extents, coordinate);
+		return m_value[linear_index];
+	}
+
+	template<int TNumDimensions, typename TType>
+	inline const TType & StructuredValueBlockND<TNumDimensions, TType>::operator[](const std::array<int, TNumDimensions>& coordinate) const
 	{
 		assert_valid_extents();
 		assert_valid_indices(coordinate);
@@ -151,19 +185,44 @@ namespace HBTK {
 
 	}
 
+	template<int TNumDimensions, typename TType>
+	inline int StructuredValueBlockND<TNumDimensions, TType>::size() const
+	{
+		constexpr int nd = TNumDimensions;
+		int size = 1;
+		for (int i = 0; i < nd; i++) {
+			size *= m_extents[i];
+		}
+		return size;
+	}
 
 	template<int TNumDimensions, typename TType>
-	inline int StructuredValueBlockND<TNumDimensions, TType>::generate_linear_index(std::array<int, TNumDimensions> extent,
-		std::array<int, TNumDimensions> index)
+	inline StructuredValueBlockNDIterator<TNumDimensions, TType> StructuredValueBlockND<TNumDimensions, TType>::begin() const
 	{
-		assert_valid_extents(extent);
+
+		return &m_value[0];
+	}
+
+	template<int TNumDimensions, typename TType>
+	inline StructuredValueBlockNDIterator<TNumDimensions, TType> StructuredValueBlockND<TNumDimensions, TType>::end() const
+	{
+		return &m_value.end();
+	}
+
+
+	template<int TNumDimensions, typename TType>
+	inline constexpr int StructuredValueBlockND<TNumDimensions, TType>::generate_linear_index(
+		const std::array<int, TNumDimensions> & extent,
+		const std::array<int, TNumDimensions> & index)
+	{
 		HBTK::StructuredBlockIndexerND<TNumDimensions> indexer(extent);
 		return indexer.coordinate_index(index);
 	}
 
 	template<int TNumDimensions, typename TType>
-	inline std::array<int, TNumDimensions> StructuredValueBlockND<TNumDimensions, TType>::generate_coordinate_index(
-		std::array<int, TNumDimensions> extent, int linear_index)
+	inline constexpr std::array<int, TNumDimensions> StructuredValueBlockND<TNumDimensions, TType>::generate_coordinate_index(
+		const std::array<int, TNumDimensions> & extent, 
+		int linear_index)
 	{
 		assert_valid_extents(extent);
 		
@@ -172,7 +231,8 @@ namespace HBTK {
 	}
 
 	template<int TNumDimensions, typename TType>
-	inline int StructuredValueBlockND<TNumDimensions, TType>::number_of_elements(std::array<int, TNumDimensions> extent)
+	inline constexpr int StructuredValueBlockND<TNumDimensions, TType>::number_of_elements(
+		const std::array<int, TNumDimensions> & extent)
 	{
 		assert_valid_extents(extent);
 		int size(1);
@@ -182,13 +242,14 @@ namespace HBTK {
 
 
 	template<int TNumDimensions, typename TType >
-	inline void StructuredValueBlockND<TNumDimensions, TType>::assert_valid_extents()
+	inline constexpr void StructuredValueBlockND<TNumDimensions, TType>::assert_valid_extents()
 	{
 		assert_valid_extents(m_extents);
 	}
 
 	template<int TNumDimensions, typename TType>
-	inline void StructuredValueBlockND<TNumDimensions, TType>::assert_valid_indices(std::array<int, TNumDimensions> indexes)
+	inline constexpr void StructuredValueBlockND<TNumDimensions, TType>::assert_valid_indices(
+		const std::array<int, TNumDimensions> & indexes)
 	{
 		assert_valid_indices(m_extents, indexes);
 		return;
@@ -196,7 +257,8 @@ namespace HBTK {
 
 
 	template<int TNumDimensions, typename TType>
-	inline void StructuredValueBlockND<TNumDimensions, TType>::assert_valid_extents(std::array<int, TNumDimensions> extents)
+	inline constexpr void StructuredValueBlockND<TNumDimensions, TType>::assert_valid_extents(
+		const std::array<int, TNumDimensions> & extents)
 	{
 		for (auto &extent : extents) {
 			assert(extent > 0);
@@ -206,8 +268,9 @@ namespace HBTK {
 
 
 	template<int TNumDimensions, typename TType>
-	inline void StructuredValueBlockND<TNumDimensions, TType>::assert_valid_indices(std::array<int, TNumDimensions> extent,
-		std::array<int, TNumDimensions> index)
+	inline constexpr void StructuredValueBlockND<TNumDimensions, TType>::assert_valid_indices(
+		const std::array<int, TNumDimensions> & extent,
+		const std::array<int, TNumDimensions> & index)
 	{
 		for (int i = 0; i < TNumDimensions; i++) {
 			assert(index[i] >= 0);

@@ -60,6 +60,7 @@ namespace HBTK {
 			std::istream& xml_input_stream();
 
 		private:
+			friend class BasicParser<XmlParser>;
 			void main_parser(std::ifstream & input_stream, std::ostream & error_stream);
 
 			// String encoding.
@@ -86,7 +87,8 @@ namespace HBTK {
 			// Parse instructions to the parser rather than data.
 			void parse_parser_event();
 			// Move to the curser to just inside the next xml tag.
-			void seek_next_xml_event();
+			// Returns 0 for end of file.
+			int seek_next_xml_event();
 			// Returns the number of characters inside the tag. Curser stays in same position.
 			int element_descriptor_length(); 
 			// Runs the correct xml function when called with curser just inside xml tag.

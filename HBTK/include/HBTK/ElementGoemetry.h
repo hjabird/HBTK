@@ -56,15 +56,7 @@ namespace HBTK {
 
 			template < typename TCoord >
 			constexpr bool is_local_coord_in_element(TCoord local_coord) {
-				if (std::is_floating_point<TCoord>::value)
-				{
-					static_assert(false)
-						// return local_coord >= -1.0 && local_coord <= 1.0
-				}
-				else
-				{
-					return local_coord[0] >= -1.0 && local_coord[0] <= 1.0
-				}
+				return local_coord[0] >= -1.0 && local_coord[0] <= 1.0
 			}
 		};
 

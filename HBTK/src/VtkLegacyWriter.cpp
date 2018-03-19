@@ -28,16 +28,16 @@ SOFTWARE.
 
 #include "StructuredBlockIndexerND.h"
 
-HBTK::Vtk::VtkWriter::VtkWriter()
-	: file_description("A_VTK_FILE: Set HBTK::Vtk::VtkWriter.file_description for custom description.")
+HBTK::Vtk::VtkLegacyWriter::VtkLegacyWriter()
+	: file_description("A_VTK_FILE: Set HBTK::Vtk::VtkLegacyWriter.file_description for custom description.")
 {
 }
 
-HBTK::Vtk::VtkWriter::~VtkWriter()
+HBTK::Vtk::VtkLegacyWriter::~VtkLegacyWriter()
 {
 }
 
-void HBTK::Vtk::VtkWriter::open_file(std::ostream * ostream)
+void HBTK::Vtk::VtkLegacyWriter::open_file(std::ostream * ostream)
 {
 	*ostream << "# vtk DataFile Version 2.0\n";
 	*ostream << file_description.c_str() << "\n";
@@ -48,7 +48,7 @@ void HBTK::Vtk::VtkWriter::open_file(std::ostream * ostream)
 	return;
 }
 
-void HBTK::Vtk::VtkWriter::write_mesh(StructuredMeshBlock3D & mesh)
+void HBTK::Vtk::VtkLegacyWriter::write_mesh(StructuredMeshBlock3D & mesh)
 {
 	if (m_mesh_written) { throw - 1; }
 	*m_ostream << "DATASET STRUCTURED_GRID\n";
@@ -65,7 +65,7 @@ void HBTK::Vtk::VtkWriter::write_mesh(StructuredMeshBlock3D & mesh)
 	return;
 }
 
-void HBTK::Vtk::VtkWriter::append_structured_scalar_data(StructuredValueBlockND<3, double>& meshdata, std::string name)
+void HBTK::Vtk::VtkLegacyWriter::append_structured_scalar_data(StructuredValueBlockND<3, double>& meshdata, std::string name)
 {
 	*m_ostream << "SCALARS " << name.c_str() << " float\n";
 	*m_ostream << "LOOKUP_TABLE default\n";

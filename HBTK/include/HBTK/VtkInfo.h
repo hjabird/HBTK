@@ -1,10 +1,10 @@
 #pragma once
 /*////////////////////////////////////////////////////////////////////////////
-VtkLegacyWriter.h
+VtkInfo.h
 
-Write Vtk Legacy (non-Xml) files.
+Information on Vtk elements
 
-Copyright 2017 HJA Bird
+Copyright 2018 HJA Bird
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,36 +25,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
-#include <memory>
-#include <ostream>
+#include <string>
 
-#include "StructuredMeshBlock3D.h"
-#include "StructuredValueBlockND.h"
+#include "CartesianVector.h"
 
 namespace HBTK {
 	namespace Vtk {
-		class VtkLegacyWriter {
-		public:
-			VtkLegacyWriter();
-			~VtkLegacyWriter();
+		// HBTK <-> VTK Types:
+		// VtkInt32 -> int
+		// VtkScalar -> double
+		// VtkVector -> CartesianVector3D
 
-			// bool write_binary;
-			std::string file_description;
+		// Returns a string describing the element given by ele_id
+		const std::string element_name(int ele_id);
 
-			void open_file(std::ostream * ostream);
+		// Returns the number of nodes of element given by ele_id.
+		// Returns -1 for invalid / unknown ele_id, and -2 for 
+		// variable number of nodes.
+		const int element_node_count(int ele_id);
 
-			// Structured mesh:
-			void write_mesh(StructuredMeshBlock3D & mesh);
-			void append_structured_scalar_data(StructuredValueBlockND<3, double> & meshdata, std::string name);
+		// Returns the number of dimensions of an element given by ele_id
+		const int element_dimensions(int ele_id);
 
-		private:
-			bool m_writing_binary;
-			bool m_mesh_written;
-
-			std::ostream * m_ostream;
-
-
-
-		};
+		// Retuns the equivalent id number for a GMSH element. 
+		// Conveniently, node ordering is the same.
+		// Returns -1 for no equavalent.
+		const int to_gmsh_element_id(int ele_id);
 	}
 }

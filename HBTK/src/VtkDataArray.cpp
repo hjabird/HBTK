@@ -1,10 +1,10 @@
-#pragma once
+#include "VtkDataArray.h"
 /*////////////////////////////////////////////////////////////////////////////
-VtkLegacyWriter.h
+VtkDataArray.cpp
 
-Write Vtk Legacy (non-Xml) files.
+An analogue of the DataArray part of a VTK file.
 
-Copyright 2017 HJA Bird
+Copyright 2018 HJA Bird
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,36 +25,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
-#include <memory>
-#include <ostream>
+// Yes, templates have removed everything the the realm of compiling multiple
+// times...
 
-#include "StructuredMeshBlock3D.h"
-#include "StructuredValueBlockND.h"
-
-namespace HBTK {
-	namespace Vtk {
-		class VtkLegacyWriter {
-		public:
-			VtkLegacyWriter();
-			~VtkLegacyWriter();
-
-			// bool write_binary;
-			std::string file_description;
-
-			void open_file(std::ostream * ostream);
-
-			// Structured mesh:
-			void write_mesh(StructuredMeshBlock3D & mesh);
-			void append_structured_scalar_data(StructuredValueBlockND<3, double> & meshdata, std::string name);
-
-		private:
-			bool m_writing_binary;
-			bool m_mesh_written;
-
-			std::ostream * m_ostream;
-
-
-
-		};
-	}
+int HBTK::Vtk::VtkDataArrayTypeless::number_of_components()
+{
+	return m_number_of_components;
 }
