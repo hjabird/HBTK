@@ -57,7 +57,7 @@ HBTK::AerofoilGeometry HBTK::AerofoilGenerators::naca_four_digit(double thicknes
 	assert(thickness > 0);
 	assert(HBTK::check_finite(thickness));
 	assert(HBTK::check_finite(camber));
-	assert(camber_position > 0);
+	assert((camber_position > 0) || (camber == 0));
 	assert(camber_position < 1);
 
 	double & m = camber;
@@ -104,9 +104,9 @@ HBTK::AerofoilGeometry HBTK::AerofoilGenerators::naca_four_digit(std::string nam
 			" P is max camber position (10ths of chord) and TT is thickness"
 			"(pc). " __FILE__ + " : " + std::to_string(__LINE__));
 	}
-	camber = std::stod(std::to_string(name[0]));
-	camber_pos = std::stod(std::to_string(name[1]));
-	thick = std::stod(std::to_string(name[2]) + std::to_string(name[3]));
+	camber = name[0] - '0';
+	camber_pos =name[1] - '0';
+	thick = std::stod(name.substr(2, 4));
 	thick /= 100;
 	camber /= 100;
 	camber_pos /= 10;

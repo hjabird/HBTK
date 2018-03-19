@@ -209,7 +209,7 @@ namespace HBTK {
 	inline void StructuredValueBlockND<TNumDimensions, TType>::assert_valid_extents(std::array<int, TNumDimensions> extents)
 	{
 		for (auto &extent : extents) {
-			assert(extent > 0);
+			assert(extent >= 0);
 		}
 		return;
 	}

@@ -125,14 +125,14 @@ HBTK::CartesianPoint2D  HBTK::CartesianPlane::projection(const CartesianPoint3D 
 	CartesianPoint2D local_sys;
 	// Try and make our maths better by choosing the bigger elements of the vector:
 	int ix, iy;
-	ix = std::max_element(on_plane.as_array().begin(), on_plane.as_array().end(),
+	ix = std::max_element(m_x_dir.as_array().begin(), m_x_dir.as_array().end(),
 		[](const double &a, const double &b) {
 		return (std::abs(b) > std::abs(a) ? true : false); })
-		- on_plane.as_array().begin();
+		- m_x_dir.as_array().begin();
 	// We don't wat the same index as ix for iy, so we take the max of the 
 	// remaining indexes. These should never both be zero.
-	iy = (std::abs(*(on_plane.as_array().begin() + (ix + 1) % 3))
-			> std::abs(*(on_plane.as_array().begin() + (ix + 2) % 3)) ?
+	iy = (std::abs(*(m_y_dir.as_array().begin() + (ix + 1) % 3))
+			> std::abs(*(m_y_dir.as_array().begin() + (ix + 2) % 3)) ?
 		(ix + 1) % 3 : (ix + 2) % 3);
 	local_sys.y() = on_plane.as_array()[iy] - on_plane.as_array()[ix] 
 		* m_x_dir.as_array()[iy] / m_x_dir.as_array()[ix];
