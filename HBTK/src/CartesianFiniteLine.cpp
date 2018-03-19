@@ -104,8 +104,8 @@ HBTK::CartesianVector3D HBTK::CartesianFiniteLine3D::vector() const
 
 double HBTK::CartesianFiniteLine3D::distance(const CartesianPoint3D & other)
 {
-	double denominator = vector().length();
-	double numerator = (other - m_start).cross(vector()).length();
+	double denominator = vector().magnitude();
+	double numerator = (other - m_start).cross(vector()).magnitude();
 	return numerator / denominator;
 }
 
@@ -118,9 +118,9 @@ double HBTK::CartesianFiniteLine3D::distance(const CartesianFiniteLine3D & other
 double HBTK::CartesianFiniteLine3D::intersection(const CartesianPoint3D & other) const
 {
 	CartesianVector3D vect = other - m_start;
-	double coeff_1 = vect.x / vector().x;
-	double coeff_2 = vect.y / vector().y;
-	double coeff_3 = vect.z / vector().z;
+	double coeff_1 = vect.x() / vector().x();
+	double coeff_2 = vect.y() / vector().y();
+	double coeff_3 = vect.z() / vector().z();
 	double coeff;
 	if ((std::abs(coeff_1 - coeff_2) > 1e-8) || (std::abs(coeff_2 - coeff_3) > 1e-8)) {
 		coeff = NAN;
@@ -137,9 +137,9 @@ double HBTK::CartesianFiniteLine3D::intersection(const CartesianFiniteLine3D & o
 	CartesianVector3D m_v = vector();
 	CartesianVector3D o_v = other.vector();
 	// Solve as a 2 x 2 linear problem in x, y, then check with z:
-	double det = m_v.x * o_v.y - m_v.y * o_v.x;
-	double tmp_m_coeff = o_v.y * vect.x - o_v.x * vect.y;
-	double tmp_o_coeff = -m_v.y * vect.x + m_v.x * vect.y;
+	double det = m_v.x() * o_v.y() - m_v.y() * o_v.x();
+	double tmp_m_coeff = o_v.y() * vect.x() - o_v.x() * vect.y();
+	double tmp_o_coeff = -m_v.y() * vect.x() + m_v.x() * vect.y();
 	double m_coeff = det * tmp_m_coeff;
 	double o_coeff = det * tmp_o_coeff;
 	if (abs(other(o_coeff) - evaluate(m_coeff)) < 1e-8) {
@@ -154,6 +154,89 @@ bool HBTK::CartesianFiniteLine3D::operator==(const CartesianFiniteLine3D & other
 }
 
 bool HBTK::CartesianFiniteLine3D::operator!=(const CartesianFiniteLine3D & other) const
+{
+	return !operator==(other);
+}
+
+
+HBTK::CartesianFiniteLine2D::CartesianFiniteLine2D()
+	: m_start({ 0.0, 0.0 }),
+	m_end({ 1.0, 0.0 })
+{
+}
+
+HBTK::CartesianFiniteLine2D::CartesianFiniteLine2D(const CartesianPoint2D & start, const CartesianPoint2D & end)
+	: m_start(start),
+	m_end(end)
+{
+}
+
+HBTK::CartesianFiniteLine2D::CartesianFiniteLine2D(const CartesianPoint2D & start, const CartesianVector2D & direction)
+	: m_start(start),
+	m_end(start + direction)
+{
+}
+
+HBTK::CartesianFiniteLine2D::CartesianFiniteLine2D(const CartesianVector2D & direction, const CartesianPoint2D & end)
+	: m_start(end - direction),
+	m_end(end)
+{
+}
+
+HBTK::CartesianFiniteLine2D::~CartesianFiniteLine2D()
+{
+}
+
+HBTK::CartesianFiniteLine2D::operator HBTK::CartesianLine2D() const
+{
+	return CartesianLine2D(m_start, m_end - m_start);
+}
+
+HBTK::CartesianPoint2D HBTK::CartesianFiniteLine2D::operator()(double position) const
+{
+	CartesianVector2D vector = m_end - m_start;
+	CartesianPoint2D output = m_start + vector * position;
+	return output;
+}
+
+HBTK::CartesianPoint2D HBTK::CartesianFiniteLine2D::evaluate(double position) const
+{
+	return operator()(position);
+}
+
+HBTK::CartesianPoint2D & HBTK::CartesianFiniteLine2D::start()
+{
+	return m_start;
+}
+
+const HBTK::CartesianPoint2D & HBTK::CartesianFiniteLine2D::start() const
+{
+	return m_start;
+}
+
+HBTK::CartesianPoint2D & HBTK::CartesianFiniteLine2D::end()
+{
+	return m_end;
+}
+
+const HBTK::CartesianPoint2D & HBTK::CartesianFiniteLine2D::end() const
+{
+	return m_end;
+}
+
+
+HBTK::CartesianVector2D HBTK::CartesianFiniteLine2D::vector() const
+{
+	return CartesianVector2D(m_end - m_start);
+}
+
+
+bool HBTK::CartesianFiniteLine2D::operator==(const CartesianFiniteLine2D & other) const
+{
+	return (other.start() == m_start) && (other.end() == m_end);
+}
+
+bool HBTK::CartesianFiniteLine2D::operator!=(const CartesianFiniteLine2D & other) const
 {
 	return !operator==(other);
 }

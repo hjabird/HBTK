@@ -82,8 +82,8 @@ const HBTK::CartesianVector3D & HBTK::CartesianLine3D::direction() const
 
 double HBTK::CartesianLine3D::distance(const CartesianPoint3D & other)
 {
-	double denominator = m_direction.length();
-	double numerator = (other - m_origin).cross(m_direction).length();
+	double denominator = m_direction.magnitude();
+	double numerator = (other - m_origin).cross(m_direction).magnitude();
 	return numerator / denominator;
 }
 
@@ -96,9 +96,9 @@ double HBTK::CartesianLine3D::distance(const CartesianLine3D & other)
 double HBTK::CartesianLine3D::intersection(const CartesianPoint3D & other) const
 {
 	CartesianVector3D vect = other - m_origin;
-	double coeff_1 = vect.x / m_direction.x;
-	double coeff_2 = vect.y / m_direction.y;
-	double coeff_3 = vect.z / m_direction.z;
+	double coeff_1 = vect.x() / m_direction.x();
+	double coeff_2 = vect.y() / m_direction.y();
+	double coeff_3 = vect.z() / m_direction.z();
 	double coeff;
 	if ((std::abs(coeff_1 - coeff_2) > 1e-8) || (std::abs(coeff_2 - coeff_3) > 1e-8)) {
 		coeff = NAN;
@@ -115,9 +115,9 @@ double HBTK::CartesianLine3D::intersection(const CartesianLine3D & other) const
 	CartesianVector3D m_v = m_direction;
 	CartesianVector3D o_v = other.direction();
 	// Solve as a 2 x 2 linear problem in x, y, then check with z:
-	double det = m_v.x * o_v.y - m_v.y * o_v.x;
-	double tmp_m_coeff = o_v.y * vect.x - o_v.x * vect.y;
-	double tmp_o_coeff = -m_v.y * vect.x + m_v.x * vect.y;
+	double det = m_v.x() * o_v.y() - m_v.y() * o_v.x();
+	double tmp_m_coeff = o_v.y() * vect.x() - o_v.x() * vect.y();
+	double tmp_o_coeff = -m_v.y() * vect.x() + m_v.x() * vect.y();
 	double m_coeff = det * tmp_m_coeff;
 	double o_coeff = det * tmp_o_coeff;
 	if (abs(other(o_coeff) - evaluate(m_coeff)) < 1e-8) {
@@ -132,6 +132,70 @@ bool HBTK::CartesianLine3D::operator==(const CartesianLine3D & other) const
 }
 
 bool HBTK::CartesianLine3D::operator!=(const CartesianLine3D & other) const
+{
+	return !operator==(other);
+}
+
+HBTK::CartesianLine2D::CartesianLine2D()
+	: m_origin({ 0.0, 0.0}),
+	m_direction({ 1.0 })
+{
+}
+
+HBTK::CartesianLine2D::CartesianLine2D(const CartesianPoint2D & start, const CartesianPoint2D & end)
+	: m_origin(start),
+	m_direction(end - start)
+{
+}
+
+HBTK::CartesianLine2D::CartesianLine2D(const CartesianPoint2D & start, const CartesianVector2D & direction)
+	: m_origin(start),
+	m_direction(direction)
+{
+}
+
+HBTK::CartesianLine2D::~CartesianLine2D()
+{
+}
+
+HBTK::CartesianPoint2D HBTK::CartesianLine2D::operator()(double position) const
+{
+	CartesianPoint2D output = m_origin + m_direction * position;
+	return output;
+}
+
+HBTK::CartesianPoint2D HBTK::CartesianLine2D::evaluate(double position) const
+{
+	return operator()(position);
+}
+
+HBTK::CartesianPoint2D & HBTK::CartesianLine2D::origin()
+{
+	return m_origin;
+}
+
+const HBTK::CartesianPoint2D & HBTK::CartesianLine2D::origin() const
+{
+	return m_origin;
+}
+
+HBTK::CartesianVector2D & HBTK::CartesianLine2D::direction()
+{
+	return m_direction;
+}
+
+const HBTK::CartesianVector2D & HBTK::CartesianLine2D::direction() const
+{
+	return m_direction;
+}
+
+
+bool HBTK::CartesianLine2D::operator==(const CartesianLine2D & other) const
+{
+	return (other.origin() == m_origin) && (other.direction() == m_direction);
+}
+
+bool HBTK::CartesianLine2D::operator!=(const CartesianLine2D & other) const
 {
 	return !operator==(other);
 }

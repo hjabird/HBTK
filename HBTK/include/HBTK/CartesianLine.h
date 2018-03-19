@@ -29,8 +29,6 @@ SOFTWARE.
 #include "CartesianVector.h"
 
 namespace HBTK {
-	class CartesianVector3D;
-
 	class CartesianLine3D {
 	public:
 		CartesianLine3D();
@@ -62,6 +60,30 @@ namespace HBTK {
 	protected:
 		CartesianPoint3D m_origin;
 		CartesianVector3D m_direction;
+	};
+
+	class CartesianLine2D {
+	public:
+		CartesianLine2D();
+		CartesianLine2D(const CartesianPoint2D & origin, const CartesianPoint2D & point_on_line);
+		CartesianLine2D(const CartesianPoint2D & origin, const CartesianVector2D & direction);
+		~CartesianLine2D();
+
+		// Get a point on the line. position * direction from origin.
+		CartesianPoint2D operator()(double position) const;
+		CartesianPoint2D evaluate(double position) const;
+
+		CartesianPoint2D & origin();
+		const CartesianPoint2D & origin() const;
+		CartesianVector2D & direction();
+		const CartesianVector2D & direction() const;
+
+		bool operator==(const CartesianLine2D & other) const;
+		bool operator!=(const CartesianLine2D & other) const;
+
+	protected:
+		CartesianPoint2D m_origin;
+		CartesianVector2D m_direction;
 	};
 }
 

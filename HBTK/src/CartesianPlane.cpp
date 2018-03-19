@@ -25,10 +25,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
+#include <cassert>
 #include <exception>
 #include <string>
 
 #include "CartesianFiniteLine.h"
+#include "Checks.h"
 
 HBTK::CartesianPlane::CartesianPlane()
 	: m_origin({0, 0, 0}),
@@ -100,6 +103,46 @@ HBTK::CartesianPoint3D HBTK::CartesianPlane::evaluate(const CartesianPoint2D & p
 	point = point + m_x_dir * plane_point.x();
 	point = point + m_y_dir * plane_point.y();
 	return point;
+}
+
+double HBTK::CartesianPlane::distance(const CartesianPoint3D & point_in_space) const
+{
+	CartesianVector3D normal = m_x_dir.cross(m_y_dir);
+	normal.normalise();
+	CartesianVector3D origin_to_point = point_in_space - m_origin;
+	double distance = normal.dot(origin_to_point);
+	return distance;
+}
+
+HBTK::CartesianPoint2D  HBTK::CartesianPlane::projection(const CartesianPoint3D & point_in_space) const
+{
+	CartesianVector3D normal = m_x_dir.cross(m_y_dir);
+	normal.normalise();
+	CartesianVector3D origin_to_point = point_in_space - m_origin;
+	double distance = normal.dot(origin_to_point);
+	CartesianPoint3D on_plane = point_in_space - normal * distance;
+
+	CartesianPoint2D local_sys;
+	// Try and make our maths better by choosing the bigger elements of the vector:
+	int ix, iy;
+	ix = std::max_element(m_x_dir.as_array().begin(), m_x_dir.as_array().end(),
+		[](const double &a, const double &b) {
+		return (std::abs(b) > std::abs(a) ? true : false); })
+		- m_x_dir.as_array().begin();
+	// We don't wat the same index as ix for iy, so we take the max of the 
+	// remaining indexes. These should never both be zero.
+	iy = (std::abs(*(m_y_dir.as_array().begin() + (ix + 1) % 3))
+			> std::abs(*(m_y_dir.as_array().begin() + (ix + 2) % 3)) ?
+		(ix + 1) % 3 : (ix + 2) % 3);
+	local_sys.y() = on_plane.as_array()[iy] - on_plane.as_array()[ix] 
+		* m_x_dir.as_array()[iy] / m_x_dir.as_array()[ix];
+	local_sys.y() /= m_y_dir.as_array()[iy] - m_y_dir.as_array()[ix]
+		* m_x_dir.as_array()[iy] / m_x_dir.as_array()[ix];
+	local_sys.x() = (on_plane.as_array()[ix] -
+		local_sys.y() * m_y_dir.as_array()[ix]) /
+		m_x_dir.as_array()[ix];
+	assert(HBTK::check_finite(local_sys));
+	return local_sys;
 }
 
 HBTK::CartesianPoint3D & HBTK::CartesianPlane::origin()

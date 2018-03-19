@@ -45,6 +45,9 @@ namespace HBTK {
 		CartesianPoint3D operator()(const CartesianPoint2D & plane_point) const;
 		CartesianPoint3D evaluate(const CartesianPoint2D & plane_point) const;
 
+		double distance(const CartesianPoint3D & point_in_space) const;
+		CartesianPoint2D projection(const CartesianPoint3D & point_in_space) const;
+
 		// Returns the planes origin.
 		CartesianPoint3D & origin();
 		const CartesianPoint3D & origin() const;

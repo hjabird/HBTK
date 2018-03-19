@@ -25,6 +25,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
+#include <string>
+
 #include "AerofoilGeometry.h"
 
 namespace HBTK {
@@ -39,5 +41,6 @@ namespace HBTK {
 		// P is camber_position as per dec (ie 10pc) of chord and TT is max thickness as 
 		// percent of chord.
 		AerofoilGeometry naca_four_digit(double thickness, double camber, double camber_position);
+		AerofoilGeometry naca_four_digit(std::string name);
 	}
 }

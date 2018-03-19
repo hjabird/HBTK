@@ -50,6 +50,7 @@ namespace HBTK {
 		// Get a reference to the value for a coordinate in the 
 		// mesh block.
 		TType& value(std::array<int, TNumDimensions> coordinate);
+		const TType& value(std::array<int, TNumDimensions> coordinate) const;
 		TType& operator[](const std::array<int, TNumDimensions> & coordinate);
 		const TType& operator[](const std::array<int, TNumDimensions> & coordinate) const;
 
@@ -261,7 +262,7 @@ namespace HBTK {
 		const std::array<int, TNumDimensions> & extents)
 	{
 		for (auto &extent : extents) {
-			assert(extent > 0);
+			assert(extent >= 0);
 		}
 		return;
 	}

@@ -57,7 +57,7 @@ HBTK::AerofoilGeometry HBTK::AerofoilGenerators::naca_four_digit(double thicknes
 	assert(thickness > 0);
 	assert(HBTK::check_finite(thickness));
 	assert(HBTK::check_finite(camber));
-	assert(camber_position > 0);
+	assert((camber_position > 0) || (camber == 0));
 	assert(camber_position < 1);
 
 	double & m = camber;
@@ -78,10 +78,10 @@ HBTK::AerofoilGeometry HBTK::AerofoilGenerators::naca_four_digit(double thicknes
 	};
 	// forward of the max camber and 
 	auto mean_ln_rear_fn = [=](double x)->double {
-		return (m / (1 - p * p)) * ((1 - 2 * p) + 2 * p * x - x * x);
+		return (m / ((1 - p)*(1 - p))) * ((1 - 2 * p) + 2 * p * x - x * x);
 	}; // behind the max ordinate, which are combined:
 	auto mean_ln_fn = [&](double x)->double {
-		return (x > p ? mean_ln_fwd_fn(x) : mean_ln_rear_fn(x));
+		return (x < p ? mean_ln_fwd_fn(x) : mean_ln_rear_fn(x));
 	};
 
 	std::vector<double> x_points = HBTK::linspace(0, HBTK::Constants::pi(), 30);
@@ -92,4 +92,23 @@ HBTK::AerofoilGeometry HBTK::AerofoilGenerators::naca_four_digit(double thicknes
 	foil.add_camber(mean_ln_fn);
 
 	return foil;
+}
+
+HBTK::AerofoilGeometry HBTK::AerofoilGenerators::naca_four_digit(std::string name)
+{
+	double thick, camber, camber_pos;
+	if ((int)name.size() != 4) {
+		throw std::runtime_error(
+			"HBTK::AerofoilGenerators::naca_four_digit Bad aerofoil name: "
+			+ name + ". Expected four digits CPTT where C is camber(pc),"
+			" P is max camber position (10ths of chord) and TT is thickness"
+			"(pc). " __FILE__ + " : " + std::to_string(__LINE__));
+	}
+	camber = name[0] - '0';
+	camber_pos =name[1] - '0';
+	thick = std::stod(name.substr(2, 4));
+	thick /= 100;
+	camber /= 100;
+	camber_pos /= 10;
+	return naca_four_digit(thick, camber, camber_pos);
 }

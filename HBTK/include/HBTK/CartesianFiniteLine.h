@@ -29,7 +29,9 @@ SOFTWARE.
 
 namespace HBTK {
 	class CartesianVector3D;
+	class CartesianVector3D;
 	class CartesianLine3D;
+	class CartesianLine2D;
 
 	class CartesianFiniteLine3D {
 	public:
@@ -69,5 +71,33 @@ namespace HBTK {
 		CartesianPoint3D m_end;
 	};
 
+	class CartesianFiniteLine2D {
+	public:
+		CartesianFiniteLine2D();
+		CartesianFiniteLine2D(const CartesianPoint2D & start, const CartesianPoint2D & end);
+		CartesianFiniteLine2D(const CartesianPoint2D & start, const CartesianVector2D & direction);
+		CartesianFiniteLine2D(const CartesianVector2D & direction, const CartesianPoint2D & end);
+		~CartesianFiniteLine2D();
+
+		explicit operator CartesianLine2D() const;
+
+		// Get a point on the line. Position in 0, 1 -> start to end.
+		CartesianPoint2D operator()(double position) const;
+		CartesianPoint2D evaluate(double position) const;
+
+		CartesianPoint2D & start();
+		const CartesianPoint2D & start() const;
+		CartesianPoint2D & end();
+		const CartesianPoint2D & end() const;
+		// Returns a vector of direction and length of the line:
+		CartesianVector2D vector() const;
+
+		bool operator==(const CartesianFiniteLine2D & other) const;
+		bool operator!=(const CartesianFiniteLine2D & other) const;
+
+	protected:
+		CartesianPoint2D m_start;
+		CartesianPoint2D m_end;
+	};
 }
 

@@ -45,7 +45,7 @@ namespace HBTK {
 		CartesianVector3D operator/(const double & divisor) const;
 
 		// Returns the length of the vector. Same as: abs(this)
-		double length() const;
+		double magnitude() const;
 		// Set vector length to 1.
 		void normalise();
 		// Dot product between to vectors.
@@ -58,14 +58,21 @@ namespace HBTK {
 		double angle(const CartesianVector3D & other) const;
 
 
-		double x;
-		double y;
-		double z;
+		double & x();
+		const double & x() const;
+		double & y();
+		const double & y() const;
+		double & z();
+		const double & z() const;
+		std::array<double, 3> & as_array();
+		const std::array<double, 3> & as_array() const;
 
 		operator std::array<double, 3>() const;
 
 		bool operator==(const CartesianVector3D & other) const;
 		bool operator!=(const CartesianVector3D & other) const;
+	private:
+		std::array<double, 3> m_coord;
 	};
 
 	double abs(const CartesianVector3D & vector);
@@ -84,7 +91,7 @@ namespace HBTK {
 		CartesianVector2D operator/(const double & divisor)const ;
 
 		// Returns the length of the vector. Same as: abs(this)
-		double length() const;
+		double magnitude() const;
 		// Set vector length to 1.
 		void normalise();
 		// Dot product between to vectors.
@@ -96,10 +103,18 @@ namespace HBTK {
 		// The angle between two vectors in radians.
 		double angle(const CartesianVector2D & other) const;
 
-		double x;
-		double y;
+		double & x();
+		const double & x() const;
+		double & y();
+		const double & y() const;
 
 		operator std::array<double, 2>() const;
+
+		bool operator==(const CartesianVector2D & other) const;
+		bool operator!=(const CartesianVector2D & other) const;
+
+	private:
+		std::array<double, 2> m_coord;
 	};
 
 	double abs(const CartesianVector2D & vector);
