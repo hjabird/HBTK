@@ -36,7 +36,7 @@ namespace HBTK {
 		public:
 			VtkDataArrayTypeless() = delete;
 			VtkDataArrayTypeless(int number_of_components) = delete;
-			virtual ~VtkDataArrayTypeless() = delete;
+			virtual ~VtkDataArrayTypeless() = 0;
 
 			// Name of the data eg. Temperature
 			std::string name;
@@ -49,9 +49,9 @@ namespace HBTK {
 			// Get data out of an index.
 			// The following will try to cast to correct types. A exception will
 			// be thrown if the number of components is wrong.
-			virtual double get_double(int idx) = delete;
-			virtual int get_int(int idx) = delete;
-			virtual HBTK::CartesianVector3D get_vector(int idx) = delete;
+			virtual double get_double(int idx) = 0;
+			virtual int get_int(int idx) = 0;
+			virtual HBTK::CartesianVector3D get_vector(int idx) = 0;
 		protected:
 			int m_number_of_components;
 		};
@@ -59,12 +59,12 @@ namespace HBTK {
 
 		template<typename Tnumeric_type>
 		class VtkDataArray 
-			: VtkDataArrayTypeless
+			: public VtkDataArrayTypeless
 		{
 		public:
 			VtkDataArray();
 			VtkDataArray(int number_of_components);
-			virtual ~VtkDataArray() override;
+			~VtkDataArray() override;
 
 			// The type contained:
 			typedef Tnumeric_type data_type;
@@ -74,21 +74,23 @@ namespace HBTK {
 
 			// The following will try to cast to correct types. A exception will
 			// be thrown if the number of components is wrong.
-			virtual double get_double(int idx) override;
-			virtual int get_int(int idx) override;
-			virtual HBTK::CartesianVector3D get_vector(int idx) override;
+			double get_double(int idx) override;
+			int get_int(int idx) override;
+			HBTK::CartesianVector3D get_vector(int idx) override;
 		};
 
 		template<typename Tnumeric_type>
 		inline VtkDataArray<Tnumeric_type>::VtkDataArray()
-			: m_number_of_components(1)
+			: VtkDataArrayTypeless
 		{
+			m_number_of_components = 1;
 		}
 
 		template<typename Tnumeric_type>
 		inline VtkDataArray<Tnumeric_type>::VtkDataArray(int number_of_components)
-			: m_number_of_components(number_of_components)
+			: VtkDataArrayTypeless
 		{
+			m_number_of_components = number_of_components;
 		}
 
 		template<typename Tnumeric_type>

@@ -29,7 +29,9 @@ SOFTWARE.
 #include "StructuredBlockIndexerND.h"
 
 HBTK::Vtk::VtkLegacyWriter::VtkLegacyWriter()
-	: file_description("A_VTK_FILE: Set HBTK::Vtk::VtkLegacyWriter.file_description for custom description.")
+	: file_description("A_VTK_FILE: Set HBTK::Vtk::VtkLegacyWriter.file_description for custom description."),
+	m_mesh_written(false),
+	m_point_data_header_written(false)
 {
 }
 
@@ -62,14 +64,22 @@ void HBTK::Vtk::VtkLegacyWriter::write_mesh(StructuredMeshBlock3D & mesh)
 		std::array<double, 3> coord = mesh.coord(index.linear_index(i));
 		*m_ostream << coord[0] << " " << coord[1] << " " << coord[2] << "\n";
 	}
+	m_mesh_extents = extent;
+	m_mesh_written = true;
 	return;
 }
 
-void HBTK::Vtk::VtkLegacyWriter::append_structured_scalar_data(StructuredValueBlockND<3, double>& meshdata, std::string name)
+void HBTK::Vtk::VtkLegacyWriter::append_structured_scalar_point_data(StructuredValueBlockND<3, double>& meshdata, std::string name)
 {
+	if (!m_point_data_header_written) {
+		*m_ostream << "POINT_DATA " << m_mesh_extents[0] * m_mesh_extents[1] * m_mesh_extents[2] << "\n";
+		m_point_data_header_written = true;
+	}
 	*m_ostream << "SCALARS " << name.c_str() << " float\n";
 	*m_ostream << "LOOKUP_TABLE default\n";
-	
+	if (meshdata.extent() != m_mesh_extents) {
+		throw - 1;
+	}
 	StructuredBlockIndexerND<3> index(meshdata.extent());	
 	int size = index.size();
 	for (int i = 0; i < size; i++) {

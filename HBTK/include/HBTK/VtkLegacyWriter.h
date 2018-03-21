@@ -25,6 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
+#include <array>
 #include <memory>
 #include <ostream>
 
@@ -45,11 +46,13 @@ namespace HBTK {
 
 			// Structured mesh:
 			void write_mesh(StructuredMeshBlock3D & mesh);
-			void append_structured_scalar_data(StructuredValueBlockND<3, double> & meshdata, std::string name);
+			void append_structured_scalar_point_data(StructuredValueBlockND<3, double> & meshdata, std::string name);
 
 		private:
 			bool m_writing_binary;
 			bool m_mesh_written;
+			bool m_point_data_header_written;
+			std::array<int, 3> m_mesh_extents;
 
 			std::ostream * m_ostream;
 

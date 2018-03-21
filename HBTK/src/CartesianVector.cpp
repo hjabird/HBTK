@@ -79,7 +79,7 @@ HBTK::CartesianVector3D HBTK::CartesianVector3D::operator*(const double & multip
 	return CartesianVector3D({
 		x() * multiplyer,
 		y() * multiplyer,
-		x() * multiplyer});
+		z() * multiplyer});
 }
 
 HBTK::CartesianVector3D HBTK::CartesianVector3D::operator/(const double & divisor) const

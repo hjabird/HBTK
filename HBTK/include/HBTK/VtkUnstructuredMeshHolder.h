@@ -8,7 +8,7 @@ namespace HBTK {
 		public:
 			VtkUnstructuredMeshHolder();
 
-			VtkDataArray<HBTK::CartesianVector3D> points;
+			VtkDataArray<double> points = VtkDataArray<double>(3);
 			VtkDataArray<int> cell_types;
 			VtkDataArray<int> cell_nodes;
 			VtkDataArray<int> cell_offsets;
