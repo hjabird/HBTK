@@ -46,12 +46,12 @@ namespace HBTK {
 	template<typename Tf_in, typename Tf, typename Ttol>
 	auto adaptive_trapezoidal_integrate(Tf & func, Ttol tolerance, 
 				Tf_in lower_limit, Tf_in upper_limit)
-		->decltype(std::result_of<Tf(Tf_in)>::type);
+		->decltype(func(lower_limit));
 
 	template<typename Tf_in, typename Tf, typename Ttol>
 	auto adaptive_simpsons_integrate(Tf & func, Ttol tolerance, 
 		Tf_in lower_limit, Tf_in upper_limit)
-		->decltype(std::result_of<Tf(Tf_in)>::type);
+		->decltype(func(lower_limit));
 
 	// DEFINITIONS
 
@@ -146,7 +146,7 @@ namespace HBTK {
 	template<typename Tf_in, typename Tf, typename Ttol>
 	auto adaptive_trapezoidal_integrate(Tf & func, Ttol tolerance, 
 				Tf_in lower_limit, Tf_in upper_limit)
-		->decltype(std::result_of<Tf(Tf_in)>::type)
+		->decltype(func(lower_limit))
 	{
 		assert(tolerance > 0.0);
 		assert(upper_limit > lower_limit);
@@ -228,7 +228,7 @@ namespace HBTK {
 	template<typename Tf_in, typename Tf, typename Ttol>
 	auto adaptive_simpsons_integrate(Tf & func, Ttol tolerance, 
 		Tf_in lower_limit, Tf_in upper_limit)
-		->decltype(std::result_of<Tf(Tf_in)>::type)
+		->decltype(func(lower_limit))
 	{
 		assert(tolerance > 0.0);
 		assert(lower_limit < upper_limit);

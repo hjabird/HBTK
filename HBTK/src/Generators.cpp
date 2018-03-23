@@ -27,6 +27,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
+#include <cmath>
 
 /// \param start the first value of the output
 /// \param end the last value of the output

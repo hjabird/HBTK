@@ -26,6 +26,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
+#include <cmath>
 
 #include "Checks.h"
 #include "Remaps.h"
