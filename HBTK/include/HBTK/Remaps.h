@@ -131,10 +131,8 @@ namespace HBTK {
 	{
 		assert(abs(singularity) == 1);
 		const Ty & s_pos = singularity;
-		Ty tmp_p, tmp_w;
-
-		tmp_p = (1 - point*point)*(s_pos + sqrt(s_pos*s_pos - 1)) / 2 + point;
-		tmp_w = (-point * (s_pos + sqrt(s_pos*s_pos - 1)) + 1) *weight;
+		Ty tmp_p( (1 - point*point)*(s_pos + sqrt(s_pos*s_pos - 1)) / 2 + point );
+		Ty tmp_w( (-point * (s_pos + sqrt(s_pos*s_pos - 1)) + 1) *weight );
 		point = tmp_p;
 		weight = tmp_w;
 		return;
@@ -163,15 +161,14 @@ namespace HBTK {
 	template<typename Ty>
 	constexpr void telles_cubic_remap(Ty & point, Ty & weight, Ty singularity_pos)
 	{
-		Ty tmp_p, tmp_w, sp_rm;
 		// remap singularity position.
-		sp_rm = cbrt((singularity_pos - 1)*(singularity_pos + 1)*(singularity_pos + 1))
+		Ty sp_rm (cbrt((singularity_pos - 1)*(singularity_pos + 1)*(singularity_pos + 1))
 			+   cbrt((singularity_pos - 1)*(singularity_pos - 1)*(singularity_pos + 1))
-			+   singularity_pos;
+			+   singularity_pos );
 		// and calculate new point & weight.
-		tmp_p = (pow(point - sp_rm, 3) + sp_rm*(sp_rm*sp_rm + 3)) 
-											/ (3 * sp_rm*sp_rm + 1);
-		tmp_w = (3 * pow(sp_rm - point, 2)) / (3 * sp_rm*sp_rm + 1) * weight;
+		Ty tmp_p( (pow(point - sp_rm, 3) + sp_rm*(sp_rm*sp_rm + 3)) 
+			/ (3 * sp_rm*sp_rm + 1) );
+		Ty tmp_w = ((3 * pow(sp_rm - point, 2)) / (3 * sp_rm*sp_rm + 1) * weight);
 		point = tmp_p;
 		weight = tmp_w;
 		return;
@@ -212,10 +209,9 @@ namespace HBTK {
 		static_assert(Torder > 1, "The order of a Sato remap must be greater than one.");
 		static_assert(Torder < 10, "A Sato remap of this order is pretty much guarenteed to have numerical problems.");
 		assert(abs(singularity_pos) == 1);
-		Ty tmp_p, tmp_w;
-		tmp_p = singularity_pos - (singularity_pos / pow(2, Torder - 1)) 
+		Ty tmp_p = singularity_pos - (singularity_pos / pow(2, Torder - 1)) 
 								* pow(1 - singularity_pos * point, Torder);
-		tmp_w = Torder * pow(2, 1 - Torder) * singularity_pos*singularity_pos 
+		Ty tmp_w = Torder * pow(2, 1 - Torder) * singularity_pos*singularity_pos 
 						* pow(1 - singularity_pos*point, Torder - 1) * weight;
 		point = tmp_p;
 		weight = tmp_w;
@@ -234,9 +230,8 @@ namespace HBTK {
 	{
 		assert(abs(singularity_pos) < 1.);
 		assert(abs(point) <= 1);
-		Ty tmp_p, tmp_w;
-		tmp_p = singularity_pos * ( 1 - pow(point, 4) ) + pow(point, 3);
-		tmp_w = weight * (-4. * pow(point, 3) * singularity_pos + 3 * point * point);
+		Ty tmp_p = singularity_pos * ( 1 - pow(point, 4) ) + pow(point, 3);
+		Ty tmp_w = weight * (-4. * pow(point, 3) * singularity_pos + 3 * point * point);
 		point = tmp_p;
 		weight = tmp_w;
 		return;
@@ -255,10 +250,8 @@ namespace HBTK {
 	template<typename Ty>
 	constexpr void exponential_remap(Ty & point, Ty & weight, Ty original_lower_limit)
 	{
-		Ty tmp_p, tmp;
-
-		tmp = exp(2 / (1 - point) - 1);
-		tmp_p = tmp - 1 + original_lower_limit;
+		Ty tmp = exp(2 / (1 - point) - 1);
+		Ty tmp_p = tmp - 1 + original_lower_limit;
 		weight = 2 * tmp / (pow(1 - point, 2));
 		point = tmp_p;
 		return void();

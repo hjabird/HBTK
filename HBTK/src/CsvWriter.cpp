@@ -28,6 +28,7 @@ SOFTWARE.
 #include <exception>
 #include <fstream>
 #include <iomanip>
+#include <stdexcept>
 
 HBTK::CsvWriter::CsvWriter()
 	: string_limiter("\""),

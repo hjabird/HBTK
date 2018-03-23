@@ -59,8 +59,8 @@ namespace HBTK {
 		private:
 			struct element {
 				int element_type;
-				std::unique_ptr<std::vector<int>> nodes;
-				std::unique_ptr<std::vector<int>> phys_groups;
+				std::vector<int> nodes;
+				std::vector<int> phys_groups;
 			};
 
 			struct physical_group {

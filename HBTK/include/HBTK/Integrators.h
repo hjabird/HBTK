@@ -34,6 +34,7 @@ SOFTWARE.
 namespace HBTK {
 
 	// DECLARATIONS
+/*
 	template< typename Tf, typename Tp, typename Tw>
 	decltype(auto) static_integrate(Tf & func, Tp & points, 
 		Tw & weights, int n_points);
@@ -48,7 +49,7 @@ namespace HBTK {
 	template<typename Tf_in, typename Tf, typename Ttol>
 	decltype(auto) adaptive_simpsons_integrate(Tf & func, Ttol tolerance, 
 		Tf_in lower_limit, Tf_in upper_limit);
-
+*/
 	// DEFINITIONS
 
 	/// \param func a function/lambda which accepts the value in points as its 
@@ -80,8 +81,8 @@ namespace HBTK {
 	/// result = HBTK::static_integrate(my_fun, points, weights, num_points);
 	/// \endcode
 	template< typename Tf, typename Tp, typename Tw>
-	decltype(auto) static_integrate(Tf & func, Tp & points, 
-									Tw & weights, int n_points)
+	auto static_integrate(Tf & func, Tp & points, Tw & weights, int n_points)
+		 -> decltype(func(points[0]) * weights[0]) 
 	{
 		assert(n_points > 0);
 		int idx = 0;
@@ -125,7 +126,8 @@ namespace HBTK {
 	/// result = HBTK::static_integrate<num_points>(my_fun, points, weights);
 	/// \endcode
 	template<int n_points, typename Tf, typename Tp, typename Tw>
-	decltype(auto) static_integrate(Tf & func, Tp & points, Tw & weights)
+	auto static_integrate(Tf & func, Tp & points, Tw & weights)
+		 -> decltype(func(points[0]) * weights[0]) 
 	{
 		return static_integrate(func, points, weights, n_points);
 	}
@@ -139,8 +141,9 @@ namespace HBTK {
 	///
 	/// \brief Evaluate an integral using an adaptive trapezium rule method.
 	template<typename Tf_in, typename Tf, typename Ttol>
-	decltype(auto) adaptive_trapezoidal_integrate(Tf & func, Ttol tolerance, 
-										Tf_in lower_limit, Tf_in upper_limit)
+	auto adaptive_trapezoidal_integrate(Tf & func, Ttol tolerance, 
+				Tf_in lower_limit, Tf_in upper_limit)
+		->decltype(std::result_of<Tf(Tf_in)>::type)
 	{
 		assert(tolerance > 0.0);
 		assert(upper_limit > lower_limit);
@@ -220,8 +223,9 @@ namespace HBTK {
 	///	Uses a simple adaptive composite simpson's rule to evaluated to a given 
 	/// tolerance.	
 	template<typename Tf_in, typename Tf, typename Ttol>
-	decltype(auto) adaptive_simpsons_integrate(Tf & func, Ttol tolerance, 
-										Tf_in lower_limit, Tf_in upper_limit)
+	auto adaptive_simpsons_integrate(Tf & func, Ttol tolerance, 
+		Tf_in lower_limit, Tf_in upper_limit)
+		->decltype(std::result_of<Tf(Tf_in)>::type)
 	{
 		assert(tolerance > 0.0);
 		assert(lower_limit < upper_limit);

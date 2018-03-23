@@ -1,4 +1,4 @@
-#include "..\include\HBTK\VtkUnstructuredMeshHolder.h"
+#include "VtkUnstructuredMeshHolder.h"
 
 HBTK::Vtk::VtkUnstructuredMeshHolder::VtkUnstructuredMeshHolder()
 	: points(3),

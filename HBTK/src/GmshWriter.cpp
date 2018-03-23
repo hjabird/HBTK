@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "GmshWriter.h"
 /*////////////////////////////////////////////////////////////////////////////
 GmshWriter.h
@@ -26,8 +25,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
-#include <fstream>
 #include <cassert>
+#include <fstream>
+#include <memory>
+
 #include "GmshInfo.h"
 
 
@@ -67,8 +68,8 @@ int HBTK::Gmsh::GmshWriter::add_element(int ele_type, const std::vector<int> & n
 
 	int id = m_elements.size();
 	m_elements.emplace(id, element{ ele_type,
-		std::make_unique<std::vector<int>>(node_ids),
-		std::make_unique<std::vector<int>>(phys_groups) });
+		std::vector<int>(node_ids),
+		std::vector<int>(phys_groups) });
 	return id;
 }
 
@@ -110,11 +111,11 @@ bool HBTK::Gmsh::GmshWriter::write(std::ofstream & output_stream)
 		for (auto const & elem : m_elements) {
 			output_stream << elem.first << " "; // key - element number
 			output_stream << elem.second.element_type << " ";
-			output_stream << (int)elem.second.phys_groups->size() << " "; // Number of physical groups
-			for (int const & grp_id : *(elem.second.phys_groups)) {
+			output_stream << (int)elem.second.phys_groups.size() << " "; // Number of physical groups
+			for (int const & grp_id : elem.second.phys_groups) {
 				output_stream << grp_id << " ";
 			}
-			for (int const & node_id : *(elem.second.nodes)) {
+			for (int const & node_id : elem.second.nodes) {
 				output_stream << node_id << " ";
 			}
 			output_stream << "\n";

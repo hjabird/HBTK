@@ -1,4 +1,4 @@
-#include "..\include\HBTK\VtkParser.h"
+#include "VtkParser.h"
 
 #include <cassert>
 

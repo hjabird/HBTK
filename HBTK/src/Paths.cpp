@@ -26,9 +26,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <cstdio>  // For FILENAME_MAX
 #include <exception>
 #include <iostream>
+#include <stdexcept>
 
 #ifdef _WIN32
 #include <direct.h>
@@ -67,10 +69,10 @@ std::string HBTK::Paths::executable_path()
 		);
 	}
 #else
-	char exe_path[FILENAME_MAX]
+	char exe_path[FILENAME_MAX];
 	char szTmp[32];
 	sprintf(szTmp, "/proc/%d/exe", getpid());
-	int bytes = MIN(readlink(szTmp, exe_path, FILENAME_MAX), FILENAME_MAX - 1);
+	int bytes = std::min((int)readlink(szTmp, exe_path, FILENAME_MAX), FILENAME_MAX - 1);
 	if (bytes >= 0)
 		exe_path[bytes] = '\0';
 #endif
@@ -112,11 +114,11 @@ std::vector<std::string> HBTK::Paths::files_in_directory(std::string path, std::
 	struct dirent *epdf;
 	dir_pointer = opendir(path.c_str());
 	if (dir_pointer != NULL) {
-		while (epdf = readdir(dpdf)) {
-			files.push_pack(epdf->d_name);
+		while (epdf = readdir(dir_pointer)) {
+			files.push_back(epdf->d_name);
 		}
 	}
-	closedir(dpdf);
+	closedir(dir_pointer);
 #endif
 	return files;
 }

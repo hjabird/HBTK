@@ -34,8 +34,6 @@ namespace HBTK {
 	namespace Vtk {
 		class VtkDataArrayTypeless {
 		public:
-			VtkDataArrayTypeless() = delete;
-			VtkDataArrayTypeless(int number_of_components) = delete;
 			virtual ~VtkDataArrayTypeless() = 0;
 
 			// Name of the data eg. Temperature
@@ -53,6 +51,8 @@ namespace HBTK {
 			virtual int get_int(int idx) = 0;
 			virtual HBTK::CartesianVector3D get_vector(int idx) = 0;
 		protected:
+			VtkDataArrayTypeless();
+			VtkDataArrayTypeless(int number_of_components);
 			int m_number_of_components;
 		};
 
@@ -81,16 +81,14 @@ namespace HBTK {
 
 		template<typename Tnumeric_type>
 		inline VtkDataArray<Tnumeric_type>::VtkDataArray()
-			: VtkDataArrayTypeless
+			: VtkDataArrayTypeless(1)
 		{
-			m_number_of_components = 1;
 		}
 
 		template<typename Tnumeric_type>
 		inline VtkDataArray<Tnumeric_type>::VtkDataArray(int number_of_components)
-			: VtkDataArrayTypeless
+			: VtkDataArrayTypeless(number_of_components)
 		{
-			m_number_of_components = number_of_components;
 		}
 
 		template<typename Tnumeric_type>
