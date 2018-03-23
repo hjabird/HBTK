@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
  
 option(BUILD_DEMO_PROGRAMS "Builds demo programs" OFF)
-option(BUILD_UNIT_TESTS "Builds the unit tests" ON)
+option(BUILD_UNIT_TESTS "Builds the unit tests" OFF)
  
  
 # Enable folders in Visual studio
