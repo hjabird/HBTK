@@ -34,22 +34,25 @@ SOFTWARE.
 namespace HBTK {
 
 	// DECLARATIONS
-/*
+
 	template< typename Tf, typename Tp, typename Tw>
-	decltype(auto) static_integrate(Tf & func, Tp & points, 
-		Tw & weights, int n_points);
+	auto static_integrate(Tf & func, Tp & points, Tw & weights, int n_points)
+		 -> decltype(func(points[0]) * weights[0]);
 
 	template<int n_points, typename Tf, typename Tp, typename Tw>
-	decltype(auto) static_integrate(Tf & func, Tp & points, Tw & weights);
+	auto static_integrate(Tf & func, Tp & points, Tw & weights)
+		 -> decltype(func(points[0]) * weights[0]) ;
 
 	template<typename Tf_in, typename Tf, typename Ttol>
-	decltype(auto) adaptive_trapezoidal_integrate(Tf & func, Ttol tolerance, 
-		Tf_in lower_limit, Tf_in upper_limit);
+	auto adaptive_trapezoidal_integrate(Tf & func, Ttol tolerance, 
+				Tf_in lower_limit, Tf_in upper_limit)
+		->decltype(std::result_of<Tf(Tf_in)>::type);
 
 	template<typename Tf_in, typename Tf, typename Ttol>
-	decltype(auto) adaptive_simpsons_integrate(Tf & func, Ttol tolerance, 
-		Tf_in lower_limit, Tf_in upper_limit);
-*/
+	auto adaptive_simpsons_integrate(Tf & func, Ttol tolerance, 
+		Tf_in lower_limit, Tf_in upper_limit)
+		->decltype(std::result_of<Tf(Tf_in)>::type);
+
 	// DEFINITIONS
 
 	/// \param func a function/lambda which accepts the value in points as its 
