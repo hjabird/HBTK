@@ -102,6 +102,11 @@ HBTK::CartesianVector3D HBTK::CartesianFiniteLine3D::vector() const
 	return CartesianVector3D(m_end - m_start);
 }
 
+HBTK::CartesianPoint3D HBTK::CartesianFiniteLine3D::midpoint() const
+{
+	return start() + (end() - start()) * 0.5;
+}
+
 double HBTK::CartesianFiniteLine3D::distance(const CartesianPoint3D & other)
 {
 	double denominator = vector().magnitude();
@@ -228,6 +233,11 @@ const HBTK::CartesianPoint2D & HBTK::CartesianFiniteLine2D::end() const
 HBTK::CartesianVector2D HBTK::CartesianFiniteLine2D::vector() const
 {
 	return CartesianVector2D(m_end - m_start);
+}
+
+HBTK::CartesianPoint2D HBTK::CartesianFiniteLine2D::midpoint() const
+{
+	return start() + (end() - start()) * 0.5;
 }
 
 
