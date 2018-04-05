@@ -68,6 +68,8 @@ namespace HBTK {
 		
 		void axis_equal_on();
 		void axis_equal_off();
+		void autoscale_on();
+		void autoscale_off();
 
 		void size(int x_size, int y_size);
 
@@ -124,6 +126,7 @@ namespace HBTK {
 		bool m_grid_on;
 		bool m_key_on;
 		bool m_axis_equal_on;
+		bool m_autoscale_on;
 		std::string m_terminal_type;
 		std::vector<std::string> m_default_line_specs;
 	};

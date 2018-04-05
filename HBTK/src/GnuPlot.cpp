@@ -45,6 +45,7 @@ namespace HBTK {
 		m_default_line_specs = { "k-+", "b-x", "r-o", "g-d", "c-*", "m-^", "y-v" };
 		m_xrange_set = false;
 		m_yrange_set = false;
+		m_autoscale_on = true;
 
 	// We need piped gnuplot on Windows.
 #ifdef _MSC_VER
@@ -382,6 +383,9 @@ namespace HBTK {
 			if (m_axis_equal_on) {
 				fprintf(m_gnuplot_pipe, "set size ratio -1\n");
 			}
+			else if (m_autoscale_on) {
+				fprintf(m_gnuplot_pipe, "set autoscale \n");
+			}
 			else {
 				// Cross that bridge when we come to it?
 			}
@@ -452,6 +456,19 @@ namespace HBTK {
 	void GnuPlot::axis_equal_off()
 	{
 		m_axis_equal_on = false;
+		return;
+	}
+
+	void GnuPlot::autoscale_on()
+	{
+		m_autoscale_on = true;
+		m_axis_equal_on = false;
+		return;
+	}
+
+	void GnuPlot::autoscale_off()
+	{
+		m_autoscale_on = false;
 		return;
 	}
 

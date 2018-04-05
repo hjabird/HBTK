@@ -77,8 +77,13 @@ namespace HBTK // Definitions
 		assert(HBTK::check_finite(start));
 		assert(HBTK::check_finite(end));
 		assert(number_of_points > 0);
-		for (int idx = 0; idx < number_of_points; idx++) {
-			target_indexable[idx] = start + idx * (end - start) / (number_of_points - 1);
+		if (number_of_points > 1) {
+			for (int idx = 0; idx < number_of_points; idx++) {
+				target_indexable[idx] = start + idx * (end - start) / (number_of_points - 1);
+			}
+		}
+		else {
+			target_indexable[0] = (start + end) / 2;
 		}
 		return;
 	}
