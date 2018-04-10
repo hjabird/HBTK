@@ -49,7 +49,9 @@ namespace HBTK {
 
 		CartesianVector3D operator-(const HBTK::CartesianPoint3D & other) const;
 		CartesianPoint3D operator+(const HBTK::CartesianVector3D & other) const;
+		CartesianPoint3D & operator+=(const HBTK::CartesianVector3D & other);
 		CartesianPoint3D operator-(const HBTK::CartesianVector3D & other) const;
+		CartesianPoint3D & operator-=(const HBTK::CartesianVector3D & other);
 
 		static CartesianPoint3D origin();
 
@@ -81,7 +83,9 @@ namespace HBTK {
 
 		CartesianVector2D operator-(const HBTK::CartesianPoint2D & other) const;
 		CartesianPoint2D operator+(const HBTK::CartesianVector2D & other) const;
+		CartesianPoint2D operator+=(const HBTK::CartesianVector2D & other);
 		CartesianPoint2D operator-(const HBTK::CartesianVector2D & other) const;
+		CartesianPoint2D operator-=(const HBTK::CartesianVector2D & other);
 
 		static CartesianPoint2D origin();
 

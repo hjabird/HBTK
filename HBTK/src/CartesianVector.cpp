@@ -50,12 +50,28 @@ HBTK::CartesianVector3D HBTK::CartesianVector3D::operator+(const CartesianVector
 		z() + other.z() });
 }
 
+HBTK::CartesianVector3D & HBTK::CartesianVector3D::operator+=(const CartesianVector3D & other)
+{
+	x() += other.x();
+	y() += other.y();
+	z() += other.z();
+	return *this;
+}
+
 HBTK::CartesianVector3D HBTK::CartesianVector3D::operator-(const CartesianVector3D & other) const
 {
 	return CartesianVector3D({
 		x() - other.x(),
 		y() - other.y(),
 		z() - other.z() });
+}
+
+HBTK::CartesianVector3D & HBTK::CartesianVector3D::operator-=(const CartesianVector3D & other)
+{
+	x() -= other.x();
+	y() -= other.y();
+	z() -= other.z();
+	return *this;
 }
 
 HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator+(const CartesianPoint3D & other) const
@@ -219,11 +235,25 @@ HBTK::CartesianVector2D HBTK::CartesianVector2D::operator+(const CartesianVector
 		y() + other.y() });
 }
 
+HBTK::CartesianVector2D & HBTK::CartesianVector2D::operator+=(const CartesianVector2D & other)
+{
+	x() += other.x();
+	y() += other.y();
+	return *this;
+}
+
 HBTK::CartesianVector2D HBTK::CartesianVector2D::operator-(const CartesianVector2D & other) const
 {
 	return CartesianVector2D({
 		x() - other.x(),
 		y() - other.y() });
+}
+
+HBTK::CartesianVector2D & HBTK::CartesianVector2D::operator-=(const CartesianVector2D & other)
+{
+	x() -= other.x();
+	y() -= other.y();
+	return *this;
 }
 
 HBTK::CartesianPoint2D HBTK::CartesianVector2D::operator+(const CartesianPoint2D & other) const
@@ -265,6 +295,26 @@ void HBTK::CartesianVector2D::normalise()
 	x() /= len;
 	y() /= len;
 	return;
+}
+
+HBTK::CartesianVector2D & HBTK::CartesianVector2D::rotate(double angle)
+{
+	double c, s;
+	c = cos(angle);
+	s = sin(angle);
+	double tmpx, tmpy;
+	tmpx = c * x() - s * y();
+	tmpy = s * x() + c * y();
+	x() = tmpx;
+	y() = tmpy;
+	return *this;
+}
+
+HBTK::CartesianVector2D HBTK::CartesianVector2D::rotated(double angle) const
+{
+	CartesianVector2D tmp = *this;
+	tmp.rotate(angle);
+	return tmp;
 }
 
 double HBTK::CartesianVector2D::dot(const CartesianVector2D & other) const
@@ -316,6 +366,16 @@ const double & HBTK::CartesianVector2D::y() const
 	return m_coord[1];
 }
 
+std::array<double, 2>& HBTK::CartesianVector2D::as_array()
+{
+	return m_coord;
+}
+
+const std::array<double, 2>& HBTK::CartesianVector2D::as_array() const
+{
+	return m_coord;
+}
+
 bool HBTK::CartesianVector2D::operator==(const CartesianVector2D & other) const
 {
 	if ((x() == other.x()) && (y() == other.y())) {
@@ -341,3 +401,9 @@ double HBTK::abs(const CartesianVector2D & vector)
 {
 	return vector.magnitude();
 }
+
+HBTK::CartesianVector2D HBTK::operator*(const double lhs, const CartesianVector2D & rhs)
+{
+	return rhs * lhs;
+}
+

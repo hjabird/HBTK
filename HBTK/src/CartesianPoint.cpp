@@ -91,12 +91,28 @@ HBTK::CartesianPoint3D HBTK::CartesianPoint3D::operator+(const CartesianVector3D
 		 z() + other.z() }));
 }
 
+HBTK::CartesianPoint3D & HBTK::CartesianPoint3D::operator+=(const HBTK::CartesianVector3D & other)
+{
+	x() += other.x();
+	y() += other.y();
+	z() += other.z();
+	return *this;
+}
+
 HBTK::CartesianPoint3D HBTK::CartesianPoint3D::operator-(const CartesianVector3D & other) const
 {
 	return CartesianPoint3D({ 
 		x() - other.x(),
 		y() - other.y(),
 		z() - other.z() });
+}
+
+HBTK::CartesianPoint3D & HBTK::CartesianPoint3D::operator-=(const HBTK::CartesianVector3D & other)
+{
+	x() -= other.x();
+	y() -= other.y();
+	z() -= other.z();
+	return *this;
 }
 
 HBTK::CartesianVector3D HBTK::CartesianPoint3D::operator-(const CartesianPoint3D & other) const
@@ -213,11 +229,25 @@ HBTK::CartesianPoint2D HBTK::CartesianPoint2D::operator+(const CartesianVector2D
 		y() + other.y() }));
 }
 
+HBTK::CartesianPoint2D HBTK::CartesianPoint2D::operator+=(const HBTK::CartesianVector2D & other)
+{
+	x() += other.x();
+	y() += other.y();
+	return *this;
+}
+
 HBTK::CartesianPoint2D HBTK::CartesianPoint2D::operator-(const CartesianVector2D & other) const
 {
 	return CartesianPoint2D({
 		x() - other.x(),
 		y() - other.y() });
+}
+
+HBTK::CartesianPoint2D HBTK::CartesianPoint2D::operator-=(const HBTK::CartesianVector2D & other)
+{
+	x() -= other.x();
+	y() -= other.y();
+	return *this;
 }
 
 HBTK::CartesianVector2D HBTK::CartesianPoint2D::operator-(const CartesianPoint2D & other) const

@@ -38,7 +38,9 @@ namespace HBTK {
 		~CartesianVector3D();
 
 		CartesianVector3D operator+(const CartesianVector3D & other) const;
+		CartesianVector3D & operator+=(const CartesianVector3D & other);
 		CartesianVector3D operator-(const CartesianVector3D & other) const;
+		CartesianVector3D & operator-=(const CartesianVector3D & other);
 		CartesianPoint3D operator+(const CartesianPoint3D & other) const;
 		CartesianPoint3D operator-(const CartesianPoint3D & other) const;
 		CartesianVector3D operator*(const double & multiplyer) const;
@@ -84,16 +86,23 @@ namespace HBTK {
 		~CartesianVector2D();
 
 		CartesianVector2D operator+(const CartesianVector2D & other) const;
+		CartesianVector2D& operator+=(const CartesianVector2D & other);
 		CartesianVector2D operator-(const CartesianVector2D & other) const;
+		CartesianVector2D& operator-=(const CartesianVector2D & other);
 		CartesianPoint2D operator+(const CartesianPoint2D & other) const;
 		CartesianPoint2D operator-(const CartesianPoint2D & other) const;
 		CartesianVector2D operator*(const double & multiplyer) const;
 		CartesianVector2D operator/(const double & divisor)const ;
 
-		// Returns the length of the vector. Same as: abs(this)
-		double magnitude() const;
 		// Set vector length to 1.
 		void normalise();
+		// Rotate clockwise by angle (Radians) - mutating.
+		CartesianVector2D & rotate(double angle);
+		// Get a vector that is this one rotated clockwise.
+		CartesianVector2D rotated(double angle) const;
+
+		// Returns the length of the vector. Same as: abs(this)
+		double magnitude() const;
 		// Dot product between to vectors.
 		double dot(const CartesianVector2D & other) const;
 		// Cross product of.. well, its just a single vector.
@@ -107,6 +116,8 @@ namespace HBTK {
 		const double & x() const;
 		double & y();
 		const double & y() const;
+		std::array<double, 2> & as_array();
+		const std::array<double, 2> & as_array() const;
 
 		operator std::array<double, 2>() const;
 
@@ -118,5 +129,6 @@ namespace HBTK {
 	};
 
 	double abs(const CartesianVector2D & vector);
+	CartesianVector2D operator*(const double lhs, const CartesianVector2D & rhs);
 
 } // End namespace HBTK
