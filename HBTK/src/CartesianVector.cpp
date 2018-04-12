@@ -66,6 +66,11 @@ HBTK::CartesianVector3D HBTK::CartesianVector3D::operator-(const CartesianVector
 		z() - other.z() });
 }
 
+HBTK::CartesianVector3D HBTK::CartesianVector3D::operator-() const
+{
+	return CartesianVector3D({ -x(), -y(), -z() });
+}
+
 HBTK::CartesianVector3D & HBTK::CartesianVector3D::operator-=(const CartesianVector3D & other)
 {
 	x() -= other.x();
@@ -247,6 +252,11 @@ HBTK::CartesianVector2D HBTK::CartesianVector2D::operator-(const CartesianVector
 	return CartesianVector2D({
 		x() - other.x(),
 		y() - other.y() });
+}
+
+HBTK::CartesianVector2D HBTK::CartesianVector2D::operator-() const
+{
+	return CartesianVector2D({ -x(), -y() });
 }
 
 HBTK::CartesianVector2D & HBTK::CartesianVector2D::operator-=(const CartesianVector2D & other)
