@@ -240,20 +240,18 @@ namespace HBTK {
 		R_Type v_sub_l, v_sub_u;
 		Tf_in p_sub_l, p_sub_u, p_cent;
 
-		int stack_size = 1;
-
 		auto simp = [&](Tf_in x0, Tf_in x2, R_Type f0, R_Type f1, R_Type f2)->R_Type 
 		{
 			return (x2 - x0)*(f0 + 4.0 * f1 + f2) / 6.0;
 		};
 
 		typedef struct stack_frame {
-			Tf_in l_lim, u_lim;
-			R_Type l, u, c;
+			Tf_in l_lim, u_lim;	// l(ower)_lim(it), u(pper)_lim(it)
+			R_Type l, u, c;		// l(ower), u(pper), c(entre)
 		} stack_frame;
 
 		stack_frame tmp;
-
+		int stack_size = 1;
 		std::stack<stack_frame> stack;
 
 		stack.emplace(stack_frame{ lower_limit, upper_limit, func(lower_limit), 
@@ -262,7 +260,6 @@ namespace HBTK {
 		while (!stack.empty())
 		{
 			tmp = stack.top();
-			assert(tmp.u_lim != tmp.l_lim);
 			p_cent = (tmp.l_lim + tmp.u_lim)*0.5;
 			p_sub_l = tmp.l_lim + (tmp.u_lim - tmp.l_lim)*0.25;
 			p_sub_u = tmp.l_lim + (tmp.u_lim - tmp.l_lim)*0.75;
@@ -272,8 +269,9 @@ namespace HBTK {
 			coarse = simp(tmp.l_lim, tmp.u_lim, tmp.l, tmp.c, tmp.u);
 			fine = simp(tmp.l_lim, p_cent, tmp.l, v_sub_l, tmp.c)
 				+ simp(p_cent, tmp.u_lim, tmp.c, v_sub_u, tmp.u);
+			coarse = (16.0 * fine - coarse) / 15.0;
 
-			if (abs(fine - coarse) > (tmp.u_lim - tmp.l_lim) * tolerance)
+			if ((tolerance + (coarse - fine) != tolerance) && (p_cent <= tmp.l_lim) && (p_cent >= tmp.u_lim))
 			{
 				stack.pop();
 				stack.emplace(stack_frame{ tmp.l_lim, p_cent, tmp.l, tmp.c, v_sub_l });
