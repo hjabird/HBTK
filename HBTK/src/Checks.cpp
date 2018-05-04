@@ -35,17 +35,35 @@ SOFTWARE.
 #include "CartesianVector.h"
 
 namespace HBTK {
-
+	bool check_in_range(int x, int min, int max)
+	{
+		return (x >= min) && (x <= max);
+	}
 	bool check_finite(float x) {
 		return std::isfinite(x);
+	}
+
+	bool check_in_range(float x, float min, float max)
+	{
+		return (x >= min) && (x <= max);
 	}
 
 	bool check_finite(double x) {
 		return std::isfinite(x);
 	}
 
+	bool check_in_range(double x, double min, double max)
+	{
+		return (x >= min) && (x <= max);
+	}
+
 	bool check_finite(const long double x) {
 		return std::isfinite(x);
+	}
+
+	bool check_in_range(const long double x, const long double min, const long double max)
+	{
+		return  (x >= min) && (x <= max);
 	}
 
 	bool check_finite(const CartesianPoint2D & x)

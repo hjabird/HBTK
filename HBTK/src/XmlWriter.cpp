@@ -1,8 +1,8 @@
-#pragma once
+#include "XmlWriter.h"
 /*////////////////////////////////////////////////////////////////////////////
-VtkUnstructuresMeshHolder.h
+XmlWriter.cpp
 
-Represents a dataless VTK unstructred mesh object.
+A class to help writing Xml files.
 
 Copyright 2018 HJA Bird
 
@@ -25,26 +25,41 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
+HBTK::Xml::XmlWriter::XmlWriter()
+{
+}
 
-#include "CartesianPoint.h"
-
-namespace HBTK {
-	namespace Vtk {
-		class VtkUnstructuredMeshHolder {
-		public:
-			VtkUnstructuredMeshHolder();
-
-			std::vector<HBTK::CartesianPoint3D> points;
-
-			struct cell_data {
-				int cell_type;
-				std::vector<int> node_ids;
-			};
-			std::vector<cell_data> cells;
-
-			std::vector<int> check_consistant_node_counts();
-			std::vector<int> check_valid_cell_nodes_ids();
-		};
+void HBTK::Xml::XmlWriter::open_tag(std::ostream & stream, const std::string & tag_name, std::vector<std::pair<std::string, std::string>> parameters)
+{
+	stream << "<";
+	stream << tag_name;
+	for (auto & param: parameters) {
+		stream << " ";
+		stream << param.first;
+		stream << "=";
+		stream << "\"" << param.second << "\"";
 	}
+	stream << ">\n";
+	m_tag_stack.push(tag_name);
+	return;
+}
+
+void HBTK::Xml::XmlWriter::close_tag(std::ostream & stream)
+{
+	stream << "</";
+	stream << m_tag_stack.top();
+	m_tag_stack.pop();
+	stream << ">\n";
+	return;
+}
+
+void HBTK::Xml::XmlWriter::header(std::ostream & stream, std::string version, std::string encoding)
+{
+	stream << "<?xml version=\"" << version << "\" encoding=\"" << encoding << "\"?>\n";
+	return;
+}
+
+int HBTK::Xml::XmlWriter::tag_depth() const
+{
+	return m_tag_stack.size();
 }

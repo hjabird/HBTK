@@ -31,12 +31,21 @@ SOFTWARE.
 #include <vector>
 
 namespace HBTK {
+	/*
+	Check finite: if a number is not real and something you can write down, return false.
+	Check in range: true if min <= x <= max
+	*/
+
+	bool check_in_range(int x, int min, int max);
 
 	bool check_finite(float x);
+	bool check_in_range(float x, float min, float max);
 
 	bool check_finite(double x);
+	bool check_in_range(double x, double min, double max);
 
 	bool check_finite(const long double x);
+	bool check_in_range(const long double x, const long double min, const long double max);
 
 	template<typename Ty>
 	bool check_finite(const std::complex<Ty> x) {
@@ -73,4 +82,23 @@ namespace HBTK {
 	bool check_finite(const CartesianFiniteLine2D & x);
 	class CartesianFiniteLine3D;
 	bool check_finite(const CartesianFiniteLine3D & x);
+
+	template<typename Ty>
+	bool check_in_range(const std::vector<Ty> & x, const Ty & min, const Ty & max) {
+		bool result = true;
+		for (auto &a : x) {
+			if (!check_in_range(a, min, max)) { result = false; break; }
+		}
+		return result;
+	}
+
+	template<typename Ty, int TySize>
+	bool check_finite(const std::array<Ty, TySize> & x, const Ty & min, const Ty & max) {
+		bool result = true;
+		for (auto &a : x) {
+			if (!check_in_range(a, min, max)) { result = false; break; }
+		}
+		return result;
+	}
+
 }

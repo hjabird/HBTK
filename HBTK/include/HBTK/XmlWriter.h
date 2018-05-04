@@ -1,8 +1,8 @@
-#include "VtkDataArray.h"
+#pragma once
 /*////////////////////////////////////////////////////////////////////////////
-VtkDataArray.cpp
+XmlWriter.h
 
-An analogue of the DataArray part of a VTK file.
+A class to help writing Xml files.
 
 Copyright 2018 HJA Bird
 
@@ -25,10 +25,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
-// Yes, templates have removed everything the the realm of compiling multiple
-// times...
+#include <ostream>
+#include <stack>
+#include <string>
+#include <vector>
 
-int HBTK::Vtk::VtkDataArrayTypeless::number_of_components()
-{
-	return m_number_of_components;
+namespace HBTK {
+
+	namespace Xml {
+
+		class XmlWriter
+		{
+		public:
+			XmlWriter();
+
+			void open_tag(std::ostream & stream,
+				const std::string & tag_name,
+				std::vector<std::pair<std::string, std::string>> parameters);
+			void close_tag(std::ostream & stream);
+			// Encoding might be UTF-8
+			void header(std::ostream & stream, std::string version, std::string encoding);
+
+			int tag_depth() const;
+		protected:
+			std::stack<std::string> m_tag_stack;
+		};
+	}
 }
