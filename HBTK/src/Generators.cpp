@@ -108,3 +108,21 @@ std::vector<double> HBTK::uniform(double value, int number_of_points)
 	uniform(output, value);
 	return output;
 }
+
+std::vector<double> HBTK::semicircspace(double radius)
+{
+	return semicircspace(radius, 0);
+}
+
+std::vector<double> HBTK::semicircspace(double radius, double centre)
+{
+	return semicircspace(radius, centre, 100);
+}
+
+std::vector<double> HBTK::semicircspace(double radius, double centre, int number_of_points)
+{
+	std::vector<double> res;
+	res.resize(number_of_points);
+	semicircspace(radius, centre, number_of_points, res);
+	return res;
+}

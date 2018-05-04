@@ -31,6 +31,7 @@ SOFTWARE.
 #include <cmath>
 
 #include "Checks.h"
+#include "Constants.h"
 
 namespace HBTK {
 
@@ -54,6 +55,12 @@ namespace HBTK {
 	std::vector<double> uniform(double value, int number_of_points);
 	template<typename TyStore, typename TyVal>
 	void uniform(TyStore & target_indexable, TyVal fill_value);
+
+	std::vector<double> semicircspace(double radius);
+	std::vector<double> semicircspace(double radius, double centre);
+	std::vector<double> semicircspace(double radius, double centre, int number_of_points);
+	template< typename Ty >
+	void semicircspace(double radius, double centre, int number_of_points, Ty & target_indexable);
 
 
 } // End Namespace HBTK - Declarations
@@ -143,4 +150,38 @@ namespace HBTK // Definitions
 		}
 	}
 
+
+	/// \param target_indexable where to write points to
+	/// \param radius the radius of the circular distribution - goes from 
+	/// centre + radius to centre - radius
+	/// \param number_of_points  the number of points to generate.
+	/// \param centre the average value of the distribution
+	/// 
+	/// \brief fills an indexable object with a semicircular distribution.
+	///
+	/// Object must have interator that can be assigend to. 
+	/// Imagine you have a semicircle with radii drawn with equal angular spacing.
+	/// The x coords where the radii meet the perimeter are what this returns.
+	/// Half the usual angle is used before the first and last radius so that they
+	/// are not the max or min possible x.
+	/// 
+	/// x_n = centre + r * cos( (idx_n + 0.5) * pi / num_points )
+	template<typename Ty>
+	void semicircspace(double radius, double centre, int number_of_points, Ty & target_indexable) 
+	{
+		using TyIdx = decltype(target_indexable[0]);
+		static_assert(std::is_floating_point<typename std::remove_reference<TyIdx>::type>::value,
+			"Output container must hold floating points");
+		static_assert(std::is_reference<TyIdx>::value,
+			"target_indexable[idx] must be something you can assign to.");
+		assert(HBTK::check_finite(radius));
+		assert(HBTK::check_finite(centre));
+		assert(number_of_points > 0);
+
+		for (int idx = 0; idx < number_of_points; idx++) {
+			 auto lin_pos = ((idx + 0.5) * HBTK::Constants::pi<std::remove_reference<TyIdx>::type>())/ (number_of_points);
+			 target_indexable[idx] = - radius * cos(lin_pos) + centre;
+		}
+		return;
+	}
 } // End HBTK namespace
