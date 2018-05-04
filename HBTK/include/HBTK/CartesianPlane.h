@@ -45,13 +45,16 @@ namespace HBTK {
 		CartesianPoint3D operator()(const CartesianPoint2D & plane_point) const;
 		CartesianPoint3D evaluate(const CartesianPoint2D & plane_point) const;
 
+		// Normal is of length 1.
+		CartesianVector3D normal() const;
 		double distance(const CartesianPoint3D & point_in_space) const;
 		CartesianPoint2D projection(const CartesianPoint3D & point_in_space) const;
+		CartesianPoint3D closest_point(const CartesianPoint3D & point_in_space) const;
+		CartesianPoint3D symmetric_point(const CartesianPoint3D & point) const;
 
 		// Returns the planes origin.
 		CartesianPoint3D & origin();
 		const CartesianPoint3D & origin() const;
-
 	private:
 		CartesianPoint3D m_origin;
 		CartesianVector3D m_x_dir;

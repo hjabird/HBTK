@@ -105,6 +105,13 @@ HBTK::CartesianPoint3D HBTK::CartesianPlane::evaluate(const CartesianPoint2D & p
 	return point;
 }
 
+HBTK::CartesianVector3D HBTK::CartesianPlane::normal() const
+{
+	CartesianVector3D norm = m_x_dir.cross(m_y_dir);
+	norm.normalise();
+	return norm;
+}
+
 double HBTK::CartesianPlane::distance(const CartesianPoint3D & point_in_space) const
 {
 	CartesianVector3D normal = m_x_dir.cross(m_y_dir);
@@ -145,6 +152,14 @@ HBTK::CartesianPoint2D  HBTK::CartesianPlane::projection(const CartesianPoint3D 
 	return local_sys;
 }
 
+HBTK::CartesianPoint3D HBTK::CartesianPlane::closest_point(const CartesianPoint3D & point_in_space) const
+{
+	CartesianVector3D norm = normal();
+	CartesianVector3D vect_from_plane = point_in_space - origin();
+	CartesianPoint3D point = norm * (norm.dot(vect_from_plane));
+	return point;
+}
+
 HBTK::CartesianPoint3D & HBTK::CartesianPlane::origin()
 {
 	return m_origin;
@@ -153,4 +168,13 @@ HBTK::CartesianPoint3D & HBTK::CartesianPlane::origin()
 const HBTK::CartesianPoint3D & HBTK::CartesianPlane::origin() const
 {
 	return m_origin;
+}
+
+HBTK::CartesianPoint3D HBTK::CartesianPlane::symmetric_point(const CartesianPoint3D & point) const
+{
+	double dist = distance(point);
+	CartesianVector3D vect_to_symmetric = normal() * dist;
+	CartesianPoint3D symettric_point = point - vect_to_symmetric * 2;
+	assert(HBTK::check_finite(symettric_point));
+	return symettric_point;
 }
