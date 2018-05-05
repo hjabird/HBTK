@@ -22,54 +22,6 @@ void HBTK::Vtk::VtkParser::on_tag_close(std::string tag_name)
 	m_tag_stack.pop();
 }
 
-HBTK::Vtk::VtkParser::vtk_tags HBTK::Vtk::VtkParser::string_to_tag(std::string tag_str)
-{
-	vtk_tags tag = UnknownTag;
-	if (tag_str == "CellData") {
-		tag = CellDataTag;
-	}
-	else if (tag_str == "Coordinates") {
-		tag = CoordinatesTag;
-	}
-	else if (tag_str == "DataArray") {
-		tag = DataArrayTag;
-	}
-	else if (tag_str == "ImageData") {
-		tag = ImageDataTag;
-	}
-	else if (tag_str == "Piece") {
-		tag = PieceTag;
-	}
-	else if (tag_str == "PointData") {
-		tag = PointDataTag;
-	}
-	else if (tag_str == "Points") {
-		tag = PointsTag;
-	}
-	else if (tag_str == "Polys") {
-		tag = PolysTag;
-	}
-	else if (tag_str == "RectilinearGrid") {
-		tag = RectilinearGridTag;
-	}
-	else if (tag_str == "Strips") {
-		tag = StripsTag;
-	}
-	else if (tag_str == "StructuredGrid") {
-		tag = StructuredGridTag;
-	}
-	else if (tag_str == "UnstructuredGrid") {
-		tag = UnstructuredGridTag;
-	}
-	else if (tag_str == "Verts") {
-		tag = VertsTag;
-	}
-	else if (tag_str == "VTKFile") {
-		tag = VTKFileTag;
-	}
-	
-	return tag;
-}
 
 void HBTK::Vtk::VtkParser::on_vtkfile_tag(key_val_pairs key_vals)
 {
@@ -97,17 +49,8 @@ void HBTK::Vtk::VtkParser::set_vtk_file_type(std::string str)
 	if (str == "UnstructuredGrid") {
 		m_file_type = UnstructuredGridFile;
 	}
-	else if (str == "ImageData") {
-		m_file_type = ImageDataFile;
-	}
 	else if (str == "StructuredGrid") {
 		m_file_type = StructuredGridFile;
-	}
-	else if (str == "RectilinearGrid") {
-		m_file_type = RectilinearGridFile;
-	} 
-	else if (str == "PolyData") {
-		m_file_type = PolyDataFile;
 	}
 	else {
 		m_file_type = UnknownFile;

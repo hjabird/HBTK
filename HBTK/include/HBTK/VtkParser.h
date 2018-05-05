@@ -26,6 +26,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <stack>
+#include <unordered_map>
 
 #include "BasicParser.h"
 #include "XmlParser.h"
@@ -42,9 +43,6 @@ namespace HBTK {
 			// Possible types of vkt file. Parallel unsupported.
 			enum VtkFileType {
 				UnknownFile,
-				ImageDataFile,
-				PolyDataFile,
-				RectilinearGridFile,
 				StructuredGridFile,
 				UnstructuredGridFile
 			};
@@ -61,13 +59,9 @@ namespace HBTK {
 				CellDataTag,
 				CoordinatesTag,
 				DataArrayTag,
-				ImageDataTag,
 				PieceTag,
 				PointDataTag,
 				PointsTag,
-				PolysTag,
-				RectilinearGridTag,
-				StripsTag,
 				StructuredGridTag,
 				UnstructuredGridTag,
 				VertsTag,
@@ -83,25 +77,16 @@ namespace HBTK {
 
 			// For handling all the xml:
 			Xml::XmlParser m_xml_parser;
+			// The set of functions to call for the subtags of the working tag
+			std::unordered_map<std::string, std::function<void(std::vector<std::pair<std::string, std::string>>)>> 
+				m_working_tag_handler;
 
 			typedef std::vector<std::pair<std::string, std::string>> key_val_pairs;
 			// Functions for the all your xml needs:
 			void on_tag_open(std::string tag_name,  key_val_pairs key_vals);
 			void on_tag_close(std::string tag_name);
-			vtk_tags string_to_tag(std::string tag_str);
-			
-			void on_cell_data_tag(key_val_pairs key_vals);
-			void on_piece_tag(key_val_pairs key_vals);
-			void on_point_data_tag(key_val_pairs key_vals);
-			void on_points_tag(key_val_pairs key_vals);
-			void on_structured_grid_tag(key_val_pairs key_vals);
-			void on_unstructured_grid_tag(key_val_pairs key_vals);
-			void on_vtkfile_tag(key_val_pairs key_vals);
-			
-			void set_vtk_file_type(std::string str);
-			void set_vtk_file_version(std::string str);
 
-			std::stack<vtk_tags> m_tag_stack;
+
 		};
 	}
 }

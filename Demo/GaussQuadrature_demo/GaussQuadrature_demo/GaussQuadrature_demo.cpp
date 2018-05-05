@@ -19,7 +19,7 @@ int main()
 	HBTK::StaticQuadrature quad = HBTK::gauss_hermite(4);
 	std::vector<double> points, weights;
 	std::tie(points, weights) = quad.get_quadrature();
-	auto simple = [](double x) { return 1; };
+	auto simple = [](double x)->double { return 1; };
 	double result = quad.integrate(simple);
 
 	for (int i = 0; i < (int)points.size(); i++) {
