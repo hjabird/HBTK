@@ -3,7 +3,7 @@ A C++ library containing what I consider to be 'useful stuff'. Very much liable 
 
 Usable features:
 * Integral remaps - Telles, Sato
-* Integrations methods - Gauss-legendre, generic static, adaptive Simpsons / Trapezoidal. Not restricted to floats / doubles.
+* Integrations methods - Gauss-legendre, generic static, adaptive Simpsons / Trapezoidal / Gauss-Lobatto. Not restricted to floats / doubles.
 * GMSH parser (ASCII & Binary v2.2 - physical groups, nodes and elements only)
 * GMSH writer (ASCII 2.2, physical groups, nodes and elements only)
 * Plot3D reader, Plot3D writer.
