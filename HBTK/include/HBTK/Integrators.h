@@ -53,6 +53,11 @@ namespace HBTK {
 		Tf_in lower_limit, Tf_in upper_limit)
 		->decltype(func(lower_limit));
 
+	template<typename Tf_in, typename Tf, typename Ttol>
+	auto adaptive_gauss_lobatto_integrate(Tf & func, Ttol tolerance,
+		Tf_in lower_limit, Tf_in upper_limit)
+		->decltype(func(lower_limit));
+
 	// DEFINITIONS
 
 	/// \param func a function/lambda which accepts the value in points as its 
@@ -289,5 +294,114 @@ namespace HBTK {
 		return result;
 	}
 
-}
 
+	/// \param func a function that takes a single argument of type Tf_in (ie. 
+	/// that of lower and upper limit) and returns a floating point type.
+	/// \param tolerance a floating point relative tolerance.
+	/// \param lower_limit the lower limit of integration.
+	/// \param upper_limit the upper limit of integration.
+	///
+	/// \brief Evaluate an integral using an adaptive Gauss-Lobatto method.
+	///
+	/// The code could be used as follows:
+	/// \code
+	/// #include "HBTK/Integrators.h"
+	/// auto my_f = [](double x)->double
+	/// { x*x*x*x*x*x*x*x*x; };
+	/// auto result = HBTK::adaptive_gauss_lobatto_integrate(my_f, 1e-10, 0.0, 1.0);
+	/// \endcode
+	///	Uses an adaptive Gauss-Lobatto quadrature to integrate my func over
+	/// given range. Based on Gander and Gautschi, BIT Numer. Math. 2000
+	template<typename Tf_in, typename Tf, typename Ttol>
+	auto adaptive_gauss_lobatto_integrate(Tf & func, Ttol tolerance,
+		Tf_in lower_limit, Tf_in upper_limit)
+		->decltype(func(lower_limit))
+	{
+		// Gander, W. & Gautschi, W. BIT Numerical Mathematics (2000) 40: 84. 
+		// https://doi.org/10.1023/A:1022318402393
+		assert(tolerance > 0.0);
+		assert(lower_limit < upper_limit);
+
+		using R_Type = typename std::result_of<Tf(Tf_in)>::type;
+		R_Type result = 0;
+		R_Type coarse, fine;
+
+		Tf_in alpha = (Tf_in)sqrt(2 / 3);
+		Tf_in beta = (Tf_in)(1 / sqrt(5));
+		Tf_in x1 = (Tf_in) 0.942882415695480; 
+		Tf_in x2 = (Tf_in) 0.641853342345781;
+		Tf_in x3 = (Tf_in) 0.236383199662150;		Tf_in h0 = (upper_limit - lower_limit) / 2;		Tf_in m0 = (upper_limit + lower_limit) / 2;		std::array<R_Type, 13> y0 = { func(lower_limit),			func(m0 - x1 * h0), func(m0 - alpha * h0), func(m0 - x2 * h0),			func(m0 - beta * h0), func(m0 - x3 * h0), func(m0), func(m0 + x3 * h0),			func(m0 + beta * h0), func(m0 + x2 * h0), func(m0 + alpha * h0),			func(m + x1 * h0), func(upper_limit) };
+
+		R_Type fa(y0[0]), fb(y0[12]);
+		coarse = (h0 / 6) * (y0[0] + y0[12] + 5 * (y0[4] + y0[8]));
+		fine = (h0 / 1470)*(77 * (y0[0] + y0[12]) + 432 * (y0[2] + y0[10]) + 
+			625 * (y0[4] + y0[8]) + 672 * y0[6]);
+		R_Type is = h * (0.0158271919734802*(y0[0] + y0[12]) + 0.0942738402188500
+			*(y0[1] + y0[11]) + 0.155071987336585*(y0[2] + y0[10]) + 
+			0.188821573960182*(y0[3] + y0[9]) + 0.199773405226859
+			*(y0[4] + y4[8]) + 0.224926465333340*(y0[5] + y0[7])
+			+ 0.242611071901408*y0[6]);
+		int s = (is >= 0.0 * R_Type() ? 1 : -1);
+		R_Type err_fine = abs(fine - is);
+		R_Type err_coarse = abs(coarse - is);
+		R_Type R = (R_Type)1.0;
+		if (err_coarse != 0.0 * R_Type()) R = err_fine / err_coarse;
+		if ((R > 0) && (R < 1)) tolerance = tolerance / R;
+		is = s * abs(is) * tolerance / HBTK::tolerance<R_Type>();
+		if (is == 0) is = upper_limit - lower_limit;
+		// And now onto the adaptive bit - adaptlobstp(...)
+
+		typedef struct stack_frame {
+			Tf_in l_lim, u_lim;	// l(ower)_lim(it), u(pper)_lim(it)
+			R_Type l, u;		// l(ower), u(pper)
+		} stack_frame;
+
+		stack_frame tmp;
+		int stack_size = 1;
+		std::stack<stack_frame> stack;
+
+		stack.emplace(stack_frame{ lower_limit, upper_limit, y0[0], y0[12] });
+
+		while (!stack.empty())
+		{
+			tmp = stack.top();
+			Tf_in ml, mll, m, mr, mrr, h;
+			h = (tmp.u_lim - tmp.l_lim) / 2;
+			m = (tmp.u_lim + tmp.l_lim) / 2;
+			mll = m - alpha * h;
+			mrr = m + alpha * h;
+			ml = m - beta * h;
+			mr = m + beta * h;
+			R_Type fml, fmll, fm, fmr, fmrr;
+			fml = func(ml);
+			fmll = func(mll);
+			fm = func(m);
+			fmr = func(mr);
+			fmrr = func(mrr);
+			coarse = (h / 6.) * (tmp.l + tmp.u + 5.0 * (fml + fmr));
+			fine = (h / 1470) * (77 * (tmp.l + tmp.u) + 432 * (fmll + fmrr) 
+				+ 625 * (fml + fmr) + 672 * fm);
+		
+			if ((tolerance + (fine - coarse) != tolerance) && (mll <= tmp.l_lim) && (mrr >= tmp.u_lim))
+			{
+				stack.pop();
+				stack.emplace(stack_frame{ tmp.l_lim, mll, tmp.l, fmll });
+				stack.emplace(stack_frame{ mll, ml, fmll, fml});
+				stack.emplace(stack_frame{ ml, m, fml, fm });
+				stack.emplace(stack_frame{ m, mr, fm, fmr });
+				stack.emplace(stack_frame{ mr, mrr, fmr, fmrr });
+				stack.emplace(stack_frame{ mrr, tmp.u_lim, fmrr, tmp.u });
+				stack_size += 5;
+			}
+			else
+			{
+				stack.pop();
+				stack_size -= 1;
+				result += fine;
+			}
+		}
+		assert(stack_size == 0);
+		return result;
+	}
+
+}

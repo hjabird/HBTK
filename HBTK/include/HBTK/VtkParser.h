@@ -38,7 +38,6 @@ namespace HBTK {
 		{
 		public:
 			VtkParser();
-			~VtkParser();
 
 			// Possible types of vkt file. Parallel unsupported.
 			enum VtkFileType {
@@ -46,47 +45,46 @@ namespace HBTK {
 				StructuredGridFile,
 				UnstructuredGridFile
 			};
-			enum ByteOrder {
-				LittleEndian,
-				BigEndian
-			};
-		private:
-			friend class BasicParser<VtkParser>;	
 
-			// Possible vtk tags.
-			enum vtk_tags {
-				UnknownTag,
-				CellDataTag,
-				CoordinatesTag,
-				DataArrayTag,
-				PieceTag,
-				PointDataTag,
-				PointsTag,
-				StructuredGridTag,
-				UnstructuredGridTag,
-				VertsTag,
-				VTKFileTag
-			};
+		protected:
+			friend class BasicParser<VtkParser>;	
+			typedef std::vector<std::pair<std::string, std::string>> key_val_pairs;
 
 			void main_parser(std::ifstream & input_stream, std::ostream & error_stream);
+
+			std::istream *input_stream;
 
 			// Meta info
 			double m_version;
 			VtkFileType m_file_type;
-			ByteOrder m_byte_order;
 
 			// For handling all the xml:
 			Xml::XmlParser m_xml_parser;
-			// The set of functions to call for the subtags of the working tag
-			std::unordered_map<std::string, std::function<void(std::vector<std::pair<std::string, std::string>>)>> 
-				m_working_tag_handler;
 
-			typedef std::vector<std::pair<std::string, std::string>> key_val_pairs;
+			// The set of functions to call for the subtags of the working tag
+			typedef std::unordered_map<std::string, std::function<void(const key_val_pairs &, std::istream &)>>
+				function_map;
+
+			// And a stack of these bad boys.
+			std::stack<function_map> m_fmap_stack;
+
+
 			// Functions for the all your xml needs:
 			void on_tag_open(std::string tag_name,  key_val_pairs key_vals);
 			void on_tag_close(std::string tag_name);
 
-
+			void vtk_file_tag_handler(const key_val_pairs & params,
+				std::istream & stream);
+			void data_array_tag_handler(const key_val_pairs & params,
+				std::istream & stream);
+			void unstructured_cells_tag_handler(const key_val_pairs & params,
+				std::istream & stream);
+			void unstructured_points_tag_handler(const key_val_pairs & params,
+				std::istream & stream);
+			void unstructured_cell_data_tag_handler(const key_val_pairs & params,
+				std::istream & stream);
+			void unstructured_point_data_tag_handler(const key_val_pairs & params,
+				std::istream & stream);
 		};
 	}
 }
