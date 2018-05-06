@@ -7,8 +7,13 @@ Usable features:
 * GMSH parser (ASCII & Binary v2.2 - physical groups, nodes and elements only)
 * GMSH writer (ASCII 2.2, physical groups, nodes and elements only)
 * Plot3D reader, Plot3D writer.
+* VTK writer(s) (limited legacy structured or xml unstructured - yes, wierd, I know)
+* Cubic splines
+* Cartesian Geometry
+* XML writer
 * Structured mesh "blocks"
 * Fortran sequential IO emulation
+* Tabulated output inc. CSV writer
 
 Features that seem to work better on some PCs that others:
 * MATLAB-like GNUPlot interface for 2D plotting.
@@ -17,12 +22,10 @@ Unverified features:
 * GMSH elements (element node coordinate (unchecked!), shape descriptions, element names)
 * Integration methods Gauss hermite, Gauss Laguerre (Generalised)
 * Aerofoil geometry
-* Cubic splines
-* Cartesian geometry 
+* XML reader
+* VTK reader
 
 Incomplete:
-* Xml support
-* VTK legacy support
 * DOCUMENTATION
 * UNIT TESTS
 
