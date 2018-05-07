@@ -30,6 +30,7 @@ SOFTWARE.
 #include <algorithm>
 #include <iterator>
 
+#include "CubicSpline1D.h"
 #include "Constants.h"
 #include "Generators.h"
 
@@ -162,12 +163,12 @@ HBTK::CubicSpline1D HBTK::AerofoilGeometry::get_thickness_spline()
 HBTK::CubicSpline1D HBTK::AerofoilGeometry::get_camber_spline()
 {
 	if (m_x_points_upper != m_x_points_lower) {
-		AerofoilGeometry new_foil;
+		AerofoilGeometry new_foil(*this);
 		new_foil.repoint(
 			[](double x)->double { return 0.5 * (1 - cos(x * HBTK::Constants::pi())); }
 			, std::max({ m_x_points_upper.size(), m_x_points_lower.size() })
 		);
-		return new_foil.get_thickness_spline();
+		return new_foil.get_camber_spline();
 	}
 	else {
 		std::vector<double> thickness(m_x_points_upper.size());
@@ -236,7 +237,20 @@ double HBTK::AerofoilGeometry::tailing_edge_gap()
 void HBTK::AerofoilGeometry::repoint(std::function<double(double)> function, int number_of_points)
 {
 	std::vector<double> points = linspace(0, 1, number_of_points);
-	assert(false);
+	for (double p : points) p = function(p);
+	std::vector<double> tmp_z_upper((int)points.size());
+	std::vector<double> tmp_z_lower((int)points.size());
+	HBTK::CubicSpline1D spline_lower(m_x_points_lower, m_z_points_lower);
+	HBTK::CubicSpline1D spline_upper(m_x_points_upper, m_z_points_upper);
+	m_x_points_lower = points;
+	m_x_points_upper = points;
+	m_z_points_upper.resize(points.size());
+	m_z_points_lower.resize(points.size());
+	for (int i = 0; i < (int)points.size(); i++) {
+		assert(check_in_range(points[i], 0., 1.));
+		m_z_points_lower[i] = spline_lower(points[i]);
+		m_z_points_upper[i] = spline_upper(points[i]);
+	}
 	return;
 }
 

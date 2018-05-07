@@ -62,6 +62,9 @@ namespace HBTK {
 			// instead of where it is declared by the xml.
 			bool appended; // Write data as appended. Default true
 
+			// Write precision
+			int write_precision;
+
 
 		protected:
 			// xml writer object

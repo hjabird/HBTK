@@ -42,7 +42,7 @@ namespace HBTK {
 		// Spline will have input from [-1, 1]
 		CubicSplineND(std::array<std::vector<double>, TNumDimensions> control_points);
 
-		~CubicSpline(ND);
+		~CubicSplineND();
 
 		// Evaluate the spline.
 		std::array<double, TNumDimensions> operator()(double local_position);
@@ -85,7 +85,7 @@ namespace HBTK {
 	}
 
 	template<int TNumDimensions>
-	inline CubicSplineND<TNumDimensions>::~CubicSpline(ND)
+	inline CubicSplineND<TNumDimensions>::~CubicSplineND()
 	{
 	}
 

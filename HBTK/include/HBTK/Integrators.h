@@ -330,7 +330,14 @@ namespace HBTK {
 		Tf_in beta = (Tf_in)(1 / sqrt(5));
 		Tf_in x1 = (Tf_in) 0.942882415695480; 
 		Tf_in x2 = (Tf_in) 0.641853342345781;
-		Tf_in x3 = (Tf_in) 0.236383199662150;		Tf_in h0 = (upper_limit - lower_limit) / 2;		Tf_in m0 = (upper_limit + lower_limit) / 2;		std::array<R_Type, 13> y0 = { func(lower_limit),			func(m0 - x1 * h0), func(m0 - alpha * h0), func(m0 - x2 * h0),			func(m0 - beta * h0), func(m0 - x3 * h0), func(m0), func(m0 + x3 * h0),			func(m0 + beta * h0), func(m0 + x2 * h0), func(m0 + alpha * h0),			func(m + x1 * h0), func(upper_limit) };
+		Tf_in x3 = (Tf_in) 0.236383199662150;
+		Tf_in h0 = (upper_limit - lower_limit) / 2;
+		Tf_in m0 = (upper_limit + lower_limit) / 2;
+		std::array<R_Type, 13> y0 = { func(lower_limit),
+			func(m0 - x1 * h0), func(m0 - alpha * h0), func(m0 - x2 * h0),
+			func(m0 - beta * h0), func(m0 - x3 * h0), func(m0), func(m0 + x3 * h0),
+			func(m0 + beta * h0), func(m0 + x2 * h0), func(m0 + alpha * h0),
+			func(m + x1 * h0), func(upper_limit) };
 
 		R_Type fa(y0[0]), fb(y0[12]);
 		coarse = (h0 / 6) * (y0[0] + y0[12] + 5 * (y0[4] + y0[8]));
@@ -348,7 +355,8 @@ namespace HBTK {
 		if (err_coarse != 0.0 * R_Type()) R = err_fine / err_coarse;
 		if ((R > 0) && (R < 1)) tolerance = tolerance / R;
 		is = s * abs(is) * tolerance / HBTK::tolerance<R_Type>();
-		if (is == 0) is = upper_limit - lower_limit;
+		if (is == 0) is = upper_limit - lower_limit;
+
 		// And now onto the adaptive bit - adaptlobstp(...)
 
 		typedef struct stack_frame {

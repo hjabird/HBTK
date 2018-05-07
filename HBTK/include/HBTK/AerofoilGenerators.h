@@ -42,5 +42,8 @@ namespace HBTK {
 		// percent of chord.
 		AerofoilGeometry naca_four_digit(double thickness, double camber, double camber_position);
 		AerofoilGeometry naca_four_digit(std::string name);
+
+		// Generate the SD7003-il aerofoil. Why this specifically? Because I use it. Duh.
+		AerofoilGeometry sd7003(void);
 	}
 }

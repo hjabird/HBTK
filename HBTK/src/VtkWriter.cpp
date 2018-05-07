@@ -28,6 +28,8 @@ SOFTWARE.
 
 #include <algorithm>
 #include <cassert>
+#include <iomanip>
+#include <sstream>
 #include <stdexcept>
 #include <utility>
 
@@ -35,7 +37,8 @@ HBTK::Vtk::VtkWriter::VtkWriter()
 	: m_written_xml_header(false),
 	m_file_type(None),
 	ascii(false),
-	appended(true)
+	appended(true),
+	write_precision(6)
 {
 }
 
@@ -78,14 +81,15 @@ void HBTK::Vtk::VtkWriter::write_piece(std::ostream & stream, const VtkUnstructu
 
 void HBTK::Vtk::VtkWriter::close_file(std::ostream & stream)
 {
+	m_xml_writer.close_tag(stream); // Grid
 	if ((int) m_appended_data.size()) {
 		if (ascii) {
 			m_xml_writer.open_tag(stream, "AppendedData",
-				{ std::make_pair("encoding", "raw") });
+				{ std::make_pair("encoding", "ascii") });
 		}
 		else {
 			m_xml_writer.open_tag(stream, "AppendedData",
-				{ std::make_pair("encoding", "ascii") });
+				{ std::make_pair("encoding", "raw") });
 		}
 		stream << '_';
 		for (auto & s : m_appended_data) {
@@ -94,9 +98,8 @@ void HBTK::Vtk::VtkWriter::close_file(std::ostream & stream)
 			}
 		}
 		m_xml_writer.close_tag(stream);
-		m_xml_writer.close_tag(stream); // grid type.
-		m_xml_writer.close_tag(stream); // VTK file
 	}
+	m_xml_writer.close_tag(stream); // VTK file
 }
 
 void HBTK::Vtk::VtkWriter::xml_header(std::ostream & ostream)
@@ -110,6 +113,7 @@ void HBTK::Vtk::VtkWriter::vtk_unstructured_file_header(std::ostream & ostream)
 		{ std::make_pair("type", "UnstructuredGrid"),
 		std::make_pair("version", "0.1"),
 		std::make_pair("byte_order", "LittleEndian")});
+	m_xml_writer.open_tag(ostream, "UnstructuredGrid", {});
 }
 
 void HBTK::Vtk::VtkWriter::vtk_unstructed_grid_header(std::ostream & ostream)
@@ -143,13 +147,17 @@ void HBTK::Vtk::VtkWriter::vtk_unstructured_cells(std::ostream & ostream, const 
 
 	int offset_counter = 0;
 	for (int i = 0; i < (int)mesh.cells.size(); i++) {
-		scratch[i] = offset_counter;
 		offset_counter += (int)mesh.cells[i].node_ids.size();
+		scratch[i] = offset_counter;
 	}
 	vtk_data_array(ostream, "offsets", scratch);
 
-	scratch.empty();
-	for (auto & cell : mesh.cells)scratch.insert(scratch.begin(), cell.node_ids.begin(), cell.node_ids.end());
+	scratch.clear();
+	for (auto & cell : mesh.cells) {
+		for (auto & node : cell.node_ids) {
+			scratch.push_back(node);
+		}
+	}
 	vtk_data_array(ostream, "connectivity", scratch);
 
 	m_xml_writer.close_tag(ostream);
@@ -258,8 +266,10 @@ std::vector<unsigned char> HBTK::Vtk::VtkWriter::vtk_data_array_generate_buffer(
 	std::vector<unsigned char> buffer;
 	if (ascii) {
 		for (auto & sca : scalars) {
-			std::string str = std::to_string(sca);
-			for (char & c : str) {
+			std::ostringstream out;
+			out << std::setprecision(write_precision) << sca;
+			std::string c_str = out.str();
+			for (char & c : c_str) {
 				buffer.push_back(c);
 			}
 			buffer.push_back('\n');
@@ -284,8 +294,10 @@ std::vector<unsigned char> HBTK::Vtk::VtkWriter::vtk_data_array_generate_buffer(
 	std::vector<unsigned char> buffer;
 	if (ascii) {
 		for (auto & sca : integers) {
-			std::string str = std::to_string(sca);
-			for (char & c : str) {
+			std::ostringstream out;
+			out << std::setprecision(write_precision) << sca;
+			std::string c_str = out.str();
+			for (char & c : c_str) {
 				buffer.push_back(c);
 			}
 			buffer.push_back('\n');
@@ -312,8 +324,10 @@ std::vector<unsigned char> HBTK::Vtk::VtkWriter::vtk_data_array_generate_buffer(
 	if (ascii) {
 		for (auto & vect : vectors) {
 			for (const double & doub : vect.as_array()) {
-				std::string str = std::to_string(doub);
-				for (char & c : str) {
+				std::ostringstream out;
+				out << std::setprecision(write_precision) << doub;
+				std::string c_str = out.str();
+				for (char & c : c_str) {
 					buffer.push_back(c);
 				}
 				buffer.push_back(' ');
@@ -341,8 +355,10 @@ std::vector<unsigned char> HBTK::Vtk::VtkWriter::vtk_data_array_generate_buffer(
 	if (ascii) {
 		for (auto & pnt : pnts) {
 			for (const double & doub : pnt.as_array()) {
-				std::string str = std::to_string(doub);
-				for (char & c : str) {
+				std::ostringstream out;
+				out << std::setprecision(write_precision) << doub;
+				std::string c_str = out.str();
+				for (char & c : c_str) {
 					buffer.push_back(c);
 				}
 				buffer.push_back(' ');
@@ -367,6 +383,7 @@ std::vector<unsigned char> HBTK::Vtk::VtkWriter::vtk_data_array_generate_buffer(
 std::vector<std::pair<std::string, std::string>> HBTK::Vtk::VtkWriter::vtk_data_array_format_options() const
 {
 	if (appended) {
+		if (ascii) throw; // Needs to be binary?
 		return { std::make_pair("Format", "appended"),
 			std::make_pair("Offset", std::to_string(appended_data_bytelength())) };
 	}
@@ -375,6 +392,7 @@ std::vector<std::pair<std::string, std::string>> HBTK::Vtk::VtkWriter::vtk_data_
 			return { std::make_pair("Format", "ascii") };
 		}
 		else {
+			throw; // Need base64 encoding!
 			return { std::make_pair("Format", "binary") };
 		}
 	}
@@ -384,7 +402,7 @@ int HBTK::Vtk::VtkWriter::appended_data_bytelength() const
 {
 	int acc = 0;
 	for (auto & arr : m_appended_data) {
-		acc += (int)m_appended_data.size();
+		acc += (int)arr.size();
 	}
 	return acc;
 }
