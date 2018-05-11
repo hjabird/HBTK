@@ -33,6 +33,8 @@ SOFTWARE.
 #include <stdexcept>
 #include <utility>
 
+#include "Base64.h"
+
 HBTK::Vtk::VtkWriter::VtkWriter()
 	: m_written_xml_header(false),
 	m_file_type(None),
@@ -89,7 +91,7 @@ void HBTK::Vtk::VtkWriter::close_file(std::ostream & stream)
 		}
 		else {
 			m_xml_writer.open_tag(stream, "AppendedData",
-				{ std::make_pair("encoding", "raw") });
+				{ std::make_pair("encoding", "base64") });
 		}
 		stream << '_';
 		for (auto & s : m_appended_data) {
@@ -111,8 +113,9 @@ void HBTK::Vtk::VtkWriter::vtk_unstructured_file_header(std::ostream & ostream)
 {
 	m_xml_writer.open_tag(ostream, "VTKFile",
 		{ std::make_pair("type", "UnstructuredGrid"),
-		std::make_pair("version", "0.1"),
-		std::make_pair("byte_order", "LittleEndian")});
+		std::make_pair("version", "1.0"),
+		std::make_pair("byte_order", "LittleEndian"),
+		std::make_pair("header_type", "UInt64")});
 	m_xml_writer.open_tag(ostream, "UnstructuredGrid", {});
 }
 
@@ -276,12 +279,15 @@ std::vector<unsigned char> HBTK::Vtk::VtkWriter::vtk_data_array_generate_buffer(
 		}
 	}
 	else {
-		buffer.resize(sizeof(double) * scalars.size());
+		buffer.resize(sizeof(double) * scalars.size() + sizeof(uint64_t));
+		*(uint64_t*)(&buffer[0]) = sizeof(double) * scalars.size();
 		for (int i = 0; i < (int)scalars.size(); i++) {
 			const unsigned char* bytes = reinterpret_cast<const unsigned char*>(&scalars[i]);
 			// Watch me carfully!
-			std::copy_n(bytes, (int) sizeof(double), &buffer[i * sizeof(double)]);
+			std::copy_n(bytes, (int) sizeof(double), &buffer[i * sizeof(double) + sizeof(uint64_t)]);
 		}
+		std::string str_buffer = HBTK::encode_base64(&*buffer.begin(), (int)buffer.size());
+		buffer = std::vector<unsigned char>(str_buffer.begin(), str_buffer.end());
 	}
 	if (appended) {
 		m_appended_data.push_back(buffer);
@@ -304,13 +310,16 @@ std::vector<unsigned char> HBTK::Vtk::VtkWriter::vtk_data_array_generate_buffer(
 		}
 	}
 	else {
-		buffer.resize(sizeof(int64_t) * integers.size());
+		buffer.resize(sizeof(int64_t) * integers.size() + sizeof(uint64_t));
+		*(uint64_t*)(&buffer[0]) = sizeof(double) * integers.size();
 		for (int i = 0; i < (int64_t)integers.size(); i++) {
 			int64_t tmp = integers[i];
 			const unsigned char* bytes = reinterpret_cast<const unsigned char*>(&tmp);
 			// Watch me carfully!
-			std::copy_n(bytes, (int) sizeof(int64_t), &buffer[i * sizeof(double)]);
+			std::copy_n(bytes, (int) sizeof(int64_t), &buffer[i * sizeof(int64_t) + sizeof(uint64_t)]);
 		}
+		std::string str_buffer = HBTK::encode_base64(&*buffer.begin(), (int)buffer.size());
+		buffer = std::vector<unsigned char>(str_buffer.begin(), str_buffer.end());
 	}
 	if (appended) {
 		m_appended_data.emplace_back(buffer);
@@ -336,12 +345,18 @@ std::vector<unsigned char> HBTK::Vtk::VtkWriter::vtk_data_array_generate_buffer(
 		}
 	}
 	else {
-		buffer.resize(sizeof(double) * vectors.size());
+		buffer.resize(sizeof(double) * vectors.size() * 3 + sizeof(uint64_t));
+		*(uint64_t*)(&buffer[0]) = sizeof(double) * vectors.size() * 3;
 		for (int i = 0; i < (double)vectors.size(); i++) {
-			const unsigned char* bytes = reinterpret_cast<const unsigned char*>(&vectors[i]);
-			// Watch me carfully!
-			std::copy_n(bytes, (int) sizeof(double), &buffer[i * sizeof(double)]);
+			HBTK::CartesianVector3D vec = vectors[i];
+			for (int j = 0; j < 3; j++) {
+				double a = vec.as_array()[j];
+				const unsigned char* bytes = reinterpret_cast<const unsigned char*>(&a);
+				std::copy_n(bytes, (int) sizeof(double), &buffer[(3 * i + j) * sizeof(double) + sizeof(uint64_t)]);
+			}
 		}
+		std::string str_buffer = HBTK::encode_base64(&*buffer.begin(), (int)buffer.size());
+		buffer = std::vector<unsigned char>(str_buffer.begin(), str_buffer.end());
 	}
 	if (appended) {
 		m_appended_data.emplace_back(buffer);
@@ -367,12 +382,18 @@ std::vector<unsigned char> HBTK::Vtk::VtkWriter::vtk_data_array_generate_buffer(
 		}
 	}
 	else {
-		buffer.resize(sizeof(double) * pnts.size());
+		buffer.resize(sizeof(double) * pnts.size() * 3 + sizeof(uint64_t));
+		*(uint64_t*)(&buffer[0]) = sizeof(double) * pnts.size() * 3;
 		for (int i = 0; i < (double)pnts.size(); i++) {
-			const unsigned char* bytes = reinterpret_cast<const unsigned char*>(&pnts[i]);
-			// Watch me carfully!
-			std::copy_n(bytes, (int) sizeof(double), &buffer[i * sizeof(double)]);
+			HBTK::CartesianPoint3D pnt = pnts[i];
+			for (int j = 0; j < 3; j++) {
+				double a = pnt.as_array()[j];
+				const unsigned char* bytes = reinterpret_cast<const unsigned char*>(&a);
+				std::copy_n(bytes, (int) sizeof(double), &buffer[(3 * i + j) * sizeof(double) + sizeof(uint64_t)]);
+			}
 		}
+		std::string str_buffer = HBTK::encode_base64(&*buffer.begin(), (int)buffer.size());
+		buffer = std::vector<unsigned char>(str_buffer.begin(), str_buffer.end());
 	}
 	if (appended) {
 		m_appended_data.emplace_back(buffer);
@@ -384,16 +405,15 @@ std::vector<std::pair<std::string, std::string>> HBTK::Vtk::VtkWriter::vtk_data_
 {
 	if (appended) {
 		if (ascii) throw; // Needs to be binary?
-		return { std::make_pair("Format", "appended"),
+		return { std::make_pair("format", "appended"),
 			std::make_pair("Offset", std::to_string(appended_data_bytelength())) };
 	}
 	else {
 		if (ascii) {
-			return { std::make_pair("Format", "ascii") };
+			return { std::make_pair("format", "ascii") };
 		}
 		else {
-			throw; // Need base64 encoding!
-			return { std::make_pair("Format", "binary") };
+			return { std::make_pair("format", "binary") };
 		}
 	}
 }

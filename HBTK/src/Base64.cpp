@@ -32,37 +32,41 @@ std::string HBTK::encode_base64(unsigned char * data, int n_bytes)
 {
 	assert(data);
 	const std::string conversion = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		"abcdefghijklmnopqrstuvwxzy"
+		"abcdefghijklmnopqrstuvwxyz"
 		"0123456789+/";
-	const uint16_t mask_c1 = 0xFC00;
-	const uint16_t mask_c2 = 0x03F0;
-	const uint16_t mask_c3 = 0x0FC0;
-	const uint16_t mask_c4 = 0x003F;
+	const uint8_t mask_c1 = 0xFC; //->2
+	const uint8_t mask_c21 = 0x03; //-<4
+	const uint8_t mask_c22 = 0xF0; //->4
+	const uint8_t mask_c31 = 0x0F; //<-2
+	const uint8_t mask_c32 = 0xC0; //->6
+	const uint8_t mask_c4 = 0x3F; //0 
 	std::string output;
 
 	unsigned char* window;
 	char scratch[5];
 	scratch[4] = '\0';
-	int position;
 	int windows = n_bytes / 3;
 	for (int i = 0; i < windows; i++) {
 		window = (data + 3 * i);
-		scratch[0] = conversion[(mask_c1 & *(uint16_t*)window) >> 10];
-		scratch[1] = conversion[(mask_c2 & *(uint16_t*)window) >> 4];
-		scratch[2] = conversion[(mask_c3 & *(uint16_t*)(window + 1)) >> 6];
-		scratch[3] = conversion[(mask_c4 & *(uint16_t*)(window + 1))];
+		scratch[0] = conversion[(mask_c1 & *(uint8_t*)window) >> 2];
+		scratch[1] = conversion[((mask_c21 & *(uint8_t*)window) << 4) +
+			((mask_c22 & *(uint8_t*) (window + 1)) >> 4)];
+		scratch[2] = conversion[((mask_c31 & *(uint8_t*)(window + 1)) << 2) +
+			((mask_c32 & *(uint8_t*)(window + 2)) >> 6)];
+		scratch[3] = conversion[(mask_c4 & *(uint8_t*)(window + 2))];
 		output.append(scratch);
 	}
-	if (windows % 3 == 1) {
-		scratch[0] = conversion[(0xFC & *(uint8_t*)windows) >> 2];
-		scratch[1] = conversion[(0x03 & *(uint8_t*)windows) << 4];
+	if (n_bytes % 3 == 1) {
+		scratch[0] = conversion[(mask_c1 & *(uint8_t*)window) >> 2];
+		scratch[1] = conversion[(mask_c21 & *(uint8_t*)window) << 4];
 		scratch[2] = scratch[3] = '=';
 		output.append(scratch);
 	}
-	if (windows % 3 == 2) {
-		scratch[0] = conversion[(mask_c1 & *(uint16_t*)windows) >> 10];
-		scratch[1] = conversion[(mask_c2 & *(uint16_t*)windows) >> 4];
-		scratch[2] = conversion[(0x000F & *(uint16_t*)windows) << 2];
+	if (n_bytes % 3 == 2) {
+		scratch[0] = conversion[(mask_c1 & *(uint8_t*)window) >> 2];
+		scratch[1] = conversion[((mask_c21 & *(uint8_t*)window) << 4) +
+			((mask_c22 & *(uint8_t*)(window + 1)) >> 4)];
+		scratch[2] = conversion[(0x0F & *(uint8_t*)(window + 1)) << 2];
 		scratch[3] = '=';
 		output.append(scratch);
 	}
@@ -74,16 +78,16 @@ std::vector<unsigned char> HBTK::decode_base64(const std::string & data)
 	const std::string conversion = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 		"abcdefghijklmnopqrstuvwxzy"
 		"0123456789+/";
-	int bytes = ceil(data.size() / 4);
+	int bytes = (int)ceil(data.size() / 4.0);
 	if (data.back() == '=') bytes -= 1;
-	if (data.[data.size() - 2] == '=') bytes -= 1;
+	if (data[data.size() - 2] == '=') bytes -= 1;
 	bytes -= 4 - ((int)data.size() % 4);
 
 	std::vector<unsigned char> output(bytes);
 	uint8_t scratch;
 	unsigned char c1, c2, c3, c4;
 	
-	for (int i = 0; i < data.size(); i += 4) {
+	for (int i = 0; i < (int) data.size(); i += 4) {
 		c1 = data[i];
 		c2 = data[i + 1];
 		if ((data.size() % 4) < 2) c3 = data[i + 2];
