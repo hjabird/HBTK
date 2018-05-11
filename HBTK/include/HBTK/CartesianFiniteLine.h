@@ -55,6 +55,9 @@ namespace HBTK {
 		CartesianVector3D vector() const;
 		CartesianPoint3D midpoint() const;
 
+		// length of the line
+		double magnitude() const;
+
 		// Distance between this line and a point.
 		double distance(const CartesianPoint3D & other);
 		double distance(const CartesianFiniteLine3D & other);
@@ -93,6 +96,9 @@ namespace HBTK {
 		// Returns a vector of direction and length of the line:
 		CartesianVector2D vector() const;
 		CartesianPoint2D midpoint() const;
+
+		// length of the line
+		double magnitude() const;
 
 		bool operator==(const CartesianFiniteLine2D & other) const;
 		bool operator!=(const CartesianFiniteLine2D & other) const;

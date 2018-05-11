@@ -76,7 +76,7 @@ std::string HBTK::encode_base64(unsigned char * data, int n_bytes)
 std::vector<unsigned char> HBTK::decode_base64(const std::string & data)
 {
 	const std::string conversion = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		"abcdefghijklmnopqrstuvwxzy"
+		"abcdefghijklmnopqrstuvwxyz"
 		"0123456789+/";
 	int bytes = (int)ceil(data.size() / 4.0);
 	if (data.back() == '=') bytes -= 1;
