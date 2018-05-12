@@ -1,114 +1,94 @@
 
 
-#include <HBTK\GaussianQuadrature.h>
-#include <HBTK\Tolerances.h>
+#include <HBTK/GaussianQuadrature.h>
+#include <HBTK/Tolerances.h>
 
-#include <gtest\gtest.h>
+#include <catch.hpp>
 
 #include <vector>
 #include <array>
 #include <chrono>
 
 
-TEST(GaussLegendre, Vect2)
+TEST_CASE("Gauss Legendre quadratures generation")
 {
 	std::vector<double> points, weights;
 	points.resize(2);
 	weights.resize(2);
-	HBTK::gauss_legendre<double>(2, points, weights);
 
-	ASSERT_NEAR(1.0, weights[0], HBTK::tolerance<double>());
-	ASSERT_NEAR(1.0, weights[1], HBTK::tolerance<double>());
-	ASSERT_TRUE(points[0] == -points[1]);
+	SECTION("Basic 2 point generation in preallocated std::vector<>") {
+		HBTK::gauss_legendre<double>(2, points, weights);
+		REQUIRE(1.0 == Approx(weights[0]));
+		REQUIRE(1.0 == Approx(weights[1]));
+		REQUIRE(points[0] == -points[1]);
+	}
+
+	SECTION("Basic 2 point generation in returned std::vector<>") {
+		auto quad = HBTK::gauss_legendre(2);
+		points = quad.get_quadrature().first;
+		weights = quad.get_quadrature().second;
+		REQUIRE(1.0 == Approx(weights[0]));
+		REQUIRE(1.0 == Approx(weights[1]));
+		REQUIRE(points[0] == -points[1]);
+	}
+
+	SECTION("7 points generation to std::vector<double>.") {
+		points.resize(7);
+		weights.resize(7);
+		HBTK::gauss_legendre<double, std::vector<double>>(7, points, weights);
+		REQUIRE(0.417959183673469 == Approx(weights[3]));
+		REQUIRE(0.381830050505119 == Approx(weights[2]));
+		REQUIRE(0.279705391489277 == Approx(weights[1]));
+		REQUIRE(0.129484966168870 == Approx(weights[0]));
+		REQUIRE(weights[2] == Approx(weights[4]));
+		REQUIRE(weights[1] == Approx(weights[5]));
+		REQUIRE(weights[0] == Approx(weights[6]));
+		REQUIRE(0.0 == Approx(points[3]));
+		REQUIRE(0.405845151377397 == Approx(points[2]));
+		REQUIRE(0.741531185599394 == Approx(points[1]));
+		REQUIRE(0.949107912342759 == Approx(points[0]));
+		REQUIRE(points[0] == Approx(-points[6]));
+		REQUIRE(points[1] == Approx(-points[5]));
+		REQUIRE(points[2] == Approx(-points[4]));
+	}
+
+	SECTION("7 point generation to std::vector<float>.")
+	{
+		std::vector<float> points, weights;
+		points.resize(7);
+		weights.resize(7);
+		HBTK::gauss_legendre<float, std::vector<float>>(7, points, weights);
+
+		REQUIRE((float) 0.417959183673469 == Approx(weights[3]));
+		REQUIRE((float) 0.381830050505119 == Approx(weights[2]));
+		REQUIRE((float) 0.279705391489277 == Approx(weights[1]));
+		REQUIRE((float) 0.129484966168870 == Approx(weights[0]));
+		REQUIRE((float) weights[2] == Approx(weights[4]));
+		REQUIRE(weights[1] == Approx(weights[5]));
+		REQUIRE(weights[0] == Approx(weights[6]));
+		REQUIRE((float) 0.0 == Approx(points[3]).margin(1e-10));
+		REQUIRE((float) 0.405845151377397 == Approx(points[2]));
+		REQUIRE((float) 0.741531185599394 == Approx(points[1]));
+		REQUIRE((float) 0.949107912342759 == Approx(points[0]));
+		REQUIRE(points[0] == Approx(-points[6]));
+		REQUIRE(points[1] == Approx(-points[5]));
+		REQUIRE(points[2] == Approx(-points[4]));
+	}
+
 }
 
-TEST(GaussLegendre, VectNoPreallocated)
-{
-	auto quad = HBTK::gauss_legendre(2);
-	auto points = quad.get_quadrature().first;
-	auto weights = quad.get_quadrature().second;
 
-	ASSERT_NEAR(1.0, weights[0], HBTK::tolerance<double>());
-	ASSERT_NEAR(1.0, weights[1], HBTK::tolerance<double>());
-	ASSERT_TRUE(points[0] == -points[1]);
-}
-
-TEST(GaussLegendre, Vect7)
-{
-	std::vector<double> points, weights;
-	points.resize(7);
-	weights.resize(7);
-	HBTK::gauss_legendre<double, std::vector<double>>(7, points, weights);
-
-	ASSERT_NEAR(0.417959183673469, weights[3], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.381830050505119, weights[2], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.279705391489277, weights[1], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.129484966168870, weights[0], HBTK::tolerance<double>());
-	ASSERT_NEAR(weights[2], weights[4], HBTK::tolerance<double>());
-	ASSERT_NEAR(weights[1], weights[5], HBTK::tolerance<double>());
-	ASSERT_NEAR(weights[0], weights[6], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.0, points[3], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.405845151377397, points[2], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.741531185599394, points[1], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.949107912342759, points[0], HBTK::tolerance<double>());
-	ASSERT_NEAR(points[0], -points[6], HBTK::tolerance<double>());
-	ASSERT_NEAR(points[1], -points[5], HBTK::tolerance<double>());
-	ASSERT_NEAR(points[2], -points[4], HBTK::tolerance<double>());
-}
-
-TEST(GaussLegendre, VectFloat7)
-{
-	std::vector<float> points, weights;
-	points.resize(7);
-	weights.resize(7);
-	HBTK::gauss_legendre<float, std::vector<float>>(7, points, weights);
-
-	ASSERT_NEAR((float) 0.417959183673469,  weights[3], HBTK::tolerance<float>());
-	ASSERT_NEAR((float) 0.381830050505119, weights[2], HBTK::tolerance<float>());
-	ASSERT_NEAR((float) 0.279705391489277, weights[1], (float)1.3*HBTK::tolerance<float>());
-	ASSERT_NEAR((float) 0.129484966168870, weights[0], HBTK::tolerance<float>());
-	ASSERT_NEAR((float) weights[2], weights[4], HBTK::tolerance<float>());
-	ASSERT_NEAR(weights[1], weights[5], HBTK::tolerance<float>());
-	ASSERT_NEAR(weights[0], weights[6], HBTK::tolerance<float>());
-	ASSERT_NEAR((float) 0.0, points[3], HBTK::tolerance<float>());
-	ASSERT_NEAR((float) 0.405845151377397, points[2], HBTK::tolerance<float>());
-	ASSERT_NEAR((float) 0.741531185599394, points[1], HBTK::tolerance<float>());
-	ASSERT_NEAR((float) 0.949107912342759, points[0], HBTK::tolerance<float>());
-	ASSERT_NEAR(points[0], -points[6], HBTK::tolerance<float>());
-	ASSERT_NEAR(points[1], -points[5], HBTK::tolerance<float>());
-	ASSERT_NEAR(points[2], -points[4], HBTK::tolerance<float>());
-}
-
-TEST(GaussLegendre, Array100)
-{
-	// Should compute at compile time. Manual text by setting breakpoint in Gausslengendre
-	std::array<double, 100> p, w;
-	HBTK::gauss_legendre<100, double>(p, w);
-}
-
-TEST(GaussLaguerre, NameHere)
+TEST_CASE("Gauss Laguerre quadrature generation")
 {
 	auto quad = HBTK::gauss_laguerre(3);
 	auto points = quad.get_quadrature().first;
 	auto weights = quad.get_quadrature().second;
-
-	ASSERT_NEAR(0.417959183673469, weights[3], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.381830050505119, weights[2], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.279705391489277, weights[1], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.129484966168870, weights[0], HBTK::tolerance<double>());
-	ASSERT_NEAR(weights[2], weights[4], HBTK::tolerance<double>());
-	ASSERT_NEAR(weights[1], weights[5], HBTK::tolerance<double>());
-	ASSERT_NEAR(weights[0], weights[6], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.0, points[3], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.405845151377397, points[2], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.741531185599394, points[1], HBTK::tolerance<double>());
-	ASSERT_NEAR(0.949107912342759, points[0], HBTK::tolerance<double>());
-	ASSERT_NEAR(points[0], -points[6], HBTK::tolerance<double>());
-	ASSERT_NEAR(points[1], -points[5], HBTK::tolerance<double>());
-	ASSERT_NEAR(points[2], -points[4], HBTK::tolerance<double>());
-}
-
-int main(int argc, char* argv[]) {
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
+	SECTION("3 point Gauss laguere quadrature generation.") {
+		REQUIRE(0.711093 == Approx(weights[0]));
+		REQUIRE(0.278518 == Approx(weights[1]));
+		REQUIRE(0.0103893 == Approx(weights[2]));
+		REQUIRE(0.415775 == Approx(points[0]));
+		REQUIRE(2.29428 == Approx(points[1]));
+		REQUIRE(6.28995 == Approx(points[2]));
+	}
 }

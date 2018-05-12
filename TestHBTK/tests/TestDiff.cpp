@@ -1,66 +1,71 @@
-#include "stdafx.h"
-#include "CppUnitTest.h"
 
-#include "../HBTK/NumericalDifferentiation.h"
+#include <HBTK/NumericalDifferentiation.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+#include <catch.hpp>
 
-namespace TestHBTK
+TEST_CASE("First derivative numerical")
 {
-	TEST_CLASS(Test_GaussLegendre)
-	{
-	public:
+	SECTION("Linear function") {
+		auto linear_func = [](double x)->double { 
+			return 3 * x; 
+		};
 
-		TEST_METHOD(First_order_diff)
-		{
-			auto linear_func = [](double x)->double { return 3*x; };
-			auto quad_func = [](double x)->double { return 3 * x + 2. * x*x + 1.; };
+		REQUIRE(3. == Approx(HBTK::central_difference_O1A2(linear_func, 0.))); //1e-7
+		REQUIRE(3. == Approx(HBTK::central_difference_O1A4(linear_func, 0.)));
+		REQUIRE(3. == Approx(HBTK::central_difference_O1A6(linear_func, 0.)));
+		REQUIRE(3. == Approx(HBTK::central_difference_O1A2(linear_func, 10.))); //1e-6
+		REQUIRE(3. == Approx(HBTK::central_difference_O1A4(linear_func, 10.)));
+		REQUIRE(3. == Approx(HBTK::central_difference_O1A6(linear_func, 10.)));
+	}
 
-			Assert::AreEqual(3., HBTK::central_difference_O1A2(linear_func, 0.), 1e-7, L"Linear O1A2 at 0");
-			Assert::AreEqual(3., HBTK::central_difference_O1A4(linear_func, 0.), 1e-7, L"Linear O1A4 at 0");
-			Assert::AreEqual(3., HBTK::central_difference_O1A6(linear_func, 0.), 1e-7, L"Linear O1A6 at 0");
-			Assert::AreEqual(3., HBTK::central_difference_O1A2(linear_func, 10.), 1e-6, L"Linear O1A2 at 10");
-			Assert::AreEqual(3., HBTK::central_difference_O1A4(linear_func, 10.), 1e-6, L"Linear O1A4 at 10");
-			Assert::AreEqual(3., HBTK::central_difference_O1A6(linear_func, 10.), 1e-6, L"Linear O1A6 at 10");
-
-
-			Assert::AreEqual(3., HBTK::central_difference_O1A2(quad_func, 0.), 1e-6, L"Quad O1A2 at 0");
-			Assert::AreEqual(3., HBTK::central_difference_O1A4(quad_func, 0.), 1e-6, L"Quad O1A4 at 0");
-			Assert::AreEqual(3., HBTK::central_difference_O1A6(quad_func, 0.), 1e-6, L"Quad O1A6 at 0");
-			Assert::AreEqual(43., HBTK::central_difference_O1A2(quad_func, 10.), 1e-5, L"Quad O1A2 at 10");
-			Assert::AreEqual(43., HBTK::central_difference_O1A4(quad_func, 10.), 1e-5, L"Quad O1A4 at 10");
-			Assert::AreEqual(43., HBTK::central_difference_O1A6(quad_func, 10.), 1e-5, L"Quad O1A6 at 10");
-		}
-		
-		TEST_METHOD(Second_order_diff)
-		{
-			auto linear_func = [](double x)->double { return 3 * x; };
-			auto quad_func = [](double x)->double { return 3. * x + 2. * x*x + 1.; };
-			auto cubic_func = [](double x)->double { return 3. * x + 2. * x*x + 1. + x*x*x; };
-
-			Assert::AreEqual(0., HBTK::central_difference_O2A2(linear_func, 0.), 1e-7, L"Linear O2A2 at 0");
-			Assert::AreEqual(0., HBTK::central_difference_O2A4(linear_func, 0.), 1e-7, L"Linear O2A4 at 0");
-			Assert::AreEqual(0., HBTK::central_difference_O2A6(linear_func, 0.), 1e-7, L"Linear O2A6 at 0");
-			Assert::AreEqual(0., HBTK::central_difference_O2A2(linear_func, 10.), 1e-6, L"Linear O2A2 at 10");
-			Assert::AreEqual(0., HBTK::central_difference_O2A4(linear_func, 10.), 1e-6, L"Linear O2A4 at 10");
-			Assert::AreEqual(0., HBTK::central_difference_O2A6(linear_func, 10.), 1e-6, L"Linear O2A6 at 10");
-
-			
-			Assert::AreEqual(4., HBTK::central_difference_O2A2(cubic_func, 0.), 1e-6, L"cubic O2A2 at 0");
-			Assert::AreEqual(4., HBTK::central_difference_O2A4(cubic_func, 0.), 1e-6, L"cubic O2A4 at 0");
-			Assert::AreEqual(4., HBTK::central_difference_O2A6(cubic_func, 0.), 1e-6, L"cubic O2A6 at 0");
-			Assert::AreEqual(64., HBTK::central_difference_O2A2(cubic_func, 10.), 1e-5, L"cubic O2A2 at 10");
-			Assert::AreEqual(64., HBTK::central_difference_O2A4(cubic_func, 10.), 1e-5, L"cubic O2A4 at 10");
-			Assert::AreEqual(64., HBTK::central_difference_O2A6(cubic_func, 10.), 1e-5, L"cubic O2A6 at 10");
-			
-
-			Assert::AreEqual(4., HBTK::central_difference_O2A2(quad_func, 0.), 1e-6, L"Quad O2A2 at 0");
-			Assert::AreEqual(4., HBTK::central_difference_O2A4(quad_func, 0.), 1e-6, L"Quad O2A4 at 0");
-			Assert::AreEqual(4., HBTK::central_difference_O2A6(quad_func, 0.), 1e-6, L"Quad O2A6 at 0");
-			Assert::AreEqual(4., HBTK::central_difference_O2A2(quad_func, 10.), 1e-5, L"Quad O2A2 at 10");
-			Assert::AreEqual(4., HBTK::central_difference_O2A4(quad_func, 10.), 1e-5, L"Quad O2A4 at 10");
-			Assert::AreEqual(4., HBTK::central_difference_O2A6(quad_func, 10.), 1e-5, L"Quad O2A6 at 10");
-		}
-		
-	};
+	SECTION("Quadratic function") {
+		auto quad_func = [](double x)->double {
+			return 3 * x + 2. * x * x + 1.;
+		};
+		REQUIRE(3. == Approx(HBTK::central_difference_O1A2(quad_func, 0.)));//-6
+		REQUIRE(3. == Approx(HBTK::central_difference_O1A4(quad_func, 0.)));
+		REQUIRE(3. == Approx(HBTK::central_difference_O1A6(quad_func, 0.)));
+		REQUIRE(43. == Approx(HBTK::central_difference_O1A2(quad_func, 10.)));//-5
+		REQUIRE(43. == Approx(HBTK::central_difference_O1A4(quad_func, 10.)));
+		REQUIRE(43. == Approx(HBTK::central_difference_O1A6(quad_func, 10.)));
+	}
 }
+		
+TEST_CASE("Second derivative numerical.")
+{
+	SECTION("Linear function") {
+		auto linear_func = [](double x)->double { 
+			return 3 * x; 
+		};
+		REQUIRE(0. == Approx(HBTK::central_difference_O2A2(linear_func, 0.)).margin(1e-7)); //-7
+		REQUIRE(0. == Approx(HBTK::central_difference_O2A4(linear_func, 0.)).margin(1e-7));
+		REQUIRE(0. == Approx(HBTK::central_difference_O2A6(linear_func, 0.)).margin(1e-7));
+		REQUIRE(0. == Approx(HBTK::central_difference_O2A2(linear_func, 10.)).margin(1e-6));//-6
+		REQUIRE(0. == Approx(HBTK::central_difference_O2A4(linear_func, 10.)).margin(1e-6));
+		REQUIRE(0. == Approx(HBTK::central_difference_O2A6(linear_func, 10.)).margin(1e-6));
+	}
+	
+	SECTION("Quadratic function") {
+		auto quad_func = [](double x)->double {
+			return 3. * x + 2. * x * x + 1.; 
+		};
+		REQUIRE(4. == Approx(HBTK::central_difference_O2A2(quad_func, 0.)));//-6
+		REQUIRE(4. == Approx(HBTK::central_difference_O2A4(quad_func, 0.)));
+		REQUIRE(4. == Approx(HBTK::central_difference_O2A6(quad_func, 0.)));
+		REQUIRE(4. == Approx(HBTK::central_difference_O2A2(quad_func, 10.)));//-5
+		REQUIRE(4. == Approx(HBTK::central_difference_O2A4(quad_func, 10.)));
+		REQUIRE(4. == Approx(HBTK::central_difference_O2A6(quad_func, 10.)));
+	}
+
+	SECTION("Cubic function") {
+		auto cubic_func = [](double x)->double { 
+			return 3. * x + 2. * x * x + 1. + x * x * x; 
+		};
+		REQUIRE(4. == Approx(HBTK::central_difference_O2A2(cubic_func, 0.))); //-6
+		REQUIRE(4. == Approx(HBTK::central_difference_O2A4(cubic_func, 0.)));
+		REQUIRE(4. == Approx(HBTK::central_difference_O2A6(cubic_func, 0.)));
+		REQUIRE(64. == Approx(HBTK::central_difference_O2A2(cubic_func, 10.))); //-5
+		REQUIRE(64. == Approx(HBTK::central_difference_O2A4(cubic_func, 10.)));
+		REQUIRE(64. == Approx(HBTK::central_difference_O2A6(cubic_func, 10.)));
+	}		
+};
