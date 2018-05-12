@@ -56,10 +56,12 @@ std::string HBTK::encode_base64(unsigned char * data, int n_bytes)
 		scratch[3] = conversion[(mask_c4 & *(uint8_t*)(window + 2))];
 		output.append(scratch);
 	}
+	window = data + windows * 3;
 	if (n_bytes % 3 == 1) {
 		scratch[0] = conversion[(mask_c1 & *(uint8_t*)window) >> 2];
 		scratch[1] = conversion[(mask_c21 & *(uint8_t*)window) << 4];
-		scratch[2] = scratch[3] = '=';
+		scratch[2] = '=';
+		scratch[3] = '=';
 		output.append(scratch);
 	}
 	if (n_bytes % 3 == 2) {
@@ -78,27 +80,30 @@ std::vector<unsigned char> HBTK::decode_base64(const std::string & data)
 	const std::string conversion = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 		"abcdefghijklmnopqrstuvwxyz"
 		"0123456789+/";
-	int bytes = (int)ceil(data.size() / 4.0);
-	if (data.back() == '=') bytes -= 1;
-	if (data[data.size() - 2] == '=') bytes -= 1;
-	bytes -= 4 - ((int)data.size() % 4);
+	int bytes = 3 * (int)ceil(data.size() / 4.0);
+	int ending_equals = 0;
+	if (data.size() && data.back() == '=') ending_equals += 1;
+	if (data.size() > 1 && data[data.size() - 2] == '=') ending_equals += 1;
+	bytes -= (int)data.size() % 4 + ending_equals;
 
 	std::vector<unsigned char> output(bytes);
-	uint8_t scratch;
 	unsigned char c1, c2, c3, c4;
 	
-	for (int i = 0; i < (int) data.size(); i += 4) {
+	int end_bytes = data.size() % 4;	// Theoretically == 0
+	int bytes_pos = 0;
+	for (int i = 0; i < (int) data.size() - ending_equals; i += 4) {
 		c1 = data[i];
 		c2 = data[i + 1];
-		if ((data.size() % 4) < 2) c3 = data[i + 2];
-		if ((data.size() % 4) < 3) c4 = data[i + 3];
-		output[i] = ((uint8_t)conversion.find(c1) << 2) | ((uint8_t)conversion.find(c2) >> 4);
+		if (end_bytes == 0 || end_bytes >= 2) c3 = data[i + 2];
+		if (end_bytes == 0 || end_bytes == 3) c4 = data[i + 3];
+		output[bytes_pos] = ((uint8_t)conversion.find(c1) << 2) | ((uint8_t)conversion.find(c2) >> 4);
 		if ((data.size() % 4) < 2 && (c3 != '=')) {
-			output[i + 1] = ((uint8_t)conversion.find(c2) << 4) | ((uint8_t)conversion.find(c3) >> 2);
+			output[bytes_pos + 1] = ((uint8_t)conversion.find(c2) << 4) | ((uint8_t)conversion.find(c3) >> 2);
 		}		
 		if ((data.size() % 4) < 3 && (c4 != '=')) {
-			output[i + 1] = ((uint8_t)conversion.find(c3) << 4) | ((uint8_t)conversion.find(c4));
+			output[bytes_pos + 2] = ((uint8_t)conversion.find(c3) << 6) | ((uint8_t)conversion.find(c4));
 		}
+		bytes_pos += 3;
 	}
 	
 	return output;
