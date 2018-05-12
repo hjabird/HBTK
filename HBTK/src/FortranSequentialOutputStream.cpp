@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "FortranSequentialOutputStream.h"
 /*////////////////////////////////////////////////////////////////////////////
 FortranSequentialInputStream.cpp
