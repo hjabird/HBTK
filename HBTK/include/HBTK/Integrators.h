@@ -216,7 +216,7 @@ namespace HBTK {
 	/// \param lower_limit the lower limit of integration.
 	/// \param upper_limit the upper limit of integration.
 	///
-	/// \brief Evaluate an integral using an adaptive Simpson'srule method.
+	/// \brief Evaluate an integral using an adaptive Simpson's rule method.
 	///
 	/// \f[I = \int^\texttt{upper_limit}_\texttt{lower_limit} \texttt{func}(x)  dx = \texttt{adaptive_simpsons_integrate}(\texttt{func}, \texttt{tol}, \texttt{lower_limit},\texttt{upper_limit}) + \epsilon \f]
 	/// where \f$|\epsilon| < \texttt{tol}\f$.
@@ -265,9 +265,9 @@ namespace HBTK {
 		while (!stack.empty())
 		{
 			tmp = stack.top();
-			p_cent = (tmp.l_lim + tmp.u_lim)*0.5;
-			p_sub_l = tmp.l_lim + (tmp.u_lim - tmp.l_lim)*0.25;
-			p_sub_u = tmp.l_lim + (tmp.u_lim - tmp.l_lim)*0.75;
+			p_cent = (tmp.l_lim + tmp.u_lim) * 0.5;
+			p_sub_l = tmp.l_lim + (tmp.u_lim - tmp.l_lim) * 0.25;
+			p_sub_u = tmp.l_lim + (tmp.u_lim - tmp.l_lim) * 0.75;
 			v_sub_l = func(p_sub_l);
 			v_sub_u = func(p_sub_u);
 
@@ -276,7 +276,7 @@ namespace HBTK {
 				+ simp(p_cent, tmp.u_lim, tmp.c, v_sub_u, tmp.u);
 			coarse = (16.0 * fine - coarse) / 15.0;
 
-			if ((tolerance + (coarse - fine) != tolerance) && (p_cent <= tmp.l_lim) && (p_cent >= tmp.u_lim))
+			if ((tolerance + (coarse - fine) != tolerance) || (p_cent <= tmp.l_lim) || (p_cent >= tmp.u_lim))
 			{
 				stack.pop();
 				stack.emplace(stack_frame{ tmp.l_lim, p_cent, tmp.l, tmp.c, v_sub_l });
@@ -287,7 +287,7 @@ namespace HBTK {
 			{
 				stack.pop();
 				stack_size--;
-				result += fine;
+				result += coarse;
 			}
 		}
 		assert(stack_size == 0);
@@ -326,8 +326,8 @@ namespace HBTK {
 		R_Type result = 0;
 		R_Type coarse, fine;
 
-		Tf_in alpha = (Tf_in)sqrt(2 / 3);
-		Tf_in beta = (Tf_in)(1 / sqrt(5));
+		Tf_in alpha = (Tf_in)sqrt(2. / 3.);
+		Tf_in beta = (Tf_in)(1. / sqrt(5.));
 		Tf_in x1 = (Tf_in) 0.942882415695480; 
 		Tf_in x2 = (Tf_in) 0.641853342345781;
 		Tf_in x3 = (Tf_in) 0.236383199662150;
@@ -387,10 +387,9 @@ namespace HBTK {
 			fmr = func(mr);
 			fmrr = func(mrr);
 			coarse = (h / 6.) * (tmp.l + tmp.u + 5.0 * (fml + fmr));
-			fine = (h / 1470) * (77 * (tmp.l + tmp.u) + 432 * (fmll + fmrr) 
+			fine = (h / 1470.) * (77 * (tmp.l + tmp.u) + 432 * (fmll + fmrr) 
 				+ 625 * (fml + fmr) + 672 * fm);
-		
-			if ((tolerance + (fine - coarse) != tolerance) && (mll <= tmp.l_lim) && (mrr >= tmp.u_lim))
+			if ((tolerance + (fine - coarse) != tolerance) || (mll <= tmp.l_lim) || (mrr >= tmp.u_lim))
 			{
 				stack.pop();
 				stack.emplace(stack_frame{ tmp.l_lim, mll, tmp.l, fmll });
