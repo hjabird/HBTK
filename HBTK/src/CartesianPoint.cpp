@@ -185,8 +185,8 @@ bool HBTK::CartesianPoint2D::operator!=(const CartesianPoint2D & other) const
 
 void HBTK::CartesianPoint2D::rotate(double angle) {
 	double tx, ty;
-	tx = x() * cos(angle) + y() * sin(angle);
-	ty = x() * -sin(angle) + y() * cos(angle);
+	tx = x() * cos(angle) - y() * sin(angle);
+	ty = x() * sin(angle) + y() * cos(angle);
 	x() = tx;
 	y() = ty;
 	return;
@@ -195,10 +195,10 @@ void HBTK::CartesianPoint2D::rotate(double angle) {
 
 void HBTK::CartesianPoint2D::rotate(double angle, CartesianPoint2D other) {
 	double tx, ty;
-	tx = cos(angle) * (x() - other.x()) + sin(angle) * (y() - other.y());
-	ty = -sin(angle) * (x() - other.x()) + cos(angle) * (y() - other.y());
-	x() = tx;
-	y() = ty;
+	tx = cos(angle) * (x() - other.x()) - sin(angle) * (y() - other.y());
+	ty = sin(angle) * (x() - other.x()) + cos(angle) * (y() - other.y());
+	x() = tx + other.x();
+	y() = ty + other.y();
 	return;
 }
 
@@ -220,6 +220,16 @@ double & HBTK::CartesianPoint2D::y()
 const double & HBTK::CartesianPoint2D::y() const
 {
 	return m_coord[1];
+}
+
+std::array<double, 2>& HBTK::CartesianPoint2D::as_array()
+{
+	return m_coord;
+}
+
+const std::array<double, 2>& HBTK::CartesianPoint2D::as_array() const
+{
+	return m_coord;
 }
 
 HBTK::CartesianPoint2D HBTK::CartesianPoint2D::operator+(const CartesianVector2D & other) const

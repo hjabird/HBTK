@@ -87,20 +87,20 @@ HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator+(const CartesianPoint3D
 		z() + other.z() });
 }
 
-HBTK::CartesianPoint3D HBTK::CartesianVector3D::operator-(const CartesianPoint3D & other) const
-{
-	return CartesianPoint3D({
-		x() - other.x(),
-		y() - other.y(),
-		z() - other.z() });
-}
-
 HBTK::CartesianVector3D HBTK::CartesianVector3D::operator*(const double & multiplyer) const
 {
 	return CartesianVector3D({
 		x() * multiplyer,
 		y() * multiplyer,
 		z() * multiplyer});
+}
+
+HBTK::CartesianVector3D & HBTK::CartesianVector3D::operator*=(const double & multiplyer) 
+{
+	x() *= multiplyer;
+	y() *= multiplyer;
+	z() *= multiplyer;
+	return *this;
 }
 
 HBTK::CartesianVector3D HBTK::CartesianVector3D::operator/(const double & divisor) const
@@ -111,6 +111,14 @@ HBTK::CartesianVector3D HBTK::CartesianVector3D::operator/(const double & diviso
 		z() / divisor });
 }
 
+HBTK::CartesianVector3D & HBTK::CartesianVector3D::operator/=(const double & divisor) 
+{
+	x() /= divisor;
+	y() /= divisor;
+	z() /= divisor;
+	return *this;
+}
+
 double HBTK::CartesianVector3D::magnitude() const
 {
 	return sqrt(x() * x() + y() * y() + z() * z());
@@ -119,9 +127,9 @@ double HBTK::CartesianVector3D::magnitude() const
 void HBTK::CartesianVector3D::normalise()
 {
 	double len = magnitude();
-	x() /= magnitude();
-	y() /= magnitude();
-	z() /= magnitude();
+	x() /= len;
+	y() /= len;
+	z() /= len;
 	return;
 }
 
@@ -143,7 +151,10 @@ double HBTK::CartesianVector3D::cos_angle(const CartesianVector3D & other) const
 {
 	double value;
 	value = dot(other);
-	value /= magnitude() * other.magnitude();
+	value /= sqrt(
+		(x() * x() + y() * y() + z() * z()) *
+		(other.x() * other.x() + other.y() * other.y() + other.z() * other.z())
+	);
 	return value;
 }
 
@@ -151,7 +162,10 @@ double HBTK::CartesianVector3D::angle(const CartesianVector3D & other) const
 {
 	double value;
 	value = dot(other);
-	value /= magnitude() * other.magnitude();
+	value /= sqrt(
+		(x() * x() + y() * y() + z() * z()) *
+		(other.x() * other.x() + other.y() * other.y() + other.z() * other.z())
+	);
 	return acos(value);
 }
 
@@ -220,6 +234,11 @@ double HBTK::abs(const CartesianVector3D & vector)
 	return vector.magnitude();
 }
 
+HBTK::CartesianVector3D HBTK::operator*(const double lhs, const HBTK::CartesianVector3D & rhs) 
+{
+	return rhs * lhs;
+}
+
 HBTK::CartesianVector2D::CartesianVector2D()
 {
 }
@@ -273,13 +292,6 @@ HBTK::CartesianPoint2D HBTK::CartesianVector2D::operator+(const CartesianPoint2D
 		y() + other.y() });
 }
 
-HBTK::CartesianPoint2D HBTK::CartesianVector2D::operator-(const CartesianPoint2D & other) const
-{
-	return CartesianPoint2D({
-		x() - other.x(),
-		y() - other.y() });
-}
-
 HBTK::CartesianVector2D HBTK::CartesianVector2D::operator*(const double & multiplyer) const
 {
 	return CartesianVector2D({
@@ -287,11 +299,25 @@ HBTK::CartesianVector2D HBTK::CartesianVector2D::operator*(const double & multip
 		y() * multiplyer });
 }
 
+HBTK::CartesianVector2D& HBTK::CartesianVector2D::operator*=(const double & multiplyer)
+{
+	x() *= multiplyer;
+	y() *= multiplyer;
+	return *this;
+}
+
 HBTK::CartesianVector2D HBTK::CartesianVector2D::operator/(const double & divisor) const
 {
 	return CartesianVector2D({
 		x() / divisor,
 		y() / divisor });
+}
+
+HBTK::CartesianVector2D& HBTK::CartesianVector2D::operator/=(const double & divisor)
+{
+	x() /= divisor;
+	y() /= divisor;
+	return *this;
 }
 
 double HBTK::CartesianVector2D::magnitude() const
@@ -344,7 +370,7 @@ double HBTK::CartesianVector2D::cos_angle(const CartesianVector2D & other) const
 {
 	double value;
 	value = dot(other);
-	value /= magnitude() * other.magnitude();
+	value /= sqrt((x() * x() + y() * y()) * (other.x() * other.x() + other.y() * other.y()));
 	return value;
 }
 
@@ -352,7 +378,7 @@ double HBTK::CartesianVector2D::angle(const CartesianVector2D & other) const
 {
 	double value;
 	value = dot(other);
-	value /= magnitude() * other.magnitude();
+	value /= sqrt((x() * x() + y() * y()) * (other.x() * other.x() + other.y() * other.y()));
 	return acos(value);
 }
 

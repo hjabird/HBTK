@@ -43,9 +43,10 @@ namespace HBTK {
 		CartesianVector3D operator-() const;
 		CartesianVector3D & operator-=(const CartesianVector3D & other);
 		CartesianPoint3D operator+(const CartesianPoint3D & other) const;
-		CartesianPoint3D operator-(const CartesianPoint3D & other) const;
 		CartesianVector3D operator*(const double & multiplyer) const;
+		CartesianVector3D & operator*=(const double & multiplyer);
 		CartesianVector3D operator/(const double & divisor) const;
+		CartesianVector3D & operator/=(const double & divisor);
 
 		// Returns the length of the vector. Same as: abs(this)
 		double magnitude() const;
@@ -79,6 +80,7 @@ namespace HBTK {
 	};
 
 	double abs(const CartesianVector3D & vector);
+	CartesianVector3D operator*(const double lhs, const CartesianVector3D & rhs);
 
 	class CartesianVector2D {
 	public:
@@ -92,9 +94,10 @@ namespace HBTK {
 		CartesianVector2D operator-() const;
 		CartesianVector2D& operator-=(const CartesianVector2D & other);
 		CartesianPoint2D operator+(const CartesianPoint2D & other) const;
-		CartesianPoint2D operator-(const CartesianPoint2D & other) const;
 		CartesianVector2D operator*(const double & multiplyer) const;
+		CartesianVector2D& operator*=(const double & multiplyer);
 		CartesianVector2D operator/(const double & divisor)const ;
+		CartesianVector2D& operator/=(const double & divisor);
 
 		// Set vector length to 1.
 		void normalise();

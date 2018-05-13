@@ -80,6 +80,8 @@ namespace HBTK {
 		const double & x() const;
 		double & y();
 		const double & y() const;
+		std::array<double, 2> & as_array();
+		const std::array<double, 2> & as_array() const;
 
 		CartesianVector2D operator-(const HBTK::CartesianPoint2D & other) const;
 		CartesianPoint2D operator+(const HBTK::CartesianVector2D & other) const;
