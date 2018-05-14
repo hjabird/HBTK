@@ -93,7 +93,7 @@ namespace HBTK {
 	}
 
 	template<typename Ty, int TySize>
-	bool check_finite(const std::array<Ty, TySize> & x, const Ty & min, const Ty & max) {
+	bool check_in_range(const std::array<Ty, TySize> & x, const Ty & min, const Ty & max) {
 		bool result = true;
 		for (auto &a : x) {
 			if (!check_in_range(a, min, max)) { result = false; break; }
