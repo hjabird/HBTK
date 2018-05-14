@@ -66,7 +66,7 @@ HBTK::CartesianPlane::CartesianPlane(const CartesianPoint3D & origin,
 	m_x_dir(),
 	m_y_dir()
 {
-	CartesianVector3D gen_axis({ 1, 0, 0 });
+	CartesianVector3D gen_axis({ 0, 0, 1 });
 	gen_axis = (normal != gen_axis ? gen_axis : CartesianVector3D({0., 1., 0.}));
 	m_x_dir = normal.cross(gen_axis);
 	m_x_dir.normalise();
@@ -128,26 +128,26 @@ HBTK::CartesianPoint2D  HBTK::CartesianPlane::projection(const CartesianPoint3D 
 	CartesianVector3D origin_to_point = point_in_space - m_origin;
 	double distance = normal.dot(origin_to_point);
 	CartesianPoint3D on_plane = point_in_space - normal * distance;
+	CartesianVector3D origin_to_on_plane = on_plane - origin();
 
-	CartesianPoint2D local_sys;
 	// Try and make our maths better by choosing the bigger elements of the vector:
 	int ix, iy;
 	ix = std::max_element(m_x_dir.as_array().begin(), m_x_dir.as_array().end(),
 		[](const double &a, const double &b) {
 		return (std::abs(b) > std::abs(a) ? true : false); })
 		- m_x_dir.as_array().begin();
-	// We don't wat the same index as ix for iy, so we take the max of the 
+	// We don't want the same index as ix for iy, so we take the max of the 
 	// remaining indexes. These should never both be zero.
 	iy = (std::abs(*(m_y_dir.as_array().begin() + (ix + 1) % 3))
 			> std::abs(*(m_y_dir.as_array().begin() + (ix + 2) % 3)) ?
 		(ix + 1) % 3 : (ix + 2) % 3);
-	local_sys.y() = on_plane.as_array()[iy] - on_plane.as_array()[ix] 
-		* m_x_dir.as_array()[iy] / m_x_dir.as_array()[ix];
-	local_sys.y() /= m_y_dir.as_array()[iy] - m_y_dir.as_array()[ix]
-		* m_x_dir.as_array()[iy] / m_x_dir.as_array()[ix];
-	local_sys.x() = (on_plane.as_array()[ix] -
-		local_sys.y() * m_y_dir.as_array()[ix]) /
-		m_x_dir.as_array()[ix];
+	double cx, cy;
+	cy = origin_to_on_plane.as_array()[iy] * m_x_dir.as_array()[ix] 
+		- origin_to_on_plane.as_array()[ix] * m_x_dir.as_array()[iy];
+	cy /= m_y_dir.as_array()[iy] * m_x_dir.as_array()[ix] 
+		- m_y_dir.as_array()[ix] * m_x_dir.as_array()[iy];
+	cx = (origin_to_on_plane.as_array()[ix] - cy * m_y_dir.as_array()[ix]) / m_x_dir.as_array()[ix];
+	CartesianPoint2D local_sys({ cx, cy });
 	assert(HBTK::check_finite(local_sys));
 	return local_sys;
 }
@@ -156,7 +156,7 @@ HBTK::CartesianPoint3D HBTK::CartesianPlane::closest_point(const CartesianPoint3
 {
 	CartesianVector3D norm = normal();
 	CartesianVector3D vect_from_plane = point_in_space - origin();
-	CartesianPoint3D point = norm * (norm.dot(vect_from_plane));
+	CartesianPoint3D point = point_in_space - norm * (norm.dot(vect_from_plane));
 	return point;
 }
 

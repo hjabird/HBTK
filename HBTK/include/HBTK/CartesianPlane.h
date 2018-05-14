@@ -34,12 +34,23 @@ namespace HBTK {
 	class CartesianPlane {
 	public:
 		CartesianPlane();
-		// Create origin as given. Primary axis is given by primary_dir - origin normalised.
-		// Other axis defined with secondary dir positive, normalised and orthogonal to firs dir...
+
+		// Create a plane by giving 3 points.
+		// Create origin as given. 
+		// Primary axis is given in the direction of the first point ("primary dir") and is a unit vector.
+		// Secondary axis is constructed at right angles to primary direction, such that the point secondary_dir
+		// is in the positive direction.
 		CartesianPlane(const CartesianPoint3D & origin, const CartesianPoint3D & primary_dir, const CartesianPoint3D & secondary_dir);
-		// Define a plane with origin and normal.
+
+		// Define a plane with origin and normal
+		// If possible, primary axis in the xy plane. If this is not well defined, it is in the
+		// xz plane. The secondary axis is defined by the cross of the normal x x_dir.
 		CartesianPlane(const CartesianPoint3D & origin, const CartesianVector3D & normal);
+
+		// Like constructing the plane with points, but the first to points are given by
+		// beginning and end of a finite line.
 		CartesianPlane(const CartesianFiniteLine3D & origin_primary_dir, const CartesianPoint3D & secondary_dir);
+
 		~CartesianPlane();
 
 		CartesianPoint3D operator()(const CartesianPoint2D & plane_point) const;
