@@ -82,13 +82,14 @@ TEST_CASE("GmshParser")
 		int element_count = 0;
 		int edge_element_count = 0;
 		int tri_count = 0;
+		bool z_zero_check = true;
 		std::map<int, std::string> phys_names;
 		std::map<int, std::set<int>> phys_grps;
 
-		auto node_fn = [&node_count](int tag, double x, double y, double z)->bool
+		auto node_fn = [&node_count, &z_zero_check](int tag, double x, double y, double z)->bool
 		{
 			node_count++;
-			REQUIRE(0.0 == z);
+			z_zero_check = 0.0 == z;
 			return true;
 		};
 
@@ -138,5 +139,6 @@ TEST_CASE("GmshParser")
 		REQUIRE(phys_names[1] == std::string("Volume"));
 		REQUIRE(636 == (int)phys_grps[1].size());
 		REQUIRE(112 == (int)phys_grps[2].size());
+		REQUIRE(z_zero_check);
 	}
 }
