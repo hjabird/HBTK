@@ -30,6 +30,7 @@ SOFTWARE.
 #include "CartesianPoint.h"
 #include "CartesianLine.h"
 #include "CartesianVector.h"
+#include "Checks.h"
 
 HBTK::CartesianFiniteLine3D::CartesianFiniteLine3D()
 	: m_start({0.0, 0.0, 0.0}),
@@ -112,33 +113,74 @@ double HBTK::CartesianFiniteLine3D::magnitude() const
 	return vector().magnitude();
 }
 
-double HBTK::CartesianFiniteLine3D::distance(const CartesianPoint3D & other)
+double HBTK::CartesianFiniteLine3D::distance(const CartesianPoint3D & other) const
 {
 	double denominator = vector().magnitude();
 	double numerator = (other - m_start).cross(vector()).magnitude();
-	return numerator / denominator;
+	double d_axis = numerator / denominator;
+	double d_start = (other - m_start).magnitude();
+	double d_end = (other - m_end).magnitude();
+	double check_length = sqrt(d_start * d_start - d_axis * d_axis)
+		+ sqrt(d_end * d_end - d_axis * d_axis);
+	double distance = d_axis;
+	if (check_length > magnitude()) {
+		distance = (d_start < d_end ? d_start : d_end);
+	}
+	return distance;
 }
 
-double HBTK::CartesianFiniteLine3D::distance(const CartesianFiniteLine3D & other)
+double HBTK::CartesianFiniteLine3D::distance(const CartesianFiniteLine3D & other) const 
 {
-	CartesianVector3D normal = vector().cross(other.vector());
-	return std::abs(normal.dot(other.start() - m_start));
+	CartesianVector3D v1(vector());
+	CartesianVector3D v2(other.vector());
+	v1.normalise();
+	v2.normalise();
+	double dist;
+	// Accounting for finiteness we need to think of the endpoints.
+	double d_start = distance(other.start());
+	double d_end = distance(other.end());
+	if (v1 == v2 || v1 == -v2) {
+		// Colinear
+		dist = (d_start <= d_end ? d_start : d_end);
+	}
+	else {
+		// If both lines were infinitely long
+		double d_axis = std::abs(v1.cross(v2).dot(other.start() - m_start));
+		double check_length = sqrt(d_start * d_start - d_axis * d_axis)
+			+ sqrt(d_end * d_end - d_axis * d_axis);
+		dist = d_axis;
+		if (check_length > magnitude()) {
+			dist = (d_start < d_end ? d_start : d_end);
+		}
+	}
+	return dist;
 }
 
 double HBTK::CartesianFiniteLine3D::intersection(const CartesianPoint3D & other) const
 {
 	CartesianVector3D vect = other - m_start;
-	double coeff_1 = vect.x() / vector().x();
-	double coeff_2 = vect.y() / vector().y();
-	double coeff_3 = vect.z() / vector().z();
+	CartesianVector3D this_v = vector();
+	double coeff_1 = vect.x() / this_v.x();
+	double coeff_2 = vect.y() / this_v.y();
+	double coeff_3 = vect.z() / this_v.z();
 	double coeff;
-	if ((std::abs(coeff_1 - coeff_2) > 1e-8) || (std::abs(coeff_2 - coeff_3) > 1e-8)) {
+	if (distance(other) > 1e-8)
+	{
 		coeff = NAN;
 	}
 	else {
-		coeff = coeff_1;
+		// we might have division by zeros.
+		if (!HBTK::check_finite(coeff_1)) {
+			if(!HBTK::check_finite(coeff_2)) coeff = coeff_3;
+			else if (!HBTK::check_finite(coeff_3)) coeff = coeff_2;
+			else coeff = (coeff_3 + coeff_2) / 2;
+		} else if (!HBTK::check_finite(coeff_2)) {
+			if (!HBTK::check_finite(coeff_3)) coeff = coeff_1;
+			else coeff = (coeff_1 + coeff_3) / 2;
+		} else if(!HBTK::check_finite(coeff_3)) coeff = (coeff_1 + coeff_2) / 2;
+		else coeff = (coeff_1 + coeff_2 + coeff_3) / 3;
 	}
-	return coeff_1;
+	return coeff;
 }
 
 double HBTK::CartesianFiniteLine3D::intersection(const CartesianFiniteLine3D & other) const
@@ -147,12 +189,28 @@ double HBTK::CartesianFiniteLine3D::intersection(const CartesianFiniteLine3D & o
 	CartesianVector3D m_v = vector();
 	CartesianVector3D o_v = other.vector();
 	// Solve as a 2 x 2 linear problem in x, y, then check with z:
-	double det = m_v.x() * o_v.y() - m_v.y() * o_v.x();
-	double tmp_m_coeff = o_v.y() * vect.x() - o_v.x() * vect.y();
-	double tmp_o_coeff = -m_v.y() * vect.x() + m_v.x() * vect.y();
-	double m_coeff = det * tmp_m_coeff;
-	double o_coeff = det * tmp_o_coeff;
-	if (abs(other(o_coeff) - evaluate(m_coeff)) < 1e-8) {
+	int i1 = -1, i2 = 0;
+	double det;
+	do {
+		i1++;
+		i2++;
+		det = m_v.as_array()[i1] * o_v.as_array()[i2]
+			- m_v.as_array()[i2] * o_v.as_array()[i1];
+		if (i2 == 3) throw std::invalid_argument(
+			"HBTK::intersection of finite lines in 3D: "
+			"It was not possible to invert the linear system to determine "
+			"the intersection. Are you sure the lines aren't collinear? "
+			__FILE__ ":" + std::to_string(__LINE__)
+		);
+	} while (det == 0);
+	double tmp_m_coeff = o_v.as_array()[i2] * vect.as_array()[i1] - o_v.as_array()[i1] * vect.as_array()[i2];
+	double tmp_o_coeff = - m_v.as_array()[i2] * vect.as_array()[i1] + m_v.as_array()[i1] * vect.as_array()[i2];
+	double m_coeff = tmp_m_coeff / det;
+	double o_coeff = - tmp_o_coeff / det;
+	HBTK::CartesianPoint3D o_pnt, m_pnt;
+	m_pnt = evaluate(m_coeff);
+	o_pnt = other(o_coeff);
+	if (abs(o_pnt - m_pnt) > 1e-8) {
 		m_coeff = NAN;
 	}
 	return m_coeff;

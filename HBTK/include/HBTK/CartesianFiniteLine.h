@@ -59,8 +59,8 @@ namespace HBTK {
 		double magnitude() const;
 
 		// Distance between this line and a point.
-		double distance(const CartesianPoint3D & other);
-		double distance(const CartesianFiniteLine3D & other);
+		double distance(const CartesianPoint3D & other) const;
+		double distance(const CartesianFiniteLine3D & other) const;
 
 		// Intersection - returns double corresponding to position between
 		// start and end of line as 0-1.
