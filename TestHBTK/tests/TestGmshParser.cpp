@@ -62,7 +62,7 @@ TEST_CASE("GmshParser")
 		parser.add_elem_function(elem_fn1);
 		parser.add_elem_function(elem_fn2);
 		parser.add_elem_function(elem_fn3);
-		parser.parse("C:\\Users\\User\\source\\repos\\HBTK\\TestHBTK\\res\\GMSH_test_file_1.msh");
+		parser.parse(TESTHBTK_RESOURCE_GMSH_TEST_FILE_ASCII);
 
 		REQUIRE(node_count == 703);
 		REQUIRE(element_count == 860);
@@ -130,7 +130,7 @@ TEST_CASE("GmshParser")
 		parser.add_elem_function(elem_fn1);
 		parser.add_elem_function(elem_fn2);
 		parser.add_elem_function(elem_fn3);
-		parser.parse("C:\\Users\\User\\source\\repos\\HBTK\\TestHBTK\\res\\GMSH_test_file_1_binary.msh");
+		parser.parse(TESTHBTK_RESOURCE_GMSH_TEST_FILE_BINARY);
 			
 		REQUIRE(node_count == 703);
 		REQUIRE(element_count == 860);
