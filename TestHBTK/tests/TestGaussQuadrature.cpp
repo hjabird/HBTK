@@ -80,10 +80,10 @@ TEST_CASE("Gauss Legendre quadratures generation")
 
 TEST_CASE("Gauss Laguerre quadrature generation")
 {
-	auto quad = HBTK::gauss_laguerre(3);
-	auto points = quad.get_quadrature().first;
-	auto weights = quad.get_quadrature().second;
 	SECTION("3 point Gauss laguere quadrature generation.") {
+		auto quad = HBTK::gauss_laguerre(3);
+		auto points = quad.get_quadrature().first;
+		auto weights = quad.get_quadrature().second;
 		REQUIRE(0.711093 == Approx(weights[0]));
 		REQUIRE(0.278518 == Approx(weights[1]));
 		REQUIRE(0.0103893 == Approx(weights[2]));
@@ -91,4 +91,79 @@ TEST_CASE("Gauss Laguerre quadrature generation")
 		REQUIRE(2.29428 == Approx(points[1]));
 		REQUIRE(6.28995 == Approx(points[2]));
 	}
+
+	SECTION("5 point Gauss laguere quadrature generation.") {
+		/*	From Wolfram Math world.
+			0.26356	0.521756
+			1.4134	0.398667
+			3.59643	0.0759424
+			7.08581	0.00361176
+			12.6408	0.00002337 */
+		auto quad = HBTK::gauss_laguerre(5);
+		auto points = quad.get_quadrature().first;
+		auto weights = quad.get_quadrature().second;
+		REQUIRE(0.521756 == Approx(weights[0]));
+		REQUIRE(0.398667 == Approx(weights[1]));
+		REQUIRE(0.0759424 == Approx(weights[2]));
+		REQUIRE(0.00361176 == Approx(weights[3]));
+		REQUIRE(0.00002337 == Approx(weights[4]));
+		REQUIRE(0.26356 == Approx(points[0]));
+		REQUIRE(1.4134 == Approx(points[1]));
+		REQUIRE(3.59643 == Approx(points[2]));
+		REQUIRE(7.08581 == Approx(points[3]));
+		REQUIRE(12.6408 == Approx(points[4]));
+	}
 }
+
+TEST_CASE("Gauss Hermite quadrature generation")
+{
+	SECTION("3 point Gauss hermite quadrature generation.") {
+		auto quad = HBTK::gauss_hermite(3);
+		auto points = quad.get_quadrature().first;
+		auto weights = quad.get_quadrature().second;
+		REQUIRE((2./3.) * sqrt(HBTK::Constants::pi()) == Approx(weights[0]));
+		REQUIRE(sqrt(HBTK::Constants::pi()) / 6. == Approx(weights[1]));
+		REQUIRE(sqrt(HBTK::Constants::pi()) / 6. == Approx(weights[2]));
+		REQUIRE(0.0 == Approx(points[0]).margin(1e-15));
+		REQUIRE(-0.5 * sqrt(6.) == Approx(points[1]));
+		REQUIRE(0.5 * sqrt(6.) == Approx(points[2]));
+	}
+
+	SECTION("4 point Gauss hermite quadrature generation.") {
+		auto quad = HBTK::gauss_hermite(4);
+		auto points = quad.get_quadrature().first;
+		auto weights = quad.get_quadrature().second;
+		REQUIRE(sqrt(HBTK::Constants::pi()) / (4 * (3 - sqrt(6.)))
+			== Approx(weights[0]));
+		REQUIRE(sqrt(HBTK::Constants::pi()) / (4 * (3 - sqrt(6.)))
+			== Approx(weights[1]));
+		REQUIRE(sqrt(HBTK::Constants::pi()) / (4 * (3 + sqrt(6.)))
+			== Approx(weights[2]));
+		REQUIRE(sqrt(HBTK::Constants::pi()) / (4 * (3 + sqrt(6.)))
+			== Approx(weights[3]));
+		REQUIRE(-sqrt((3. - sqrt(6.)) / 2.) == Approx(points[0]));
+		REQUIRE(sqrt((3. - sqrt(6.)) / 2.) == Approx(points[1]));
+		REQUIRE(-sqrt((3. + sqrt(6.)) / 2.) == Approx(points[2]));
+		REQUIRE(sqrt((3. + sqrt(6.)) / 2.) == Approx(points[3]));
+	}
+}
+
+//TEST_CASE("Gauss Chebyshev type 1 quadrature") {
+//
+//	SECTION("5 point Gauss chebyshev 1 quadrature generation") {
+//		auto quad = HBTK::gauss_chebyshev1(5);
+//		auto points = quad.get_quadrature().first;
+//		auto weights = quad.get_quadrature().second;
+//		REQUIRE(0.521756 == Approx(weights[0]));
+//		REQUIRE(0.398667 == Approx(weights[1]));
+//		REQUIRE(0.0759424 == Approx(weights[2]));
+//		REQUIRE(0.00361176 == Approx(weights[3]));
+//		REQUIRE(0.00002337 == Approx(weights[4]));
+//		REQUIRE(0.26356 == Approx(points[0]));
+//		REQUIRE(1.4134 == Approx(points[1]));
+//		REQUIRE(3.59643 == Approx(points[2]));
+//		REQUIRE(7.08581 == Approx(points[3]));
+//		REQUIRE(12.6408 == Approx(points[4]));
+//	}
+//}
+
