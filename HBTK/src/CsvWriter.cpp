@@ -66,7 +66,7 @@ void HBTK::CsvWriter::write(std::ostream & output, HBTK::DoubleTable & table)
 		else {
 			write(output, table.column_name(i), width);
 		}
-		write_delimiter(output);
+		if(i != n_col - 1) write_delimiter(output);
 		col_widths[i] = width;
 	}
 	write_new_line(output);
@@ -82,7 +82,7 @@ void HBTK::CsvWriter::write(std::ostream & output, HBTK::DoubleTable & table)
 		for (int j = 0; j < n_col; j++) {
 			write(output, row[j], 
 					(precision + 6 > col_widths[j] ? precision + 6 : col_widths[j]));
-			write_delimiter(output);
+			if(j != n_col - 1) write_delimiter(output);
 		}
 		write_new_line(output);
 	}
