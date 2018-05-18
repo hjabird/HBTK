@@ -41,9 +41,9 @@ HBTK::AerofoilGeometry::AerofoilGeometry()
 	m_z_points_upper(25)
 {
 	auto x_dist = [](double x)->double { 
-		return 0.5 * (1 - cos(HBTK::Constants::pi() * x));
+		return (1 - cos(x)) / 2.;
 	};
-	auto linear_dist = HBTK::linspace(0, 1, 25);
+	auto linear_dist = HBTK::linspace(0, HBTK::Constants::pi(), 25);
 
 	for (int i = 0; i < 25; i++) {
 		m_x_points_lower[i] = m_x_points_upper[i]
