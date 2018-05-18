@@ -64,7 +64,7 @@ HBTK::AerofoilGeometry HBTK::AerofoilGenerators::naca_four_digit(double thicknes
 	double & p = camber_position;
 	// Thickness distribution function (all from Abbott and Doenhoff):
 	auto thick_fn = [=](double x)->double {
-		return 5 * thickness *(
+		return 10 * thickness *(
 			0.29690 * sqrt(x)
 			- 0.12600 * x
 			- 0.35160 * x * x
