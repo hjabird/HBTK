@@ -148,22 +148,41 @@ TEST_CASE("Gauss Hermite quadrature generation")
 	}
 }
 
-//TEST_CASE("Gauss Chebyshev type 1 quadrature") {
-//
-//	SECTION("5 point Gauss chebyshev 1 quadrature generation") {
-//		auto quad = HBTK::gauss_chebyshev1(5);
-//		auto points = quad.get_quadrature().first;
-//		auto weights = quad.get_quadrature().second;
-//		REQUIRE(0.521756 == Approx(weights[0]));
-//		REQUIRE(0.398667 == Approx(weights[1]));
-//		REQUIRE(0.0759424 == Approx(weights[2]));
-//		REQUIRE(0.00361176 == Approx(weights[3]));
-//		REQUIRE(0.00002337 == Approx(weights[4]));
-//		REQUIRE(0.26356 == Approx(points[0]));
-//		REQUIRE(1.4134 == Approx(points[1]));
-//		REQUIRE(3.59643 == Approx(points[2]));
-//		REQUIRE(7.08581 == Approx(points[3]));
-//		REQUIRE(12.6408 == Approx(points[4]));
-//	}
-//}
+TEST_CASE("Gauss Chebyshev type 1 quadrature") {
+
+	SECTION("5 point Gauss chebyshev 1 quadrature generation") {
+		auto quad = HBTK::gauss_chebyshev1(5);
+		auto points = quad.get_quadrature().first;
+		auto weights = quad.get_quadrature().second;
+		REQUIRE(HBTK::Constants::pi() / 5. == Approx(weights[0]));
+		REQUIRE(HBTK::Constants::pi() / 5. == Approx(weights[1]));
+		REQUIRE(HBTK::Constants::pi() / 5. == Approx(weights[2]));
+		REQUIRE(HBTK::Constants::pi() / 5. == Approx(weights[3]));
+		REQUIRE(HBTK::Constants::pi() / 5. == Approx(weights[4]));
+		REQUIRE(-0.5 * sqrt(0.5 * (5. - sqrt(5.))) == Approx(points[0]));
+		REQUIRE(-0.5 * sqrt(0.5 * (5. + sqrt(5.))) == Approx(points[1]));
+		REQUIRE(0.0 == Approx(points[2]).margin(1e-15));
+		REQUIRE(0.5 * sqrt(0.5 * (5. - sqrt(5.))) == Approx(points[3]));
+		REQUIRE(0.5 * sqrt(0.5 * (5. + sqrt(5.))) == Approx(points[4]));
+	}
+}
+
+TEST_CASE("Gauss Chebyshev type 2 quadrature") {
+
+	SECTION("5 point Gauss chebyshev 2 quadrature generation") {
+		auto quad = HBTK::gauss_chebyshev2(5);
+		auto points = quad.get_quadrature().first;
+		auto weights = quad.get_quadrature().second;
+		REQUIRE(0.3926990816987241548078 == Approx(weights[0]));
+		REQUIRE(0.5235987755982988730771 == Approx(weights[1]));
+		REQUIRE(0.3926990816987241548078 == Approx(weights[2]));
+		REQUIRE(0.1308996938995747182693 == Approx(weights[3]));
+		REQUIRE(0.1308996938995747182693 == Approx(weights[4]));
+		REQUIRE(-0.5 == Approx(points[0]));
+		REQUIRE(0.0 == Approx(points[1]).margin(1e-15));
+		REQUIRE(0.5  == Approx(points[2]));
+		REQUIRE(0.8660254037844386467637== Approx(points[3]));
+		REQUIRE(-0.8660254037844386467637 == Approx(points[4]));
+	}
+}
 
