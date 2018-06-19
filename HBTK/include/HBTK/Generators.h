@@ -179,7 +179,7 @@ namespace HBTK // Definitions
 		assert(number_of_points > 0);
 
 		for (int idx = 0; idx < number_of_points; idx++) {
-			 auto lin_pos = ((idx + 0.5) * HBTK::Constants::pi<std::remove_reference<TyIdx>::type>())/ (number_of_points);
+			 auto lin_pos = ((idx + 0.5) * HBTK::Constants::pi<typename std::remove_reference<TyIdx>::type>())/ (number_of_points);
 			 target_indexable[idx] = - radius * cos(lin_pos) + centre;
 		}
 		return;

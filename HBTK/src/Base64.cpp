@@ -27,6 +27,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
+#include <cmath>
 
 std::string HBTK::encode_base64(unsigned char * data, int n_bytes)
 {

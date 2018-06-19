@@ -31,6 +31,8 @@ SOFTWARE.
 #include <type_traits>
 #include <stack>
 
+#include "Tolerances.h"
+
 namespace HBTK {
 
 	// DECLARATIONS
