@@ -50,7 +50,7 @@ HBTK::StaticQuadrature HBTK::gauss_hermite(int num_terms)
 HBTK::StaticQuadrature HBTK::gauss_chebyshev1(int num_terms)
 {
 	assert(num_terms >= 0);
-	auto a_i = [=](int k)->double {(void)k; return 2; };
+	auto a_i = [=](int k)->double { return (k == 1 ? 1 : 2); };
 	auto b_i = [=](int k)->double {(void)k; return 0; };
 	auto c_i = [=](int k)->double {(void)k; return 1; };
 
