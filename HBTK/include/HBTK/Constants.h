@@ -108,5 +108,13 @@ namespace HBTK {
 		std::complex<Ty> constexpr i() {
 			return std::complex<Ty>(0, 1);
 		}
+
+		double constexpr radians_to_degrees(double rads) {
+			return 180 * rads / pi<double>();
+		}
+
+		double constexpr degrees_to_radians(double degs) {
+			return pi<double>() * degs / 180;
+		}
 	}
 }
