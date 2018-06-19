@@ -244,7 +244,6 @@ namespace HBTK {
 		// 1/4 and 3/4 points coordinates and values:
 		R_Type v_sub_l, v_sub_u;
 		Tf_in p_sub_l, p_sub_u, p_cent;
-
 		auto simp = [&](Tf_in x0, Tf_in x2, R_Type f0, R_Type f1, R_Type f2)->R_Type 
 		{
 			return (x2 - x0)*(f0 + 4.0 * f1 + f2) / 6.0;
@@ -262,6 +261,12 @@ namespace HBTK {
 		stack.emplace(stack_frame{ lower_limit, upper_limit, func(lower_limit), 
 			func(upper_limit), func((upper_limit - lower_limit) / 2.0) });
 
+		R_Type is = (upper_limit - lower_limit) / 8 * (stack.top().l + stack.top().u + stack.top().c
+			+ (func(lower_limit + 0.9501) + func(lower_limit + 0.2311) + func(lower_limit + 0.6068)
+				+ func(lower_limit + 0.4860) + func(lower_limit + 0.8913)) * (upper_limit - lower_limit));
+		is = (is == 0 ? upper_limit - lower_limit : is);
+		is = is * tolerance / HBTK::tolerance<R_Type>();
+
 		while (!stack.empty())
 		{
 			tmp = stack.top();
@@ -276,7 +281,7 @@ namespace HBTK {
 				+ simp(p_cent, tmp.u_lim, tmp.c, v_sub_u, tmp.u);
 			coarse = (16.0 * fine - coarse) / 15.0;
 
-			if ((tolerance + (coarse - fine) != tolerance) || (p_cent <= tmp.l_lim) || (p_cent >= tmp.u_lim))
+			if ((is + (coarse - fine) != is) || (p_cent <= tmp.l_lim) || (p_cent >= tmp.u_lim))
 			{
 				stack.pop();
 				stack.emplace(stack_frame{ tmp.l_lim, p_cent, tmp.l, tmp.c, v_sub_l });
@@ -389,7 +394,7 @@ namespace HBTK {
 			coarse = (h / 6.) * (tmp.l + tmp.u + 5.0 * (fml + fmr));
 			fine = (h / 1470.) * (77 * (tmp.l + tmp.u) + 432 * (fmll + fmrr) 
 				+ 625 * (fml + fmr) + 672 * fm);
-			if ((tolerance + (fine - coarse) != tolerance) || (mll <= tmp.l_lim) || (mrr >= tmp.u_lim))
+			if ((is + (fine - coarse) != is) || (mll <= tmp.l_lim) || (mrr >= tmp.u_lim))
 			{
 				stack.pop();
 				stack.emplace(stack_frame{ tmp.l_lim, mll, tmp.l, fmll });
