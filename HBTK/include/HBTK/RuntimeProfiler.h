@@ -34,8 +34,8 @@ SOFTWARE.
 namespace HBTK {
 	class RuntimeProfiler {
 	public:
-		RuntimeProfiler(char* function, int line_no);
-		RuntimeProfiler(char* function, int line_no, int timing);
+		RuntimeProfiler(const char* function, const int line_no);
+		RuntimeProfiler(const char* function, const int line_no, bool timing);
 		~RuntimeProfiler();
 	private:
 		std::string m_string;

@@ -80,14 +80,14 @@ void HBTK::GlobalRuntimeProfiler::new_timeset_now()
 	inst.write_mutex.unlock();
 }
 
-HBTK::RuntimeProfiler::RuntimeProfiler(char * function, int line_no)
+HBTK::RuntimeProfiler::RuntimeProfiler(const char * function, const int line_no)
 	: m_timing(false),
 	m_string(std::to_string(line_no) + ' ' + std::string(function))
 {
 
 }
 
-HBTK::RuntimeProfiler::RuntimeProfiler(char * function, int line_no, int timing)
+HBTK::RuntimeProfiler::RuntimeProfiler(const char * function, const int line_no, const bool timing)
 	: m_timing(timing),
 	m_string(std::to_string(line_no) + ' ' + std::string(function))
 {
