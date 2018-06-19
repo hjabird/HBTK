@@ -25,6 +25,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
+#include <cmath>
+
 #include "CartesianVector.h"
 #include "Constants.h"
 
@@ -45,3 +47,4 @@ HBTK::CartesianVector3D HBTK::BiotSavart::unity_vel(CartesianPoint3D & mes_point
 	CartesianVector3D output = r1.cross(r2) * K;
 	return output;
 }
+

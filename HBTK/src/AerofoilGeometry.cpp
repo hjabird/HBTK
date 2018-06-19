@@ -28,6 +28,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <cmath>
 #include <iterator>
 
 #include "CubicSpline1D.h"

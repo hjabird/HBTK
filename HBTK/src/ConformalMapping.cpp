@@ -25,6 +25,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
+#include <cmath>
+
 #include "Constants.h"
 
 std::complex<double> HBTK::joukowsky_transform(std::complex<double> zeta_point)

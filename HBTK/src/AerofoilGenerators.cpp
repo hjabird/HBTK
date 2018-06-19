@@ -26,6 +26,7 @@ SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
+#include <cmath>
 
 #include "AerofoilGeometry.h"
 #include "Checks.h"

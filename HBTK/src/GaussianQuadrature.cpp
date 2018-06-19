@@ -27,6 +27,7 @@ SOFTWARE.
 
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 
 #include "Generators.h"
 
