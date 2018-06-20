@@ -118,9 +118,9 @@ namespace HBTK {
 		CubicSplineND<TNumDimensions>::derivative(double local_position)
 	{
 		std::array<double, TNumDimensions> derivs;
-		for (int i = 0; i < TNumDimensions; i++{
-			derivs[i] = m_subsplines[i].derivative(local_position)
-		})
+		for (int i = 0; i < TNumDimensions; i++){
+			derivs[i] = m_subsplines[i].derivative(local_position);
+		}
 		return derivs;
 	}
 
