@@ -3,7 +3,7 @@
 #include <HBTK/GaussianQuadrature.h>
 #include <HBTK/Tolerances.h>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <vector>
 #include <array>

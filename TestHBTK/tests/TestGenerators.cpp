@@ -2,7 +2,7 @@
 #include <HBTK/Generators.h>
 #include <HBTK/Tolerances.h>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 
 TEST_CASE("Linspace - linear spacing of points")

@@ -3,7 +3,7 @@
 #include <HBTK/CartesianPlane.h>
 #include <HBTK/Constants.h>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <cmath>
 #include <array>

@@ -4,7 +4,7 @@
 #include <HBTK/CartesianLine.h>
 #include <HBTK/Constants.h>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 TEST_CASE("Cartesian finite line 3D") {
 

@@ -5,7 +5,7 @@
 
 #include <vector>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 TEST_CASE("NACA 0012") {
 

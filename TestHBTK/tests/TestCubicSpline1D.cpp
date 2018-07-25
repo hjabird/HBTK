@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 TEST_CASE("Cubic spline 1D") {
 

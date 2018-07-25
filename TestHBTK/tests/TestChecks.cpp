@@ -5,7 +5,7 @@
 #include <complex>
 #include <vector>
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 TEST_CASE("Check finite") {
 
