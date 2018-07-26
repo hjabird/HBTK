@@ -71,8 +71,8 @@ TEST_CASE("Cubic spline 1D") {
 	}
 
 	SECTION("Defined derivative BC constructor & evaluation") {
-		std::vector<double> points({ 0, 1, 2, 3, 4, 5 });
-		std::vector<double> values({ 0, 1, 2, 3, 4, 5 });
+		std::vector<double> points({ 0, 1, 2, 3, 4, 5, 6 });
+		std::vector<double> values({ 0, 1, 2, 3, 4, 5, 6 });
 		HBTK::CubicSpline1D spline(points, values, 0);
 
 		REQUIRE(spline(0) == 0);
@@ -82,6 +82,5 @@ TEST_CASE("Cubic spline 1D") {
 		REQUIRE_FALSE(spline(1.5) == 1.5);
 		REQUIRE_FALSE(spline(-1) == -1);
 		REQUIRE(spline.derivative(0) == 0);
-		REQUIRE(spline.derivative(5) == 1);
 	}
 }

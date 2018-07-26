@@ -193,13 +193,13 @@ double HBTK::CubicSpline1D::derivative(double location)
 	}
 	// And compute our position on the spline.
 	h = m_point_locations[khi] - m_point_locations[klo];
-	da = -1 / h;
-	db = 1 / h;
+	da = -1. / h;
+	db = 1. / h;
 	a = (m_point_locations[khi] - location) / h;
 	b = (location - m_point_locations[klo]) / h;
 	y = da * m_point_values[klo] + db * m_point_values[khi]
-		+ (da * (3 * a * a  - 1) * m_second_derivatives[klo]
-			+ db * (3 * b * b - b) * m_second_derivatives[khi])
+		+ (da * (3. * a * a  - 1.) * m_second_derivatives[klo]
+			+ db * (3. * b * b - 1.) * m_second_derivatives[khi])
 		* (h * h) / 6.0;
 	return y;
 }
