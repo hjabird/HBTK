@@ -57,6 +57,12 @@ namespace HBTK {
 
 		// first derivative of the spline:
 		double derivative(double location);
+		// second derivative of the spline
+		double derivative2(double location);
+		// third derivative of the spline
+		double derivative3(double location);
+		// nth derivative
+		double derivative(double location, int n);
 
 		double lower_input_bound();
 		double upper_input_bound();

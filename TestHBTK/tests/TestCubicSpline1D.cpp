@@ -83,4 +83,21 @@ TEST_CASE("Cubic spline 1D") {
 		REQUIRE_FALSE(spline(-1) == -1);
 		REQUIRE(spline.derivative(0) == 0);
 	}
+
+	SECTION("Expected zero second, third & higher derivative") {
+		std::vector<double> points({ 0, 1, 2 });
+		std::vector<double> values({ 0, 1, 2 });
+		HBTK::CubicSpline1D spline(points, values);
+		REQUIRE(spline.derivative2(0) == 0);
+		REQUIRE(spline.derivative2(1) == 0);
+		REQUIRE(spline.derivative2(2) == 0);
+		REQUIRE(spline.derivative3(0) == 0);
+		REQUIRE(spline.derivative3(1) == 0);
+		REQUIRE(spline.derivative3(2) == 0);
+		REQUIRE(spline.derivative(0, 4) == 0);
+		REQUIRE(spline.derivative(1, 3) == 0);
+		REQUIRE(spline.derivative(2, 2) == 0);
+		REQUIRE(spline.derivative(1, 0) != 0);
+		REQUIRE(spline.derivative(2, 1) != 0);
+	}
 }

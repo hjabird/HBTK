@@ -204,6 +204,82 @@ double HBTK::CubicSpline1D::derivative(double location)
 	return y;
 }
 
+double HBTK::CubicSpline1D::derivative2(double location)
+{
+	// Differentiated from above.
+	check_computed_blocking();
+	int klo, khi, k;
+	double h, a, b, da, db, y;
+
+	// Bracketing of k in m_point_location
+	klo = 0;
+	khi = (int)m_point_locations.size() - 1;
+	while (khi - klo > 1) {
+		k = (khi + klo) / 2;	// Compute midpoint
+		if (m_point_locations[k] > location) { khi = k; }
+		else { klo = k; }
+	}
+	// And compute our position on the spline.
+	h = m_point_locations[khi] - m_point_locations[klo];
+	da = -1. / h;
+	db = 1. / h;
+	a = (m_point_locations[khi] - location) / h;
+	b = (location - m_point_locations[klo]) / h;
+	y = (da * da * a * m_second_derivatives[klo]
+			+ db * db * b * m_second_derivatives[khi])
+		* (h * h);
+	return y;
+}
+
+double HBTK::CubicSpline1D::derivative3(double location)
+{
+	// Differentiated from above.
+	check_computed_blocking();
+	int klo, khi, k;
+	double h, da, db, y;
+
+	// Bracketing of k in m_point_location
+	klo = 0;
+	khi = (int)m_point_locations.size() - 1;
+	while (khi - klo > 1) {
+		k = (khi + klo) / 2;	// Compute midpoint
+		if (m_point_locations[k] > location) { khi = k; }
+		else { klo = k; }
+	}
+	// And compute our position on the spline.
+	h = m_point_locations[khi] - m_point_locations[klo];
+	da = -1. / h;
+	db = 1. / h;
+	y = (da * da * da * m_second_derivatives[klo]
+		+ db * db * db * m_second_derivatives[khi])
+		* (h * h);
+	return y;
+}
+
+double HBTK::CubicSpline1D::derivative(double location, int n)
+{
+	assert(n >= 0);
+	double val;
+	switch(n){
+	case 0:
+		val = evaluate(location);
+		break;
+	case 1:
+		val = derivative(location);
+		break;
+	case 2:
+		val = derivative2(location);
+		break;
+	case 3:
+		val = derivative3(location);
+		break;
+	default:
+		val = 0.0;
+		break;
+	}
+	return val;
+}
+
 double HBTK::CubicSpline1D::lower_input_bound()
 {
 	return m_point_locations[0];
