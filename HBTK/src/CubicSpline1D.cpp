@@ -289,3 +289,21 @@ double HBTK::CubicSpline1D::upper_input_bound()
 {
 	return m_point_locations.back();
 }
+
+HBTK::CubicSpline1D & HBTK::CubicSpline1D::operator=(CubicSpline1D & spline)
+{
+	if (this != &spline) {
+		std::lock(m_deriv_compute_mutex, spline.m_deriv_compute_mutex);
+		std::lock_guard<std::mutex> lhs_lk(m_deriv_compute_mutex, std::adopt_lock);
+		std::lock_guard<std::mutex> rhs_lk(spline.m_deriv_compute_mutex, std::adopt_lock);
+		m_point_locations = spline.m_point_locations;
+		m_point_values = spline.m_point_values;
+		m_second_derivatives = spline.m_second_derivatives;
+		m_derivative_x0 = spline.m_derivative_x0;
+		m_derivative_xn = spline.m_derivative_xn;
+		m_natural_bc_x0 = spline.m_natural_bc_x0;
+		m_natural_bc_xn = spline.m_natural_bc_xn;
+		m_derivatives_computed = spline.m_derivatives_computed;
+	}
+	return *this;
+}

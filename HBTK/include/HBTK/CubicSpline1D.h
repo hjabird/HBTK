@@ -67,6 +67,7 @@ namespace HBTK {
 		double lower_input_bound();
 		double upper_input_bound();
 
+		CubicSpline1D& operator=(CubicSpline1D& spline);
 	private:
 
 		// The reference inputs x to interpolate y = f(x);
