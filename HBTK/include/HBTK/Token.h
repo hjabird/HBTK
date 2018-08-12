@@ -32,14 +32,21 @@ namespace HBTK {
 	public:
 		const std::string & value() const;
 		const int line() const;
+		const int char_idx() const;
 
 		bool isnum() const;
 		bool isvar() const;
 		bool isstr() const;
 		bool ispunct() const;
-		bool isspace() const;
+		bool iswhitespace() const;
 
 		bool isbracket() const;
+		bool isopenbracket() const;
+		bool isclosebracket() const;
+
+		bool isinteger() const;
+		bool isfloat() const;
+
 		bool isnewline() const;
 
 	private:
@@ -56,5 +63,6 @@ namespace HBTK {
 		type m_token_type;
 		std::string m_value;
 		int m_line;
+		int m_char;
 	};
 }

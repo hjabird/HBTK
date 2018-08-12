@@ -39,10 +39,14 @@ namespace HBTK {
 
 		bool eof() const;
 		int line_number() const;
+		int char_number() const;
+
+		bool multiline_strings;
 
 	protected:
 		Token m_working_token;
 		int m_line_number;
+		int m_char_number;
 
 		std::istream& m_stream;
 	};

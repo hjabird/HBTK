@@ -34,6 +34,10 @@ const int HBTK::Token::line() const {
 	return m_line;
 }
 
+const int HBTK::Token::char_idx() const {
+	return m_char;
+}
+
 bool HBTK::Token::isnum() const
 {
 	return m_token_type == NUMBER;
@@ -54,14 +58,15 @@ bool HBTK::Token::ispunct() const
 	return m_token_type == PUNCTUATION;
 }
 
-bool HBTK::Token::isspace() const
+bool HBTK::Token::iswhitespace() const
 {
 	return m_token_type == WHITE_SPACE;
 }
 
 bool HBTK::Token::isbracket() const
 {
-	if (m_token_type != PUNCTUATION) {
+	if (m_token_type != PUNCTUATION) 
+	{
 		return false;
 	}
 	else {
@@ -73,6 +78,68 @@ bool HBTK::Token::isbracket() const
 			m_value == "]") {
 			return true;
 		}
+		else {
+			return false;
+		}
+	}
+}
+
+bool HBTK::Token::isopenbracket() const 
+{
+	if (m_token_type != PUNCTUATION) {
+		return false;
+	}
+	else {
+		if (m_value == "(" ||
+			m_value == "{" ||
+			m_value == "[") {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+bool HBTK::Token::isclosebracket() const 
+{
+	if (m_token_type != PUNCTUATION) {
+		return false;
+	}
+	else {
+		if (m_value == ")" ||
+			m_value == "}" ||
+			m_value == "]") {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+
+bool HBTK::Token::isinteger() const {
+	if (m_token_type != NUMBER) {
+		return false;
+	}
+	else {
+		if (value().find('.') != std::string::npos)
+			return false;
+		else {
+			return true;
+		}
+	}
+}
+
+bool HBTK::Token::isfloat() const
+{
+	if (m_token_type != NUMBER) {
+		return false;
+	}
+	else {
+		if (value().find('.') != std::string::npos)
+			return true;
 		else {
 			return false;
 		}

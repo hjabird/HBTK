@@ -40,7 +40,7 @@ TEST_CASE("Tokeniser & Tokens") {
 		}
 		REQUIRE(tokens.size() == 3);
 		for (auto & i : tokens) {
-			REQUIRE(i.isspace());
+			REQUIRE(i.iswhitespace());
 		}
 		REQUIRE(tokens[0].value() == " ");
 		REQUIRE(tokens[1].value() == "\t");
@@ -107,6 +107,56 @@ TEST_CASE("Tokeniser & Tokens") {
 		REQUIRE(tokens[0].value() == "foo");
 	}
 
+	SECTION("Identify brackets") {
+		std::istringstream str("{}()[]!.");
+		std::vector<HBTK::Token> tokens;
+		HBTK::Tokeniser tokeniser(&str);
+		while (!tokeniser.eof()) {
+			tokens.push_back(tokeniser.next());
+		}
+		REQUIRE(tokens[0].isbracket());
+		REQUIRE(tokens[1].isbracket());
+		REQUIRE(tokens[2].isbracket());
+		REQUIRE(tokens[3].isbracket());
+		REQUIRE(tokens[4].isbracket());
+		REQUIRE(tokens[5].isbracket());
+		REQUIRE(!tokens[6].isbracket());
+		REQUIRE(!tokens[7].isbracket());
+		REQUIRE(tokens[0].isopenbracket());
+		REQUIRE(!tokens[1].isopenbracket());
+		REQUIRE(tokens[2].isopenbracket());
+		REQUIRE(!tokens[3].isopenbracket());
+		REQUIRE(tokens[4].isopenbracket());
+		REQUIRE(!tokens[5].isopenbracket());
+		REQUIRE(!tokens[6].isopenbracket());
+		REQUIRE(!tokens[7].isopenbracket());
+		REQUIRE(!tokens[0].isclosebracket());
+		REQUIRE(tokens[1].isclosebracket());
+		REQUIRE(!tokens[2].isclosebracket());
+		REQUIRE(tokens[3].isclosebracket());
+		REQUIRE(!tokens[4].isclosebracket());
+		REQUIRE(tokens[5].isclosebracket());
+		REQUIRE(!tokens[6].isclosebracket());
+		REQUIRE(!tokens[7].isclosebracket());
+	}
+
+
+	SECTION("Identify var name with underscore") {
+		std::istringstream str("_ var_name var _underscore_then_var");
+		std::vector<HBTK::Token> tokens;
+		HBTK::Tokeniser tokeniser(&str);
+		while (!tokeniser.eof()) {
+			tokens.push_back(tokeniser.next());
+		}
+		REQUIRE(tokens[0].isvar());
+		REQUIRE(tokens[1].iswhitespace());
+		REQUIRE(tokens[2].isvar());
+		REQUIRE(tokens[3].iswhitespace());
+		REQUIRE(tokens[4].isvar());
+		REQUIRE(tokens[5].iswhitespace());
+		REQUIRE(tokens[6].isvar());
+	}
+
 	SECTION("Identify variables mixed with punctuation") {
 		std::istringstream str("foo+bar=foobar");
 		std::vector<HBTK::Token> tokens;
@@ -156,5 +206,81 @@ TEST_CASE("Tokeniser & Tokens") {
 		}
 		REQUIRE(caught == true);
 		REQUIRE(tokeniser.line_number() == 6);
+	}
+
+	SECTION("No multiline strings") {
+		std::istringstream str("\"string 1\"\n\"multi\nline\nstring\"");
+		std::vector<HBTK::Token> tokens;
+		HBTK::Tokeniser tokeniser(&str);
+		tokeniser.multiline_strings = false;
+		bool caught = false;
+		try {
+			while (!tokeniser.eof()) {
+				tokens.push_back(tokeniser.next());
+			}
+		}
+		catch (...) {
+			caught = true;
+		}
+		REQUIRE(caught == true);
+		REQUIRE(tokeniser.line_number() == 2);
+	}
+
+	SECTION("char numbering without newline") {
+		std::istringstream str("foo+bar=foobar");
+		std::vector<HBTK::Token> tokens;
+		HBTK::Tokeniser tokeniser(&str);
+		while (!tokeniser.eof()) {
+			tokens.push_back(tokeniser.next());
+		}
+		REQUIRE(tokens.size() == 5);
+		REQUIRE(tokens[0].char_idx() == 1);
+		REQUIRE(tokens[2].char_idx() == 5);
+		REQUIRE(tokens[4].char_idx() == 9);
+		REQUIRE(tokens[1].char_idx() == 4);
+		REQUIRE(tokens[3].char_idx() == 8);
+	}
+
+
+	SECTION("char numbering with newline - no strings") {
+		std::istringstream str(
+			"She is the fairies midwife, and she comes\n"
+			"In shape no bigger than an agate stone\n"
+			"On the forefinger of an alderman,\n"
+			"Drawn with a team of little atomi\n"
+			"Over mens noses as they lie asleep.\n"
+		);
+		std::vector<HBTK::Token> tokens;
+		HBTK::Tokeniser tokeniser(&str);
+		while (!tokeniser.eof()) {
+			tokens.push_back(tokeniser.next());
+		}
+		REQUIRE(tokens[0].value() == "She");
+		REQUIRE(tokens[0].line() == 1);
+		REQUIRE(tokens[0].char_idx() == 1);
+		REQUIRE(tokens[37].value() == "forefinger");
+		REQUIRE(tokens[37].line() == 3);
+		REQUIRE(tokens[37].char_idx() == 8);
+	}
+
+	SECTION("Int and float token distinction") {
+		std::istringstream str("1.1 22.4 1 43 0. 2");
+		std::vector<HBTK::Token> tokens;
+		HBTK::Tokeniser tokeniser(&str);
+		while (!tokeniser.eof()) {
+			tokens.push_back(tokeniser.next());
+		}
+		REQUIRE(!tokens[0].isinteger());
+		REQUIRE(!tokens[2].isinteger());
+		REQUIRE(tokens[4].isinteger());
+		REQUIRE(tokens[6].isinteger());
+		REQUIRE(!tokens[8].isinteger());
+		REQUIRE(tokens[10].isinteger());
+		REQUIRE(tokens[0].isfloat());
+		REQUIRE(tokens[2].isfloat());
+		REQUIRE(!tokens[4].isfloat());
+		REQUIRE(!tokens[6].isfloat());
+		REQUIRE(tokens[8].isfloat());
+		REQUIRE(!tokens[10].isfloat());
 	}
 }
