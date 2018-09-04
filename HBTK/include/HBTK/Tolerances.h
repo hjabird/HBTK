@@ -24,7 +24,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
-
+#include <type_traits>
 
 namespace HBTK {
 
@@ -44,7 +44,7 @@ namespace HBTK {
 	}
 
 
-	/// \brief returns the tolerance of double (10^-7)
+	/// \brief returns the tolerance of float (10^-7)
 	/// \code float tol = HBTK::tolerance<float>() \endcode
 	template <>
 	constexpr float tolerance<float>(void)
