@@ -110,7 +110,7 @@ namespace HBTK {
 	{
 		assert(dimension > 0);
 		assert(dimension < TNumDimensions);
-		returm m_subsplines[dimension];
+		return m_subsplines[dimension];
 	}
 
 	template<int TNumDimensions>
