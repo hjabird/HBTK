@@ -266,7 +266,7 @@ namespace HBTK {
 		R_Type is = (upper_limit - lower_limit) / 8 * (stack.top().l + stack.top().u + stack.top().c
 			+ (func(lower_limit + 0.9501) + func(lower_limit + 0.2311) + func(lower_limit + 0.6068)
 				+ func(lower_limit + 0.4860) + func(lower_limit + 0.8913)) * (upper_limit - lower_limit));
-		is = (is == 0 ? upper_limit - lower_limit : is);
+		is = (std::abs(is) == 0 ? upper_limit - lower_limit : is);
 		is = is * tolerance / HBTK::tolerance<R_Type>();
 
 		while (!stack.empty())

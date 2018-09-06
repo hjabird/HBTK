@@ -80,7 +80,8 @@ namespace HBTK {
 		for (auto & vector : control_points) { assert(num_points == (int)vector.size()); }
 		std::vector<double> input_points = linspace(-1, 1, num_points);
 		for (int i = 0; i < TNumDimensions; i++) {
-			m_subsplines[i] = CubicSpline1D(input_points, control_points[i]);
+			CubicSpline1D spline(input_points, control_points[i]);
+			m_subsplines[i] = spline;
 		}
 	}
 

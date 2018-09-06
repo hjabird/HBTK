@@ -90,26 +90,26 @@ namespace HBTK {
 #pragma warning(suppress: 4244)
 		m = (n_points + 1.0) / 2.0;
 
-		for (idxO = 0; idxO < floor(m - 1) + 1; idxO++)
+		for (idxO = 0; idxO < floor(m - 1.) + 1; idxO++)
 		{
 #pragma warning(suppress: 4244)
 			z = cos(HBTK::Constants::pi<Ty>() * (idxO + 0.75) / (n_points + 0.5));
-			z1 = 12;
+			z1 = 12.;
 			while (abs(z - z1) > HBTK::tolerance<Ty>()) {
-				p1 = 1;
-				p2 = 0;
+				p1 = 1.;
+				p2 = 0.;
 				for (idxI = 0; idxI < n_points; idxI++)
 				{
 					p3 = p2;	p2 = p1;
-					p1 = ((2 * idxI + 1)*z*p2 - idxI*p3) / (idxI + 1);
+					p1 = ((2. * idxI + 1.)*z*p2 - idxI*p3) / (idxI + 1.);
 				}
-				pp = n_points *(z*p1 - p2) / (z*z - 1);
+				pp = n_points *(z*p1 - p2) / (z*z - 1.);
 				z1 = z;
 				z = z1 - p1 / pp;
 			}
 			points[idxO] = z;
 			points[n_points - idxO - 1] = -z;
-			weights[idxO] = 2 / ((1 - z*z)*pp*pp);
+			weights[idxO] = 2. / ((1. - z*z)*pp*pp);
 			weights[n_points - idxO - 1] = weights[idxO];
 		}
 		return;
