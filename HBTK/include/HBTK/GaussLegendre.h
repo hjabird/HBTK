@@ -94,8 +94,8 @@ namespace HBTK {
 		{
 #pragma warning(suppress: 4244)
 			z = cos(HBTK::Constants::pi<Ty>() * (idxO + 0.75) / (n_points + 0.5));
-			z1 = 12.;
-			while (abs(z - z1) > HBTK::tolerance<Ty>()) {
+            z1 = 12.;
+            while (std::abs(z - z1) > HBTK::tolerance<Ty>()) {
 				p1 = 1.;
 				p2 = 0.;
 				for (idxI = 0; idxI < n_points; idxI++)
@@ -105,7 +105,7 @@ namespace HBTK {
 				}
 				pp = n_points *(z*p1 - p2) / (z*z - 1.);
 				z1 = z;
-				z = z1 - p1 / pp;
+                z = z1 - p1 / pp;
 			}
 			points[idxO] = z;
 			points[n_points - idxO - 1] = -z;

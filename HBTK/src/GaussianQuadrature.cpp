@@ -163,15 +163,15 @@ HBTK::jacobi_tridiagonal_to_quadrature(std::vector<double> off_diagonal, std::ve
 
 		do {
 			for (m = i; m < (int)diagonal.size() - 1; m++) {
-				double dd = abs(diagonal[m]) + abs(diagonal[m + 1]);
-				if (abs(off_diagonal[m]) + dd == dd) break;
+                double dd = std::abs(diagonal[m]) + std::abs(diagonal[m + 1]);
+                if (std::abs(off_diagonal[m]) + dd == dd) break;
 			}
 
 			if (m != i) {
 				g = (diagonal[i + 1] - diagonal[i]) / (2.0 * off_diagonal[i]);
 				r = sqrt(g * g + 1.);
 				g = diagonal[m] - diagonal[i] + off_diagonal[i] /
-					(g + (g < 0 ? -abs(r) : abs(r)));
+                    (g + (g < 0 ? - std::abs(r) : std::abs(r)));
 				s = 1.0;
 				c = 1.0;
 				p = 0.0;
@@ -180,7 +180,7 @@ HBTK::jacobi_tridiagonal_to_quadrature(std::vector<double> off_diagonal, std::ve
 					double f = s * off_diagonal[j];
 					double b = c * off_diagonal[j];
 
-					if (abs(f) >= abs(g)) {
+                    if (std::abs(f) >= std::abs(g)) {
 						c = g / f;
 						r = sqrt((c*c) + 1.0);
 						off_diagonal[j + 1] = f * r;
@@ -248,7 +248,7 @@ double HBTK::jacobi_integral(double alpha, double beta)
 		}
 	}
 	else if (alpha == -beta) {
-		if (abs(alpha) == 0.5) { result = HBTK::Constants::pi(); }
+        if (std::abs(alpha) == 0.5) { result = HBTK::Constants::pi(); }
 		else { assert(false); }
 	}
 	else { assert(false); } // Perhaps numerically integrate?
