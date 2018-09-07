@@ -193,7 +193,7 @@ namespace HBTK {
 			fine = trap(tmp.l_lim, p_sub, tmp.l, v_sub)
 				+ trap(p_sub, tmp.u_lim, v_sub, tmp.u);
 
-			if (abs(fine - coarse) > (tmp.u_lim - tmp.l_lim) * tolerance)
+            if (std::abs(fine - coarse) > (tmp.u_lim - tmp.l_lim) * tolerance)
 			{
 				stack.pop();
 				stack.emplace(stack_frame{ tmp.l_lim, p_sub, tmp.l, v_sub });
@@ -266,7 +266,7 @@ namespace HBTK {
 		R_Type is = (upper_limit - lower_limit) / 8 * (stack.top().l + stack.top().u + stack.top().c
 			+ (func(lower_limit + 0.9501) + func(lower_limit + 0.2311) + func(lower_limit + 0.6068)
 				+ func(lower_limit + 0.4860) + func(lower_limit + 0.8913)) * (upper_limit - lower_limit));
-		is = (is == 0 ? upper_limit - lower_limit : is);
+		is = (std::abs(is) == 0 ? upper_limit - lower_limit : is);
 		is = is * tolerance / HBTK::tolerance<R_Type>();
 
 		while (!stack.empty())
@@ -356,12 +356,12 @@ namespace HBTK {
 			*(y0[4] + y0[8]) + 0.224926465333340*(y0[5] + y0[7])
 			+ 0.242611071901408*y0[6]);
 		int s = (is >= 0.0 * R_Type() ? 1 : -1);
-		R_Type err_fine = abs(fine - is);
-		R_Type err_coarse = abs(coarse - is);
+        R_Type err_fine = std::abs(fine - is);
+        R_Type err_coarse = std::abs(coarse - is);
 		R_Type R = (R_Type)1.0;
 		if (err_coarse != 0.0 * R_Type()) R = err_fine / err_coarse;
 		if ((R > 0) && (R < 1)) tolerance = tolerance / R;
-		is = s * abs(is) * tolerance / HBTK::tolerance<R_Type>();
+        is = s * std::abs(is) * tolerance / HBTK::tolerance<R_Type>();
 		if (is == 0) is = upper_limit - lower_limit;
 
 		// And now onto the adaptive bit - adaptlobstp(...)
