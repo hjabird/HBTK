@@ -29,7 +29,8 @@ SOFTWARE.
 #include <algorithm>
 #include <cstdio>  // For FILENAME_MAX
 #include <exception>
-#include <iostream>
+#include <istream>
+#include <sstream>
 #include <stdexcept>
 
 #ifdef _WIN32
@@ -39,8 +40,12 @@ SOFTWARE.
 #else
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/stat.h>
 #define GetCurrentDir getcwd	// For current_working_directory()
 #endif
+
+#include "Token.h"
+#include "Tokeniser.h"
 
 std::string HBTK::Paths::current_working_directory()
 {
@@ -123,5 +128,264 @@ std::vector<std::string> HBTK::Paths::files_in_directory(std::string path, std::
 	return files;
 }
 
+HBTK::Path::Path()
+	: m_path()
+{
+}
+
+HBTK::Path::Path(const std::string & path)
+	: m_path()
+{
+	*this = path;
+	return;
+}
+
+HBTK::Path & HBTK::Path::operator=(const std::string & other) 
+{
+	std::istringstream str(other);
+	Tokeniser tokeniser(&str);
+	std::vector<Token> toks;
+	while (!tokeniser.eof()) {
+		toks.push_back(tokeniser.next());
+	}
+
+	std::string tmp;
+	for (auto & t : toks) {
+		if (t.iswhitespace()) {
+			throw std::invalid_argument("Whitespace in path " + other + " is not acceptable. "
+				__FILE__ " : " + std::to_string(__LINE__));
+		}
+
+		if (!is_dir_separator(t.value())) {
+			tmp += t.value();
+		}
+		else {
+			if (!tmp.empty()) { m_path.push_back(tmp); }
+#ifdef _WIN32
+			m_path.push_back("\\");
+#else
+			m_path.push_back("/");
+#endif
+			tmp.clear();
+		}
+	}
+	if (!tmp.empty()) {
+		m_path.push_back(tmp);
+	}
+	return *this;
+}
+
+HBTK::Path & HBTK::Path::operator=(const Path & other) 
+{
+	m_path = other.m_path;
+	return *this;
+}
 
 
+std::string HBTK::Path::to_string() const 
+{
+	std::string tmp;
+	for (auto & t : m_path) {
+		tmp += t;
+	}
+	return tmp;
+}
+
+HBTK::Path::operator std::string() const
+{
+	return to_string();
+}
+
+HBTK::Path HBTK::Path::absolute_path() const {
+	auto tmp = *this;
+	tmp.normalise();
+#ifdef _WIN32
+	if ((int)tmp.m_path[0].size() != 2 || tmp.m_path[0][1] != ':') 
+	{
+		std::string dir = Paths::current_working_directory();
+		Path tmp2(dir);
+		tmp2.join(tmp);
+		tmp = tmp2;
+	}
+#else
+	if (tmp.m_path[0] != "/") {
+		std::string dir = Paths::current_working_directory();
+		Path tmp2(dir);
+		tmp2.join(tmp);
+		tmp = tmp2;
+	}
+#endif
+	return tmp;
+}
+
+HBTK::Path HBTK::Path::base_name() const 
+{
+	// We want to extract the last bit of the path. Eg:
+	// a/b/c.exe -> c.exe
+	// a/b -> b
+	// a/b/c.exe/ -> '' 
+	// Aim is to be identical to os.path.basename in Python
+	std::string name;
+	if ((int)m_path.size() == 0) { name = ""; }
+	else if (!is_dir_separator(m_path.back())) {
+		name = m_path.back();
+	}
+	else {
+		int i = 1;
+		int len = (int)m_path.size();
+		while (i < len) {
+			if (!is_dir_separator(m_path[len - i])) {
+				name = m_path[len - i];
+			}
+			++i;
+		}
+	}
+	return name;
+}
+
+
+std::string HBTK::Path::directory_name() const
+{
+	int len = (int)m_path.size();
+	std::string dir;
+	switch (len) {
+	case 0:
+		dir = "";
+		break;
+	case 1:
+		if (m_path[0] != "/" && m_path[0] != "\\") {
+			dir = "";
+		}
+		else {
+			dir = m_path[0];
+		}
+		break;
+	default:
+		if (m_path.back() != "/" && m_path.back() != "\\") {
+			dir = m_path[len - 3];
+		}
+		else
+		{
+			dir = m_path[len - 2];
+		}
+		break;
+	}
+	return dir;
+}
+
+bool HBTK::Path::exists()
+{
+	// If this looks like Stackoverflow answers...
+	std::string as_str = to_string();
+#ifdef _WIN32
+		DWORD dwAttrib = GetFileAttributes(as_str.c_str());
+		return (dwAttrib != INVALID_FILE_ATTRIBUTES);
+#else
+	// https://stackoverflow.com/questions/12774207/
+	struct stat buffer;
+	return (stat(as_str.c_str(), &buffer) == 0);
+#endif
+}
+
+bool HBTK::Path::is_absolute_path()
+{
+
+	if ((int)m_path.size() == 0) { return false; }
+	std::string& str = m_path[0];
+#ifdef _WIN32
+	if (str.size() <= 1) return false;
+	if (isupper(str[0]) && str[1] == ':') return true;
+	else return false;
+#else
+	if (str[0] == "/") return true;
+	else return false;
+#endif
+}
+
+bool HBTK::Path::is_file() {
+	std::string as_str = to_string();
+#ifdef _WIN32
+	DWORD dwAttrib = GetFileAttributes(as_str.c_str());
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
+		!(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+#else
+	struct stat buffer;
+	return (stat(as_str.c_str(), &buffer) == 0);
+#endif
+}
+
+bool HBTK::Path::is_folder()
+{
+	std::string as_str = to_string();
+#ifdef _WIN32
+	DWORD dwAttrib = GetFileAttributes(as_str.c_str());
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
+		(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+#else
+	struct stat buffer;
+	return (stat(as_str.c_str(), &buffer) == 0);
+#endif
+}
+
+void HBTK::Path::normalise()
+{
+	remove_repeated_slashes();
+	for (int i = 0; i < (int)m_path.size() - 1; ++i) {
+		if (m_path[i] == "." && is_dir_separator(m_path[i + 1])) {
+			m_path.erase(m_path.begin() + i, m_path.begin() + i + 2);
+			--i;
+			remove_repeated_slashes();
+		}
+		if (is_dir_separator(m_path[i]) && m_path[i + 1] == "..") {
+			m_path.erase(m_path.begin() + i - 1, m_path.begin() + i + 3);
+			--i; --i;
+			remove_repeated_slashes();
+			if (i - 1 > 0) {
+				--i;
+			}
+		}
+	}
+	return;
+}
+
+void HBTK::Path::join(const Path & other)
+{
+	if (!is_dir_separator(m_path.back())
+		&& !is_dir_separator(other.m_path.front())
+		&& (int) other.m_path.size() > 0){
+#ifdef _WIN32
+		m_path.push_back("\\");
+#else
+		m_path.push_back("/");
+#endif
+	}
+	for (auto & a : other.m_path) {
+		m_path.push_back(a);
+	}
+	return;
+}
+
+bool HBTK::Path::is_dir_separator(const std::string & str)
+{
+	if(str == "\\" || str == "/") return true;
+	else return false;
+}
+
+
+void HBTK::Path::remove_repeated_slashes(void) 
+{
+	int s = (int)m_path.size();
+	for (int i = 0; i < s - 1; ++i) {
+		if (is_dir_separator(m_path[i]) && is_dir_separator(m_path[i + 1])) {
+			m_path.erase(m_path.begin() + i);
+			s -= 1; --i;
+		}
+	}
+	return;
+}
+
+std::ostream & HBTK::operator<<(std::ostream & os, const Path & path)
+{
+	os << path.to_string();
+	return os;
+}

@@ -26,6 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -45,4 +46,64 @@ namespace HBTK {
 		std::vector<std::string> files_in_directory(std::string path);
 		std::vector<std::string> files_in_directory(std::string path, std::string file_extension);
 	}
+
+	class Path {
+	public:
+		// Construct an empty path.
+		Path();
+		// Construct a path from a string
+		Path(const std::string & path);
+
+		Path & operator=(const std::string & other);
+		Path & operator=(const Path & other);
+
+		// Obtain a string representation of the path
+		std::string to_string() const;
+		operator std::string() const;
+
+		// Returns the absolute path. Essentually joins this path and
+		// current working directory.
+		Path absolute_path() const;
+
+		// Returns the base name. Eg: a/file.exe -> file.exe,
+		// a/ -> '', t/p/a -> a
+		Path base_name() const;
+
+		// Returns the name of the directory. Eg: a/b -> a
+		// a/b/c -> b, a/b/c/ -> c
+		std::string directory_name() const;
+
+		//Checks if the path exists in the file system.
+		bool exists();
+		
+		// Checks whether the path starts from '/'(linux)
+		// or a drive letter (Windows)
+		bool is_absolute_path();
+
+		// Checks with operating system to see if the path
+		// refers to a file.
+		bool is_file();
+
+		// Checks with OS to see if the path refers to a
+		// normal directory.
+		bool is_folder();
+		
+		// Removes unneeded parts from the path. 
+		// Eg: a///c -> a/c, b/././c -> b/c, b/c/../d -> b/d
+		void normalise();
+
+		// Joins paths. Like Python.
+		void join(const Path & other);
+
+	
+	protected:
+
+		std::vector<std::string> m_path;
+		static bool is_dir_separator(const std::string& str);
+		void remove_repeated_slashes(void);
+	};
+
+	// Place into ostream.
+	std::ostream& operator<<(std::ostream& os, const Path& path);
 }
+ 
