@@ -12,11 +12,19 @@
 
 TEST_CASE("Gauss Legendre quadratures generation")
 {
-	std::vector<double> points, weights;
-	points.resize(2);
-	weights.resize(2);
+	SECTION("Basic 1 point generation in preallocated std::vector<>") {
+		std::vector<double> points, weights;
+		points.resize(1);
+		weights.resize(1);
+		HBTK::gauss_legendre<double>(1, points, weights);
+		REQUIRE(2.0 == Approx(weights[0]));
+		REQUIRE(points[0] == Approx(0.0));
+	}
 
 	SECTION("Basic 2 point generation in preallocated std::vector<>") {
+		std::vector<double> points, weights;
+		points.resize(2);
+		weights.resize(2);
 		HBTK::gauss_legendre<double>(2, points, weights);
 		REQUIRE(1.0 == Approx(weights[0]));
 		REQUIRE(1.0 == Approx(weights[1]));
@@ -24,6 +32,7 @@ TEST_CASE("Gauss Legendre quadratures generation")
 	}
 
 	SECTION("Basic 2 point generation in returned std::vector<>") {
+		std::vector<double> points, weights;
 		auto quad = HBTK::gauss_legendre(2);
 		points = quad.get_quadrature().first;
 		weights = quad.get_quadrature().second;
@@ -33,6 +42,7 @@ TEST_CASE("Gauss Legendre quadratures generation")
 	}
 
 	SECTION("7 points generation to std::vector<double>.") {
+		std::vector<double> points, weights;
 		points.resize(7);
 		weights.resize(7);
 		HBTK::gauss_legendre<double, std::vector<double>>(7, points, weights);

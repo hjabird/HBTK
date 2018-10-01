@@ -61,7 +61,7 @@ namespace HBTK {
 		return result;
 	}
 
-	template<typename Ty, int TySize>
+	template<typename Ty, long unsigned int TySize>
 	bool check_finite(const std::array<Ty, TySize> & x) {
 		bool result = true;
 		for (auto &a : x) {
@@ -92,7 +92,7 @@ namespace HBTK {
 		return result;
 	}
 
-	template<typename Ty, int TySize>
+	template<typename Ty, long unsigned int TySize>
 	bool check_in_range(const std::array<Ty, TySize> & x, const Ty & min, const Ty & max) {
 		bool result = true;
 		for (auto &a : x) {
