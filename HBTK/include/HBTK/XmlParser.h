@@ -44,12 +44,15 @@ namespace HBTK {
 			XmlParser();
 			~XmlParser();
 
+			// Its way more convenient to have this than write the definition each time.
+			using key_val_pairs = std::vector<std::pair<std::string, std::string>>;
+
 			// Define a function to call when an element is opened.
 			// The function should take two arguments:
 			// A string defining the element's NAME ie: <NAME param1="1" ...>
 			// A vector of parameters: pairs of param name and value
 			// ie <NAME Pair1st="Pair2nd"
-			std::function<void(std::string, std::vector<std::pair<std::string, std::string>>)> on_element_open;
+			std::function<void(std::string, key_val_pairs)> on_element_open;
 
 			// A function to call when and element is closed.
 			// Takes element name as argument:

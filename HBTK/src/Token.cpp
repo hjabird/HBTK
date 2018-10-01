@@ -40,12 +40,17 @@ const int HBTK::Token::char_idx() const {
 
 bool HBTK::Token::isnum() const
 {
-	return m_token_type == NUMBER;
+	return m_token_type == INTEGER || m_token_type == FLOAT;
 }
 
 bool HBTK::Token::isvar() const
 {
 	return m_token_type == VARIABLE;
+}
+
+bool HBTK::Token::isword() const
+{
+	return m_token_type == WORD;	
 }
 
 bool HBTK::Token::isstr() const
@@ -150,3 +155,4 @@ bool HBTK::Token::isnewline() const
 {
 	return m_token_type == WHITE_SPACE && m_value[0] == '\n';
 }
+

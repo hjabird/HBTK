@@ -1,5 +1,5 @@
 #include <HBTK/Token.h>
-#include <HBTK/Tokeniser.h>
+#include <HBTK/BasicTokeniser.h>
 #include <catch2/catch.hpp>
 /*////////////////////////////////////////////////////////////////////////////
 TestTokeniser.cpp
@@ -32,9 +32,9 @@ SOFTWARE.
 
 TEST_CASE("Tokeniser & Tokens") {
 	SECTION("All whitespace & token count") {
-		std::istringstream str(" \t\n");
+		std::string str(" \t\n");
 		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
+		HBTK::BasicTokeniser tokeniser(str);
 		while (!tokeniser.eof()) {
 			tokens.push_back(tokeniser.next());
 		}
@@ -47,70 +47,35 @@ TEST_CASE("Tokeniser & Tokens") {
 		REQUIRE(tokens[2].value() == "\n");
 	}
 
-	SECTION("Read a string - double quoted") {
-		std::istringstream str("\"Hello world\"");
-		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
-		while (!tokeniser.eof()) {
-			tokens.push_back(tokeniser.next());
-		}
-		REQUIRE(tokens.size() == 1);
-		REQUIRE(tokens[0].isstr());
-		REQUIRE(tokens[0].value() == "Hello world");
-	}
-
-	SECTION("Read a string - single quoted") {
-		std::istringstream str("\'Hello world\'");
-		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
-		while (!tokeniser.eof()) {
-			tokens.push_back(tokeniser.next());
-		}
-		REQUIRE(tokens.size() == 1);
-		REQUIRE(tokens[0].isstr());
-		REQUIRE(tokens[0].value() == "Hello world");
-	}
-
-	SECTION("Read a string - single quotes in double quotes") {
-		std::istringstream str("\"Hello\' world\"");
-		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
-		while (!tokeniser.eof()) {
-			tokens.push_back(tokeniser.next());
-		}
-		REQUIRE(tokens.size() == 1);
-		REQUIRE(tokens[0].isstr());
-		REQUIRE(tokens[0].value() == "Hello\' world");
-	}
-
 	SECTION("Identify a number") {
-		std::istringstream str("1.35");
+		std::string str("1.35");
 		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
+		HBTK::BasicTokeniser tokeniser(str);
 		while (!tokeniser.eof()) {
 			tokens.push_back(tokeniser.next());
 		}
-		REQUIRE(tokens.size() == 1);
+		REQUIRE(tokens.size() == 3);
 		REQUIRE(tokens[0].isnum());
-		REQUIRE(tokens[0].value() == "1.35");
+		REQUIRE(tokens[0].value() == "1");
+		REQUIRE(tokens[2].isnum());
+		REQUIRE(tokens[2].value() == "35");
 	}
 
-	SECTION("Identify a variable name") {
-		std::istringstream str("foo");
+	SECTION("Identify a word") {
+		std::string str("foo");
 		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
+		HBTK::BasicTokeniser tokeniser(str);
 		while (!tokeniser.eof()) {
 			tokens.push_back(tokeniser.next());
 		}
 		REQUIRE(tokens.size() == 1);
-		REQUIRE(tokens[0].isvar());
 		REQUIRE(tokens[0].value() == "foo");
 	}
 
 	SECTION("Identify brackets") {
-		std::istringstream str("{}()[]!.");
+		std::string str("{}()[]!.");
 		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
+		HBTK::BasicTokeniser tokeniser(str);
 		while (!tokeniser.eof()) {
 			tokens.push_back(tokeniser.next());
 		}
@@ -140,36 +105,19 @@ TEST_CASE("Tokeniser & Tokens") {
 		REQUIRE(!tokens[7].isclosebracket());
 	}
 
-
-	SECTION("Identify var name with underscore") {
-		std::istringstream str("_ var_name var _underscore_then_var");
-		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
-		while (!tokeniser.eof()) {
-			tokens.push_back(tokeniser.next());
-		}
-		REQUIRE(tokens[0].isvar());
-		REQUIRE(tokens[1].iswhitespace());
-		REQUIRE(tokens[2].isvar());
-		REQUIRE(tokens[3].iswhitespace());
-		REQUIRE(tokens[4].isvar());
-		REQUIRE(tokens[5].iswhitespace());
-		REQUIRE(tokens[6].isvar());
-	}
-
 	SECTION("Identify variables mixed with punctuation") {
-		std::istringstream str("foo+bar=foobar");
+		std::string str("foo+bar=foobar");
 		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
+		HBTK::BasicTokeniser tokeniser(str);
 		while (!tokeniser.eof()) {
 			tokens.push_back(tokeniser.next());
 		}
 		REQUIRE(tokens.size() == 5);
-		REQUIRE(tokens[0].isvar());
+		REQUIRE(tokens[0].isword());
 		REQUIRE(tokens[0].value() == "foo");
-		REQUIRE(tokens[2].isvar());
+		REQUIRE(tokens[2].isword());
 		REQUIRE(tokens[2].value() == "bar");
-		REQUIRE(tokens[4].isvar());
+		REQUIRE(tokens[4].isword());
 		REQUIRE(tokens[4].value() == "foobar");
 		REQUIRE(tokens[1].ispunct());
 		REQUIRE(tokens[1].value() == "+");
@@ -179,9 +127,9 @@ TEST_CASE("Tokeniser & Tokens") {
 
 
 	SECTION("Correct line numbering") {
-		std::istringstream str("a\nb\nc\n");
+		std::string str("a\nb\nc\n");
 		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
+		HBTK::BasicTokeniser tokeniser(str);
 		while (!tokeniser.eof()) {
 			tokens.push_back(tokeniser.next());
 		}
@@ -191,45 +139,10 @@ TEST_CASE("Tokeniser & Tokens") {
 	}
 
 
-	SECTION("String ends in file") {
-		std::istringstream str("a\nb\n\"\nabcd\'\n\n");
-		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
-		bool caught = false;
-		try {
-			while (!tokeniser.eof()) {
-				tokens.push_back(tokeniser.next());
-			}
-		}
-		catch (...) {
-			caught = true;
-		}
-		REQUIRE(caught == true);
-		REQUIRE(tokeniser.line_number() == 6);
-	}
-
-	SECTION("No multiline strings") {
-		std::istringstream str("\"string 1\"\n\"multi\nline\nstring\"");
-		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
-		tokeniser.multiline_strings = false;
-		bool caught = false;
-		try {
-			while (!tokeniser.eof()) {
-				tokens.push_back(tokeniser.next());
-			}
-		}
-		catch (...) {
-			caught = true;
-		}
-		REQUIRE(caught == true);
-		REQUIRE(tokeniser.line_number() == 2);
-	}
-
 	SECTION("char numbering without newline") {
-		std::istringstream str("foo+bar=foobar");
+		std::string str("foo+bar=foobar");
 		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
+		HBTK::BasicTokeniser tokeniser(str);
 		while (!tokeniser.eof()) {
 			tokens.push_back(tokeniser.next());
 		}
@@ -243,7 +156,7 @@ TEST_CASE("Tokeniser & Tokens") {
 
 
 	SECTION("char numbering with newline - no strings") {
-		std::istringstream str(
+		std::string str(
 			"She is the fairies midwife, and she comes\n"
 			"In shape no bigger than an agate stone\n"
 			"On the forefinger of an alderman,\n"
@@ -251,7 +164,7 @@ TEST_CASE("Tokeniser & Tokens") {
 			"Over mens noses as they lie asleep.\n"
 		);
 		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
+		HBTK::BasicTokeniser tokeniser(str);
 		while (!tokeniser.eof()) {
 			tokens.push_back(tokeniser.next());
 		}
@@ -261,26 +174,5 @@ TEST_CASE("Tokeniser & Tokens") {
 		REQUIRE(tokens[37].value() == "forefinger");
 		REQUIRE(tokens[37].line() == 3);
 		REQUIRE(tokens[37].char_idx() == 8);
-	}
-
-	SECTION("Int and float token distinction") {
-		std::istringstream str("1.1 22.4 1 43 0. 2");
-		std::vector<HBTK::Token> tokens;
-		HBTK::Tokeniser tokeniser(&str);
-		while (!tokeniser.eof()) {
-			tokens.push_back(tokeniser.next());
-		}
-		REQUIRE(!tokens[0].isinteger());
-		REQUIRE(!tokens[2].isinteger());
-		REQUIRE(tokens[4].isinteger());
-		REQUIRE(tokens[6].isinteger());
-		REQUIRE(!tokens[8].isinteger());
-		REQUIRE(tokens[10].isinteger());
-		REQUIRE(tokens[0].isfloat());
-		REQUIRE(tokens[2].isfloat());
-		REQUIRE(!tokens[4].isfloat());
-		REQUIRE(!tokens[6].isfloat());
-		REQUIRE(tokens[8].isfloat());
-		REQUIRE(!tokens[10].isfloat());
 	}
 }

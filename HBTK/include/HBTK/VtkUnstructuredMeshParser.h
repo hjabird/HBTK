@@ -29,6 +29,7 @@ SOFTWARE.
 #include <unordered_map>
 
 #include "BasicParser.h"
+#include "VtkXmlArrayReader.h"
 #include "XmlParser.h"
 
 namespace HBTK {
@@ -39,16 +40,31 @@ namespace HBTK {
 		public:
 			VtkParser();
 
-			// Possible types of vkt file. Parallel unsupported.
-			enum VtkFileType {
-				UnknownFile,
-				StructuredGridFile,
-				UnstructuredGridFile
-			};
+			// Inherits from BasicParser:
+			/*
+			// Parse file at path.
+			void parse(std::string file_path) {
+				if (file_path.empty()) { throw - 1; }
+				std::ifstream inpt_stream(file_path.c_str(), std::ios::binary);
+				parse(inpt_stream, std::cerr);
+			}
+
+			// Parse Ifstream
+			void parse(std::ifstream & input_stream) {
+				parse(input_stream, std::cerr);
+			}
+
+			// Parse based on both input fstream and output stream
+			void parse(std::ifstream & input_stream, std::ostream & error_stream) {
+				if (!input_stream) { throw - 1; }
+				if (!error_stream) { throw - 1; }
+				static_cast<TParentClass *>(this)->main_parser(input_stream, error_stream);
+			}
+			*/
 
 		protected:
 			friend class BasicParser<VtkParser>;	
-			typedef std::vector<std::pair<std::string, std::string>> key_val_pairs;
+			using key_val_pairs = Xml::XmlParser::key_val_pairs;
 
 			void main_parser(std::ifstream & input_stream, std::ostream & error_stream);
 
@@ -56,7 +72,6 @@ namespace HBTK {
 
 			// Meta info
 			double m_version;
-			VtkFileType m_file_type;
 
 			// For handling all the xml:
 			Xml::XmlParser m_xml_parser;
@@ -68,6 +83,8 @@ namespace HBTK {
 			// And a stack of these bad boys.
 			std::stack<function_map> m_fmap_stack;
 
+			// To handle the reading of the array bits for us:
+			VtkXmlArrayReader m_array_reader;
 
 			// Functions for the all your xml needs:
 			void on_tag_open(std::string tag_name,  key_val_pairs key_vals);

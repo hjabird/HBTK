@@ -45,7 +45,7 @@ SOFTWARE.
 #endif
 
 #include "Token.h"
-#include "Tokeniser.h"
+#include "BasicTokeniser.h"
 
 std::string HBTK::Paths::current_working_directory()
 {
@@ -142,8 +142,9 @@ HBTK::Path::Path(const std::string & path)
 
 HBTK::Path & HBTK::Path::operator=(const std::string & other) 
 {
-	std::istringstream str(other);
-	Tokeniser tokeniser(&str);
+	std::unique_ptr<std::istringstream> str 
+		= std::make_unique<std::istringstream>(std::istringstream(other));
+	BasicTokeniser tokeniser(std::move(str));
 	std::vector<Token> toks;
 	while (!tokeniser.eof()) {
 		toks.push_back(tokeniser.next());

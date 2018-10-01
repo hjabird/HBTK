@@ -1,8 +1,11 @@
 #pragma once
 /*////////////////////////////////////////////////////////////////////////////
-Tokeniser.h
+BasicTokeniser.h
 
-A simple lexer.
+A simple lexer that separates out a text stream into Tokens. Separates tokens
+by whitespace, punctuation and into groups of numbers (so +ve integers)
+and groups of letters (words). These can be pieced back together according
+to linguistic rules.
 
 Copyright 2018 HJA Bird
 
@@ -25,29 +28,41 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */////////////////////////////////////////////////////////////////////////////
 
+#include <deque>
 #include <istream>
 
 #include "Token.h"
+#include "TokenStream.h"
 
 namespace HBTK {
-	class Tokeniser {
+	class BasicTokeniser :
+		TokenStream
+	{
 	public:
-		Tokeniser(std::istream *stream);
+		BasicTokeniser(std::unique_ptr<std::istream>);
+		BasicTokeniser(const std::string& str);
 
-		const Token& current() const;
-		const Token& next();
+		virtual const Token& current() override;
+		virtual const Token& next() override;
+		virtual const Token& peek(int) override;
 
-		bool eof() const;
-		int line_number() const;
-		int char_number() const;
-
-		bool multiline_strings;
+		virtual bool eof() const override;
+		virtual int line_number() override;
+		virtual int char_number() override;
+		virtual int position() override;
 
 	protected:
-		Token m_working_token;
-		int m_line_number;
-		int m_char_number;
+		// The collection of tokens used for lookahead purposes
+		std::deque<Token> m_tokens;
 
-		std::istream& m_stream;
+		// Associated with the starting position of the current token.
+		int m_stream_line_no;
+		int m_stream_char_no;
+
+		void parse_another_token();
+
+		int m_position;
+
+		std::unique_ptr<std::istream> m_stream;
 	};
 }

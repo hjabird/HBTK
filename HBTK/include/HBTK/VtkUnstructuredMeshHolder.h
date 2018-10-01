@@ -28,6 +28,7 @@ SOFTWARE.
 #include <vector>
 
 #include "CartesianPoint.h"
+#include "VtkCellType.h"
 
 namespace HBTK {
 	namespace Vtk {
@@ -38,7 +39,7 @@ namespace HBTK {
 			std::vector<HBTK::CartesianPoint3D> points;
 
 			struct cell_data {
-				int cell_type;
+				CellType cell_type;
 				std::vector<int> node_ids;
 			};
 			std::vector<cell_data> cells;
