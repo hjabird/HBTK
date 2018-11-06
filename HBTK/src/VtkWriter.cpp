@@ -65,6 +65,7 @@ void HBTK::Vtk::VtkWriter::open_file(std::ostream & stream, vtk_file_type file_t
 void HBTK::Vtk::VtkWriter::write_piece(std::ostream & stream, const VtkUnstructuredDataset & data)
 {
 	assert(m_file_type != None); // Have you used open_file()?
+	assert(!(ascii && appended)); // Not correct options!
 	if (m_file_type != UnstructuredGrid) {
 		throw std::runtime_error(
 			"HBTK::Vtk::VtkWriter::write_piece(..., VtkUnstructuredGrid): "

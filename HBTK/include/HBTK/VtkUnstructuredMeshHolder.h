@@ -35,16 +35,25 @@ namespace HBTK {
 		public:
 			VtkUnstructuredMeshHolder();
 
+			// Vector containing the coordinates of each point in the mesh
 			std::vector<HBTK::CartesianPoint3D> points;
 
+			// The data structure representing the cells. Cell type is 
+			// according to the VTK datasheet and is repetead in 
+			// VTKInfo.cpp ( I should create enums ).
 			struct cell_data {
+				// Cell type
 				int cell_type;
+				// Constituant nodes in VTK file format order
 				std::vector<int> node_ids;
 			};
 			std::vector<cell_data> cells;
 
 			std::vector<int> check_consistant_node_counts();
 			std::vector<int> check_valid_cell_nodes_ids();
+
+			// Remove points that are included in points multiple times.
+			// std::vector<int> merge_repeated_points();
 		};
 	}
 }

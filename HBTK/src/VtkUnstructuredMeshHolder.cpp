@@ -1,7 +1,10 @@
 #include "VtkUnstructuredMeshHolder.h"
 
+#include "CartesianPoint.h"
 #include "Checks.h"
 #include "VtkInfo.h"
+
+#include <unordered_map>
 
 HBTK::Vtk::VtkUnstructuredMeshHolder::VtkUnstructuredMeshHolder()
 {
@@ -34,4 +37,37 @@ std::vector<int> HBTK::Vtk::VtkUnstructuredMeshHolder::check_valid_cell_nodes_id
 	}
 	return problem_cells;
 }
+/*
+std::vector<int> HBTK::Vtk::VtkUnstructuredMeshHolder::merge_repeated_points()
+{
+	std::vector<int> new_positions(points.size());
+	std::unordered_map<HBTK::CartesianPoint3D, int> encountered;
+	int count = 0;
+	for (int i = 0; i < (int)points.size(); i++) {
+		if (encountered.count(points[i])) {
+			new_positions[i] = encountered[points[i]];
+		}
+		else {
+			encountered[points[i]] = count;
+			new_positions[i] = count;
+			count += 1;
+		}
+	}
+	encountered.clear();
+	
+	std::vector<HBTK::CartesianPoint3D> new_points(count);
+	for (int i = 0; i < (int)new_positions.size(); i++) {
+		new_points[new_positions[i]] = points[i];
+	}
+	points = new_points;
+	new_points.clear();
 
+	for (auto & cell : cells) {
+		for (int & node_id : cell.node_ids) {
+			node_id = new_positions[node_id];
+		}
+	}
+
+	return new_positions;
+}
+*/
