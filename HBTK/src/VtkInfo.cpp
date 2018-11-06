@@ -31,67 +31,147 @@ const std::string HBTK::Vtk::element_name(int ele_id)
 	std::string descriptor;
 	switch (ele_id) {
 	case 1:
-		descriptor = "point";
+		descriptor = "VTK_VERTEX";
 		break;
 	case 2:
-		descriptor = "polypoint";
+		descriptor = "VTK_POLY_VERTEX";
 		break;
 	case 3:
-		descriptor = "2 node line";
+		descriptor = "VTK_LINE";
 		break;
 	case 4:
-		descriptor = "polyline";
+		descriptor = "VTK_POLY_LINE";
 		break;
 	case 5:
-		descriptor = "3 node triangle";
+		descriptor = "VTK_TRIANGLE";
 		break;
 	case 6:
-		descriptor = "triangle strip";
+		descriptor = "VTK_TRIANGLE_STRIP";
 		break;
 	case 7:
-		descriptor = "polygon";
+		descriptor = "VTK_POLYGON";
 		break;
 	case 8:
-		descriptor = "pixel";
+		descriptor = "VTK_PIXEL";
 		break;
 	case 9:
-		descriptor = "4 node quadrangle";
+		descriptor = "VTK_QUAD";
 		break;
 	case 10:
-		descriptor = "4 node tetrahedron";
+		descriptor = "VTK_TETRA";
 		break;
 	case 11:
-		descriptor = "voxel";
+		descriptor = "VTK_VOXEL";
 		break;
 	case 12:
-		descriptor = "8 node hexahedron";
+		descriptor = "VTK_HEXAHEDRON";
 		break;
 	case 13:
-		descriptor = "6 node wedge";
+		descriptor = "VTK_WEDGE";
 		break;
 	case 14:
-		descriptor = "5 node pyramid";
+		descriptor = "VTK_PYRAMID";
+		break;
+	case 15:
+		descriptor = "VTK_PENTAGONAL_PRISM";
+		break;
+	case 16:
+		descriptor = "VTK_HEXAGONAL_PRISM";
 		break;
 	case 21:
-		descriptor = "3 node second order line";
+		descriptor = "VTK_QUADRATIC_EDGE";
 		break;
 	case 22:
-		descriptor = "6 node second order triangle";
+		descriptor = "VTK_QUADRATIC_TRIANGLE";
 		break;
 	case 23:
-		descriptor = "8 node second order quadrangle";
+		descriptor = "VTK_QUADRATIC_QUAD";
 		break;
 	case 24:
-		descriptor = "10 node second order tetrahedron";
+		descriptor = "VTK_QUADRATIC_TETRA";
 		break;
 	case 25:
-		descriptor = "20 node second order hexahedron";
+		descriptor = "VTK_QUADRATIC_HEXAHEDRON";
+		break;
+	case 35:
+		descriptor = "VTK_CUBIC_LINE";
+		break;
+	case 42:
+		descriptor = "VTK_POLYHEDRON";
+		break;
+	case 51:
+		descriptor = "VTK_PARAMETRIC_CURVE";
+		break;
+	case 52:
+		descriptor = "VTK_PARAMETRIC_SURFACE";
+		break;
+	case 53:
+		descriptor = "VTK_PARAMETRIC_TRI_SURFACE";
+		break;
+	case 54:
+		descriptor = "VTK_PARAMETRIC_QUAD_SURFACE";
+		break;
+	case 55:
+		descriptor = "VTK_PARAMETRIC_TETRA_REGION";
+		break;
+	case 56:
+		descriptor = "VTK_PARAMETRIC_HEX_REGION";
+		break;
+	case 60:
+		descriptor = "VTK_HIGHER_ORDER_EDGE";
+		break;
+	case 61:
+		descriptor = "VTK_HIGHER_ORDER_TRIANGLE";
+		break;
+	case 62:
+		descriptor = "VTK_HIGHER_ORDER_QUAD";
+		break;
+	case 63:
+		descriptor = "VTK_HIGHER_ORDER_POLYGON";
+		break;
+	case 64:
+		descriptor = "VTK_HIGHER_ORDER_TETRAHEDRON";
+		break;
+	case 65:
+		descriptor = "VTK_HIGHER_ORDER_WEDGE";
+		break;
+	case 66:
+		descriptor = "VTK_HIGHER_ORDER_PYRAMID";
+		break;
+	case 67:
+		descriptor = "VTK_HIGHER_ORDER_HEXAHEDRON";
+		break;
+	case 68:
+		descriptor = "VTK_LAGRANGE_CURVE";
+		break;
+	case 69:
+		descriptor = "VTK_LAGRANGE_TRIANGLE";
+		break;
+	case 70:
+		descriptor = "VTK_LAGRANGE_QUADRILATERAL";
+		break;
+	case 71:
+		descriptor = "VTK_LAGRANGE_TETRAHEDRON";
+		break;
+	case 72:
+		descriptor = "VTK_LAGRANGE_HEXAHEDRON";
+		break;
+	case 73:
+		descriptor = "VTK_LAGRANGE_WEDGE";
+		break;
+	case 74: 
+		descriptor = "VTK_LAGRANGE_PYRAMID";
 		break;
 	default:
-		descriptor = "INVALID TYPE INTEGER";
+		descriptor = "VTK_INVALID_CELL_TYPE";
 		break;
 	}
 	return descriptor;
+}
+
+const std::string HBTK::Vtk::element_name(CellType ele_id)
+{
+	return element_name((int) ele_id);
 }
 
 const int HBTK::Vtk::element_node_count(int ele_id)
@@ -102,22 +182,22 @@ const int HBTK::Vtk::element_node_count(int ele_id)
 		num = 1;
 		break;
 	case 2:
-		num = -2;
+		num = -1;
 		break;
 	case 3:
 		num = 2;
 		break;
 	case 4:
-		num = -2;
+		num = -1;
 		break;
 	case 5:
 		num = 3;
 		break;
 	case 6:
-		num = -2;
+		num = -1;
 		break;
 	case 7:
-		num = -2;
+		num = -1;
 		break;
 	case 8:
 		num = 4;	// Voxel - constrained.
@@ -140,6 +220,12 @@ const int HBTK::Vtk::element_node_count(int ele_id)
 	case 14:
 		num = 5;
 		break;
+	case 15:
+		num = 10;
+		break;
+	case 16:
+		num = 12;
+		break;
 	case 21:
 		num = 3;
 		break;
@@ -155,11 +241,28 @@ const int HBTK::Vtk::element_node_count(int ele_id)
 	case 25:
 		num = 20;
 		break;
-	default:
+	case 35:
+		num = 4;
+		break;
+	case 42:
 		num = -1;
+		break;
+	case 51:
+		num = 20;
+		break;
+	case 71:
+		num = 15;
+		break;
+	default:
+		num = -2;
 		break;
 	}
 	return num;
+}
+
+const int HBTK::Vtk::element_node_count(CellType ele_id)
+{
+	return element_node_count((int) ele_id);
 }
 
 const int HBTK::Vtk::element_dimensions(int ele_id)
@@ -230,6 +333,11 @@ const int HBTK::Vtk::element_dimensions(int ele_id)
 	return num;
 }
 
+const int HBTK::Vtk::element_dimensions(CellType ele_id)
+{
+	return element_dimensions((int) ele_id);
+}
+
 const int HBTK::Vtk::to_gmsh_element_id(int ele_id)
 {
 	int equiv;
@@ -296,4 +404,9 @@ const int HBTK::Vtk::to_gmsh_element_id(int ele_id)
 		break;
 	}
 	return equiv;
+}
+
+const int HBTK::Vtk::to_gmsh_element_id(CellType ele_id)
+{
+	return to_gmsh_element_id((int) ele_id);
 }
