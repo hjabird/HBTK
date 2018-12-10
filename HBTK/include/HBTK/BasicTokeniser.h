@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include <deque>
 #include <istream>
+#include <memory>
 
 #include "Token.h"
 #include "TokenStream.h"

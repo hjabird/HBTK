@@ -125,7 +125,7 @@ bool HBTK::Token::isclosebracket() const
 
 
 bool HBTK::Token::isinteger() const {
-	if (m_token_type != NUMBER) {
+	if (m_token_type != INTEGER) {
 		return false;
 	}
 	else {
@@ -139,7 +139,7 @@ bool HBTK::Token::isinteger() const {
 
 bool HBTK::Token::isfloat() const
 {
-	if (m_token_type != NUMBER) {
+	if (m_token_type != FLOAT) {
 		return false;
 	}
 	else {
