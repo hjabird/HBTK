@@ -252,7 +252,7 @@ namespace HBTK {
 	{
 		Ty tmp = exp(2 / (1 - point) - 1);
 		Ty tmp_p = tmp - 1 + original_lower_limit;
-		weight = 2 * tmp / (pow(1 - point, 2));
+		weight = 2 * tmp / (pow(1 - point, 2)) * weight;
 		point = tmp_p;
 		return void();
 	}
