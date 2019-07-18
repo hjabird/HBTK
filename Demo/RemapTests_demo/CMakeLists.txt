@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.1)
 add_executable (RemapTests_demo RemapTests_demo/RemapTests_demo.cpp)
 
 # Library dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-target_include_directories (RemapTests_demo PRIVATE "${PROJECT_SOURCE_DIR}/HBTK/include") 
-target_link_libraries (RemapTests_demo HBTK)
+target_include_directories (RemapTests_demo PRIVATE "${PROJECT_SOURCE_DIR}/include") 
+target_link_libraries (RemapTests_demo hbtk)
  
 # Visual studio ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # VS folders.

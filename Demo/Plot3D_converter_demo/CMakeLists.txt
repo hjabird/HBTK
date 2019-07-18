@@ -1,12 +1,11 @@
-
 cmake_minimum_required(VERSION 3.1)
 
 # Target
 add_executable (Plot3D_converter Plot3D_converter_demo/Plot3D_converter_demo.cpp)
 
 # Library dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-target_include_directories (Plot3D_converter PRIVATE "${PROJECT_SOURCE_DIR}/HBTK/include") 
-target_link_libraries (Plot3D_converter HBTK)
+target_include_directories (Plot3D_converter PRIVATE "${PROJECT_SOURCE_DIR}/include") 
+target_link_libraries (Plot3D_converter hbtk)
  
 # Visual studio ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # VS folders.

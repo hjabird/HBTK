@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.1)
 add_executable (GMSH_Info GmshParser_demo/GmshParser_demo.cpp)
 
 # Library dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-target_include_directories (GMSH_Info PRIVATE "${PROJECT_SOURCE_DIR}/HBTK/include") 
-target_link_libraries (GMSH_Info HBTK)
+target_include_directories (GMSH_Info PRIVATE "${PROJECT_SOURCE_DIR}/include") 
+target_link_libraries (GMSH_Info hbtk)
  
 # Visual studio ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # VS folders.

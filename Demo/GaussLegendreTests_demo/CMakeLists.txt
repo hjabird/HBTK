@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.1)
 add_executable (GaussLegendreTests GaussLegendreTests_demo/GaussLegendreTests_demo.cpp)
 
 # Library dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-target_include_directories (GaussLegendreTests PRIVATE "${PROJECT_SOURCE_DIR}/HBTK/include") 
-target_link_libraries (GaussLegendreTests HBTK)
+target_include_directories (GaussLegendreTests PRIVATE "${PROJECT_SOURCE_DIR}/include") 
+target_link_libraries (GaussLegendreTests hbtk)
  
 # Visual studio ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # VS folders.

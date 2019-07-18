@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.1)
 add_executable (GaussQuadrature_demo GaussQuadrature_demo/GaussQuadrature_demo.cpp)
 
 # Library dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-target_include_directories (GaussQuadrature_demo PRIVATE "${PROJECT_SOURCE_DIR}/HBTK/include") 
-target_link_libraries (GaussQuadrature_demo HBTK)
+target_include_directories (GaussQuadrature_demo PRIVATE "${PROJECT_SOURCE_DIR}/include") 
+target_link_libraries (GaussQuadrature_demo hbtk)
  
 # Visual studio ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # VS folders.
