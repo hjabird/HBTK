@@ -1,3 +1,5 @@
+This library is now abandonware. Use at own risk.
+
 # HBTK
 A C++ library containing what I consider to be 'useful stuff'. Very much liable to change.
 
